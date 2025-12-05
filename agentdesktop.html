@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Agent Desktop Designer</title>
+<style>
+  :root {
+    --header-h: 68px; --nav-w: 74px;
+    --bg:#0e1117; --panel:#161a24; --header:#0f121a; --accent:#2a7cff;
+    --text:#e6edff; --muted:#a8b2cc; --border:#2a3140; --chip:#0e1422; --warn:#ffcc00; --err:#ff5a5a;
+    --footer:#0b0f19;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+  .app { display: grid; grid-template-columns: 1fr 440px; height: 100%; }
+
+  /* Stage */
+  .stage { display: grid; grid-template-rows: auto var(--header-h) 1fr 32px; border-right: 1px solid var(--border); }
+  .controls { padding: 12px; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 8px; background: #0b0f19; }
+  .btn { appearance: none; border: 1px solid var(--border); background: #12182a; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.ghost { background: transparent; }
+  .btn.danger { border-color: #5a2030; background:#2a0f16; }
+  .btn.small { padding: 6px 10px; font-size: 12px; }
+  .btn.inline { padding: 4px 8px; font-size: 12px; }
+
+  .header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--header); border-bottom: 1px solid var(--border); cursor: pointer; }
+  .header:hover { outline: 1px dashed var(--accent); outline-offset: -3px; }
+  .logo { height: 28px; width: auto; object-fit: contain; }
+  .title { font-weight: 600; letter-spacing: .2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-widgets { display: flex; gap: 8px; margin-left: auto; }
+  .chip { background: var(--chip); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); }
+
+  .work { display: grid; grid-template-columns: var(--nav-w) 1fr; }
+  .nav { background: #0b101a; border-right: 1px solid var(--border); padding: 8px 0; overflow: auto; }
+  .group-title { padding: 6px 0 6px 10px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+  .item { display: grid; place-items: center; width: calc(var(--nav-w) - 8px); height: 60px; margin: 6px 4px; border-radius: 10px; border: 1px solid var(--border); background: #13182a; cursor: pointer; }
+  .item:hover, .item.active { border-color: var(--accent); }
+  .icon { width: 28px; height: 28px; border-radius: 6px; background: #0a0f1c; display: grid; place-items: center; overflow: hidden; }
+  .icon img { width: 100%; height: 100%; object-fit: contain; }
+
+  .main { background: var(--panel); display: grid; grid-template-rows: 42px 1fr; position: relative; }
+  .tabs { display: flex; gap: 8px; align-items: stretch; padding: 8px 10px; border-bottom: 1px solid var(--border); background: #0f1422; }
+  .tab { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: #141a2b; font-size: 13px; cursor: pointer; }
+  .tab.active { border-color: var(--accent); }
+  .canvas { position: relative; overflow: hidden; }
+  .frame { position: absolute; inset: 0; border: none; width: 100%; height: 100%; background: #0b0f19; }
+  .placeholder { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 13px; border-left: 1px solid var(--border); text-align:center; padding:16px; }
+
+  .footer { display:flex; align-items:center; padding: 6px 10px; border-top:1px solid var(--border); background: var(--footer); font-size:12px; color:var(--muted); gap:8px;}
+  .footer a { color:#cfe; text-decoration:none; border-bottom:1px dotted #2a7cff; }
+
+  /* Sidebar */
+  .sidebar { display: grid; grid-template-rows: auto auto 1fr auto; }
+  .coach { padding: 10px 14px; font-size: 13px; background: #0b0f19; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .coach b { color: var(--text); }
+  .editor { padding: 14px; overflow: auto; }
+  .editor h3 { margin: 10px 0 8px; font-size: 16px; }
+  .field { display: grid; gap: 6px; margin: 8px 0 14px; }
+  .field label { font-size: 12px; color: var(--muted); display:flex; align-items:center; gap:6px; }
+  .help { border: 1px dashed var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--muted); }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 10px 12px; background: #0e1322; color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; font-size: 13px;
+  }
+  .kv { display: grid; grid-template-columns: 1fr 1fr auto; gap: 6px; align-items: center; }
+  .divider { border-top: 1px solid var(--border); margin: 16px 0; }
+  .json-dump { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 12px; white-space: pre; background: #090d17; border-top: 1px solid var(--border); padding: 12px; overflow: auto; max-height: 26vh; }
+  .msg { font-size: 12px; padding: 8px 10px; border-radius:8px; margin-bottom:8px; }
+  .msg.warn { background:#322b10; border:1px solid #5a4a10; color:#ffe9a0; }
+  .msg.err { background:#351417; border:1px solid #5a2030; color:#ffd3d6; }
+  .flex { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .right { margin-left:auto; }
+
+  /* Popover/Modal */
+  dialog { border:1px solid var(--border); border-radius:12px; background:#0c101b; color:var(--text); padding:14px; max-width:580px; }
+  dialog::backdrop { background: rgba(0,0,0,0.5); }
+  .modal-title { font-weight:600; margin-bottom:8px; }
+  .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:10px; }
+  .note { font-size:12px; color:var(--muted); }
+
+  .tooltip { cursor: help; display:inline-flex; justify-content:center; align-items:center; width:16px; height:16px; border-radius:50%; background:#1b2135; color:#cfe; font-weight:700; font-size:12px; }
+  .pill { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; background:#12182a; border:1px solid var(--border); border-radius:999px; font-size:12px; color:var(--muted); }
+  .ok { color:#7dffb3; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="stage">
+    <div class="controls">
+      <input type="file" id="file" accept=".json" />
+      <button class="btn" id="loadSample">Load tiny sample</button>
+      <button class="btn" id="loadKitchenSink">🍲 Load Kitchen Sink Example</button>
+      <button class="btn" id="addNavTop">+ Nav (Top)</button>
+      <button class="btn" id="addNavBottom">+ Nav (Bottom)</button>
+      <button class="btn" id="addHeaderWidget">+ Header Widget</button>
+      <span class="pill">New nav default: <b>Two tabs</b> ▸ Dashboard + KB</span>
+      <span class="right flex">
+        <button class="btn" id="exportPng">Export PNG</button>
+        <button class="btn" id="copyJson">Copy JSON</button>
+        <button class="btn primary" id="downloadJson">Download JSON</button>
+      </span>
+    </div>
+
+    <div class="header" id="headerClick" title="Click to edit Advanced Header">
+      <img class="logo" id="headerLogo" alt="">
+      <div class="title" id="headerTitle">Agent Desktop Designer</div>
+      <div class="header-widgets" id="headerWidgets"></div>
+    </div>
+
+    <div class="work">
+      <div class="nav" id="nav"></div>
+      <div class="main">
+        <div class="tabs" id="tabs"></div>
+        <div class="canvas">
+          <div class="placeholder" id="workspaceNote">
+            <div>
+              <div><b>Welcome!</b> Select a nav icon or click the header to edit.</div>
+              <div class="note" style="margin-top:8px">Use <b>🍲 Load Kitchen Sink Example</b> to see everything filled in. Tooltips explain each field.</div>
+            </div>
+          </div>
+          <iframe class="frame" id="mainFrame" src="" title="Preview" style="display:none;"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Need help? Hover <span class="tooltip" title="Click for help">?</span> icons or click <a href="#" id="openQuickHelp">Quick Help</a>. Everything runs locally in your browser.
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="coach">
+      <b>How to use:</b> Click a section (Header / Left Nav / Tabs). The editor shows safe, supported fields. Hover <span class="tooltip">?</span> to learn what a field does.
+    </div>
+    <div class="editor" id="editor"></div>
+
+    <div class="editor" id="validation"></div>
+    <pre class="json-dump" id="jsonDump"></pre>
+  </div>
+</div>
+
+<!-- Modals -->
+<dialog id="modalWidget">
+  <div class="modal-title">Add Header Widget</div>
+  <div class="note">Choose a ready-made widget. You can tweak details after adding.</div>
+  <div class="field" style="margin-top:10px">
+    <label>Widget type</label>
+    <select id="widgetType">
+      <option value="rss">RSS Feed (iframe)</option>
+      <option value="custom">Custom iframe</option>
+    </select>
+  </div>
+  <div id="widgetConfig"></div>
+  <div class="modal-actions">
+    <button class="btn" id="cancelWidget">Cancel</button>
+    <button class="btn primary" id="confirmWidget">Add Widget</button>
+  </div>
+</dialog>
+
+<dialog id="modalHelp">
+  <div class="modal-title" id="helpTitle">Help</div>
+  <div id="helpBody" class="note"></div>
+  <div class="modal-actions"><button class="btn primary" id="closeHelp">OK</button></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+/* =============================
+   State & Normalization
+============================= */
+let layout = null;
+let selection = { type: null, index: null }; // 'header' | 'headerWidget' | 'nav'
+let activeTabIndex = 0;
+
+const $ = id => document.getElementById(id);
+const dump = () => $('jsonDump').textContent = JSON.stringify(layout, null, 2);
+
+function norm() {
+  layout.agent ??= {};
+  const a = layout.agent;
+  a.version ??= "0.2.0";
+  a.appTitle ??= "Agent Desktop Designer";
+  a.logo ??= "";
+  a.taskPageIllustration ??= "";
+  a.area ??= {};
+  a.area.advancedHeader ??= []; // advanced header widgets
+  a.area.navigation ??= [];     // left navigation list
+  // optional footer
+  a.area.footer ??= { comp: "agentx-wc-iframe", attributes: { src: "https://example.com/footer" } };
+}
+
+/* =============================
+   Helpers (UI)
+============================= */
+function tip(text, title="Help") {
+  $('helpTitle').textContent = title;
+  $('helpBody').innerHTML = text;
+  $('modalHelp').showModal();
+}
+$('closeHelp').onclick = ()=>$('modalHelp').close();
+$('openQuickHelp').onclick = (e)=>{ e.preventDefault(); tip(`
+  <b>Header</b>: Edit title, logo, and add header widgets (e.g., RSS, queue stats).<br><br>
+  <b>Navigation</b>: Left icons for pages. Each page can have multiple <i>Tabs</i> with HTTPS URLs (shown inside the main window).<br><br>
+  <b>Kitchen Sink</b>: Loads a full, best-practice example so you can remove what you don't need.<br><br>
+  <b>Export</b>: Download JSON to upload into Webex Contact Center. Export PNG for screenshots.
+`, "Quick Help"); };
+
+function tippyIcon(text, title) {
+  const span = document.createElement('span');
+  span.className = 'tooltip';
+  span.textContent = '?';
+  span.onclick = (e)=>{ e.stopPropagation(); tip(text, title||'Help'); };
+  return span;
+}
+
+function inputField(label, value, onChange, {type='text', placeholder='', help, title}={}) {
+  const wrap = document.createElement('div'); wrap.className = 'field';
+  const lab = document.createElement('label'); lab.textContent = label;
+  if (help) lab.appendChild(tippyIcon(help, title||label));
+  const inp = (type==='textarea') ? document.createElement('textarea') : document.createElement('input');
+  if (type!=='textarea') inp.type = type;
+  inp.value = value ?? '';
+  if (placeholder) inp.placeholder = placeholder;
+  inp.oninput = () => onChange(inp.value);
+  wrap.append(lab, inp);
+  return wrap;
+}
+
+function rowButtons(...btns) {
+  const row = document.createElement('div'); row.className='flex';
+  btns.forEach(({label, kind='normal', onclick})=>{
+    const b = document.createElement('button');
+    b.className = 'btn ' + (kind==='primary'?'primary':kind==='danger'?'danger':'');
+    b.textContent = label; b.onclick = onclick; row.appendChild(b);
+  });
+  return row;
+}
+
+/* =============================
+   Schema Builders
+============================= */
+function createHeaderWidgetIframe(src, title) {
+  return { comp: "agentx-wc-iframe", title, attributes: { src } };
+}
+function createNavItem({align="top"}={}) {
+  const id = "page-" + Math.random().toString(36).slice(2,8);
+  return {
+    nav: {
+      label: "New Page",
+      icon: "https://example.com/icon.png",
+      iconType: "other",
+      align,
+      navigateTo: id
+    },
+    page: {
+      id,
+      tabs: [
+        { label: "Dashboard", src: "https://example.com/dashboard" },
+        { label: "Knowledge Base", src: "https://example.com/kb" }
+      ],
+      // optional legacy single content:
+      layout: { areas: [["content"]], size: { cols:[1], rows:[1] } },
+      widgets: { content: { comp: "agentx-wc-iframe", attributes: { src: "about:blank" } } }
+    }
+  };
+}
+
+/* =============================
+   Rendering: Header, Nav, Tabs, Footer
+============================= */
+function renderHeader() {
+  const a = layout.agent;
+  $('headerTitle').textContent = a.appTitle || "Agent Desktop Designer";
+  const $logo = $('headerLogo');
+  if (a.logo) { $logo.src = a.logo; $logo.style.display = 'block'; }
+  else { $logo.removeAttribute('src'); $logo.style.display = 'none'; }
+
+  const $hw = $('headerWidgets'); $hw.innerHTML = "";
+  (a.area.advancedHeader || []).forEach((w,i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = w.title || w.comp || 'widget';
+    chip.title = (w.comp||'') + (w.attributes?.src ? ` — ${w.attributes.src}` : '');
+    chip.onclick = ()=>{ selection={type:'headerWidget', index:i}; renderEditor(); };
+    $hw.appendChild(chip);
+  });
+}
+
+function renderNav() {
+  const nav = layout.agent.area.navigation;
+  const top = nav.filter(x => (x.nav?.align || 'top') === 'top');
+  const bottom = nav.filter(x => (x.nav?.align || 'top') !== 'top');
+
+  const $nav = $('nav'); $nav.innerHTML = "";
+  if (top.length) {
+    const t = document.createElement('div'); t.className='group-title'; t.textContent='Top'; $nav.appendChild(t);
+    top.forEach(item => $nav.appendChild(navButton(item)));
+  }
+  if (bottom.length) {
+    const b = document.createElement('div'); b.className='group-title'; b.textContent='Bottom'; $nav.appendChild(b);
+    bottom.forEach(item => $nav.appendChild(navButton(item)));
+  }
+}
+function navButton(item) {
+  const idx = layout.agent.area.navigation.indexOf(item);
+  const btn = document.createElement('button');
+  btn.className = 'item' + (selection.type==='nav' && selection.index===idx ? ' active' : '');
+  btn.title = item.nav?.label ?? '(no label)';
+  btn.onclick = ()=>{ selection={type:'nav', index:idx}; activeTabIndex=0; renderEditor(); renderTabs(); renderContent(); renderNav(); };
+  const ico = document.createElement('div'); ico.className='icon';
+  const img = document.createElement('img'); if (item.nav?.icon) img.src = item.nav.icon; else img.alt="•";
+  ico.appendChild(img); btn.appendChild(ico);
+  return btn;
+}
+
+function renderTabs() {
+  const $tabs = $('tabs'); $tabs.innerHTML = "";
+  if (selection.type!=='nav') return;
+
+  const item = layout.agent.area.navigation[selection.index];
+  const tabs = item.page?.tabs || [];
+  tabs.forEach((t,i)=>{
+    const el = document.createElement('button');
+    el.className = 'tab' + (i===activeTabIndex ? ' active' : '');
+    el.textContent = t.label || `Tab ${i+1}`;
+    el.onclick = ()=>{ activeTabIndex=i; renderContent(); };
+    $tabs.appendChild(el);
+  });
+}
+
+function renderContent() {
+  const $frame = $('mainFrame'); const $ph = $('workspaceNote');
+  if (selection.type!=='nav') { $frame.style.display='none'; $ph.style.display='grid'; return; }
+  const item = layout.agent.area.navigation[selection.index];
+  const tabs = item.page?.tabs || [];
+  if (!tabs.length) { $frame.style.display='none'; $ph.style.display='grid'; $ph.textContent="This page has no tabs. Use the editor to add tabs."; return; }
+  const active = tabs[Math.min(activeTabIndex, tabs.length-1)];
+  const src = active?.src || "about:blank";
+  $frame.src = src; $frame.style.display='block'; $ph.style.display='none';
+}
+
+/* =============================
+   Editor Panels (Guided)
+============================= */
+function renderEditor() {
+  norm();
+  const $ed = $('editor'); $ed.innerHTML = "";
+
+  if (!selection.type) selection = { type:'header' };
+
+  // HEADER EDITOR
+  if (selection.type === 'header') {
+    const a = layout.agent;
+    const sec = document.createElement('div');
+    sec.innerHTML = `<h3>Advanced Header</h3>`;
+    sec.appendChild(inputField(
+      'App Title (agent.appTitle)', a.appTitle,
+      v=>{ a.appTitle=v; renderHeader(); dump(); },
+      {help:'Shown in the top bar. Keep this short, e.g. “Customer Care”.'}
+    ));
+    sec.appendChild(inputField(
+      'Logo URL (agent.logo)', a.logo,
+      v=>{ a.logo=v; renderHeader(); dump(); },
+      {placeholder:'https://example.com/logo.png', help:'PNG or SVG. Recommended height ~28px. Requires HTTPS.'}
+    ));
+    sec.appendChild(inputField(
+      'Task Page Illustration (agent.taskPageIllustration)',
+      a.taskPageIllustration,
+      v=>{ a.taskPageIllustration=v; dump(); },
+      {placeholder:'https://example.com/illustration.png', help:'Optional background image for task page.'}
+    ));
+
+    // List header widgets with quick actions
+    const hw = a.area.advancedHeader;
+    const list = document.createElement('div'); list.className='field';
+    const lb = document.createElement('label');
+    lb.textContent = 'Header Widgets (agent.area.advancedHeader)';
+    lb.appendChild(tippyIcon('Widgets in the top bar. Add RSS feed or custom iframes. Drag order not supported here; use delete + re-add to resequence.', 'Header Widgets'));
+    list.appendChild(lb);
+
+    hw.forEach((w,i)=>{
+      const row = document.createElement('div'); row.className='kv';
+      const comp = document.createElement('input'); comp.value=w.comp||''; comp.placeholder='comp (e.g., agentx-wc-iframe)';
+      const title = document.createElement('input'); title.value=w.title||''; title.placeholder='title (hover label)';
+      const edit = document.createElement('button'); edit.className='btn small'; edit.textContent='Edit';
+      comp.oninput = ()=>{ w.comp=comp.value; renderHeader(); dump(); };
+      title.oninput = ()=>{ w.title=title.value; renderHeader(); dump(); };
+      edit.onclick = ()=>{ selection={type:'headerWidget', index:i}; renderEditor(); };
+      row.append(comp,title,edit); list.appendChild(row);
+    });
+
+    const addBar = rowButtons(
+      {label:'+ Add Header Widget', onclick:()=>openWidgetModal()}
+    );
+    list.appendChild(addBar);
+    sec.appendChild(list);
+
+    $ed.appendChild(sec);
+    $ed.appendChild(document.createElement('div')).className='divider';
+  }
+
+  // HEADER WIDGET DETAIL
+  if (selection.type === 'headerWidget') {
+    const w = layout.agent.area.advancedHeader[selection.index];
+    const sec = document.createElement('div');
+    sec.innerHTML = `<h3>Header Widget #${selection.index+1}</h3>`;
+    sec.appendChild(inputField('comp', w.comp||'', v=>{ w.comp=v; renderHeader(); dump(); }, {placeholder:'agentx-wc-iframe', help:'Use agentx-wc-iframe for embedded content.'}));
+    sec.appendChild(inputField('title', w.title||'', v=>{ w.title=v; renderHeader(); dump(); }, {placeholder:'Company News', help:'Shown as tooltip/label.'}));
+    sec.appendChild(inputField('script (optional)', w.script||'', v=>{ if(v){ w.script=v } else { delete w.script } ; dump(); }, {placeholder:'https://example.com/widget.js', help:'Advanced: load a supporting JS file if your widget needs one.'}));
+
+    // Attributes as KV list
+    const attrs = w.attributes ??= {};
+    const attrsBox = document.createElement('div'); attrsBox.className='field';
+    const lab = document.createElement('label'); lab.textContent = 'attributes (key/value)';
+    lab.appendChild(tippyIcon('Custom settings for the widget. For iframes, set key "src" to an HTTPS URL (e.g. https://example.com/app).', 'Widget attributes'));
+    attrsBox.appendChild(lab);
+
+    Object.entries(attrs).forEach(([k,v])=>{
+      const row = document.createElement('div'); row.className='kv';
+      const kInp = document.createElement('input'); kInp.value=k; kInp.placeholder='key';
+      const vInp = document.createElement('input'); vInp.value=v; vInp.placeholder='value';
+      const del = document.createElement('button'); del.className='btn small'; del.textContent='–';
+      kInp.oninput = ()=>{ const oldK=k; const newK=kInp.value; if(newK && newK!==oldK){ attrs[newK]=attrs[oldK]; delete attrs[oldK]; dump(); } };
+      vInp.oninput = ()=>{ attrs[kInp.value||k]=vInp.value; dump(); };
+      del.onclick = ()=>{ delete attrs[kInp.value||k]; renderEditor(); dump(); };
+      row.append(kInp, vInp, del); attrsBox.appendChild(row);
+    });
+
+    const addRow = document.createElement('div'); addRow.className='kv';
+    const nk=document.createElement('input'); nk.placeholder='key';
+    const nv=document.createElement('input'); nv.placeholder='value';
+    const add=document.createElement('button'); add.className='btn small'; add.textContent='+';
+    add.onclick = ()=>{ if(!nk.value) return; attrs[nk.value]=nv.value||""; renderEditor(); dump(); };
+    addRow.append(nk,nv,add); attrsBox.appendChild(addRow);
+    sec.appendChild(attrsBox);
+
+    sec.appendChild(rowButtons(
+      {label:'← Back to Header', onclick:()=>{ selection={type:'header'}; renderEditor(); }},
+      {label:'Delete Widget', kind:'danger', onclick:()=>{ if(confirm('Remove this header widget?')){ layout.agent.area.advancedHeader.splice(selection.index,1); selection={type:'header'}; renderHeader(); renderEditor(); dump(); } }}
+    ));
+
+    $ed.appendChild(sec);
+    $ed.appendChild(document.createElement('div')).className='divider';
+  }
+
+  // NAV EDITOR
+  if (selection.type === 'nav') {
+    const item = layout.agent.area.navigation[selection.index];
+    const sec = document.createElement('div');
+    sec.innerHTML = `<h3>Navigation Item</h3>`;
+    sec.appendChild(inputField('Label (nav.label)', item.nav?.label ?? '', v=>{ item.nav.label=v; renderNav(); dump(); }, {help:'Shown when hovering this icon in the left bar.'}));
+    sec.appendChild(inputField('Icon URL (nav.icon)', item.nav?.icon ?? '', v=>{ item.nav.icon=v; renderNav(); dump(); }, {placeholder:'https://example.com/icon.png', help:'32–64px PNG/SVG. HTTPS only.'}));
+
+    // iconType
+    const typeWrap = document.createElement('div'); typeWrap.className='field';
+    const lab = document.createElement('label'); lab.textContent='Icon Type (nav.iconType)'; lab.appendChild(tippyIcon('For custom URLs, choose "other".', 'Icon type')); typeWrap.appendChild(lab);
+    const sel = document.createElement('select'); ['other','md','none'].forEach(opt=>{ const o=document.createElement('option'); o.value=opt; o.textContent=opt; if((item.nav?.iconType||'other')===opt) o.selected=true; sel.appendChild(o); });
+    sel.onchange = ()=>{ item.nav.iconType = sel.value; dump(); };
+    typeWrap.appendChild(sel); sec.appendChild(typeWrap);
+
+    // align
+    const alignWrap = document.createElement('div'); alignWrap.className='field';
+    const lab2 = document.createElement('label'); lab2.textContent='Align (nav.align)'; lab2.appendChild(tippyIcon('Place this icon at the top or bottom of the left bar.', 'Align')); alignWrap.appendChild(lab2);
+    const sel2 = document.createElement('select'); ['top','bottom'].forEach(opt=>{ const o=document.createElement('option'); o.value=opt; o.textContent=opt; if((item.nav?.align||'top')===opt) o.selected=true; sel2.appendChild(o); });
+    sel2.onchange = ()=>{ item.nav.align = sel2.value; renderNav(); dump(); };
+    alignWrap.appendChild(sel2); sec.appendChild(alignWrap);
+
+    sec.appendChild(inputField('Target Page ID (nav.navigateTo)', item.nav?.navigateTo ?? '', v=>{ item.nav.navigateTo=v; item.page.id=v; dump(); }, {help:'Must match the page ID below.'}));
+
+    // Tabs editor
+    const tabs = item.page.tabs ??= [];
+    const tabsWrap = document.createElement('div'); tabsWrap.className='field';
+    const labTabs = document.createElement('label'); labTabs.textContent = `Tabs for page "${item.page.id}"`; labTabs.appendChild(tippyIcon('Each tab shows a web page inside the main window. Enter a name and a secure (HTTPS) URL.', 'Tabs')); tabsWrap.appendChild(labTabs);
+
+    tabs.forEach((t,i)=>{
+      const row = document.createElement('div'); row.className='kv';
+      const l = document.createElement('input'); l.value=t.label||`Tab ${i+1}`; l.placeholder='Tab label';
+      const s = document.createElement('input'); s.value=t.src||''; s.placeholder='https://example.com/... (iframe URL)';
+      const del = document.createElement('button'); del.className='btn small'; del.textContent='–';
+      l.oninput = ()=>{ t.label=l.value; renderTabs(); dump(); };
+      s.oninput = ()=>{ t.src=s.value; if(i===activeTabIndex) renderContent(); dump(); };
+      del.onclick = ()=>{ tabs.splice(i,1); activeTabIndex=Math.max(0, activeTabIndex-1); renderEditor(); renderTabs(); renderContent(); dump(); };
+      row.append(l,s,del); tabsWrap.appendChild(row);
+    });
+
+    const addRow = document.createElement('div'); addRow.className='kv';
+    const nl=document.createElement('input'); nl.placeholder='New tab label';
+    const ns=document.createElement('input'); ns.placeholder='https://example.com/... (iframe URL)';
+    const add=document.createElement('button'); add.className='btn small'; add.textContent='+';
+    add.onclick = ()=>{ if(!nl.value) return; tabs.push({label:nl.value, src: ns.value || 'about:blank'}); activeTabIndex=tabs.length-1; renderTabs(); renderContent(); renderEditor(); dump(); };
+    addRow.append(nl,ns,add); tabsWrap.appendChild(addRow);
+    sec.appendChild(tabsWrap);
+
+    // Optional legacy iframe sync
+    const legacyAttrs = item.page.widgets?.content?.attributes;
+    if (legacyAttrs) {
+      sec.appendChild(inputField(
+        '(Optional) Fallback iframe (page.widgets.content.attributes.src)',
+        legacyAttrs.src||'',
+        v=>{ legacyAttrs.src=v; dump(); },
+        {help:'Not required if using tabs, but may be used as a fallback.'}
+      ));
+    }
+
+    // Remove nav
+    sec.appendChild(rowButtons(
+      {label:'Delete Nav Item', kind:'danger', onclick:()=>{ if(confirm('Remove this navigation item?')){ layout.agent.area.navigation.splice(selection.index,1); selection={type:'header'}; renderNav(); renderTabs(); renderContent(); renderEditor(); dump(); } }}
+    ));
+
+    $ed.appendChild(sec);
+  }
+
+  runValidation();
+  dump();
+}
+
+/* =============================
+   Validation & Guidance
+============================= */
+function runValidation() {
+  const msgs = [];
+  // URL checks (https for logos/icons/iframes)
+  function checkHttps(url, path) {
+    if (!url) return;
+    if (!/^https:\/\//i.test(url) && url !== 'about:blank') msgs.push({type:'warn', text:`${path} should be HTTPS. Got: ${url}`});
+  }
+  const a = layout.agent;
+
+  checkHttps(a.logo, 'agent.logo');
+  (a.area.advancedHeader||[]).forEach((w,i)=> checkHttps(w.attributes?.src, `advancedHeader[${i}].attributes.src`));
+
+  // Navigation checks
+  (a.area.navigation||[]).forEach((n,i)=>{
+    const p = n.page;
+    if (!n.nav?.navigateTo) msgs.push({type:'err', text:`navigation[${i}].nav.navigateTo is required.`});
+    if (!p?.id) msgs.push({type:'err', text:`navigation[${i}].page.id is required.`});
+    if (p?.id && n.nav?.navigateTo && p.id !== n.nav.navigateTo) msgs.push({type:'err', text:`navigation[${i}] page.id must equal nav.navigateTo.`});
+    checkHttps(n.nav?.icon, `navigation[${i}].nav.icon`);
+    (p?.tabs||[]).forEach((t,j)=> checkHttps(t.src, `navigation[${i}].page.tabs[${j}].src`));
+  });
+
+  // Render messages
+  const box = $('validation'); box.innerHTML = '';
+  if (!msgs.length) {
+    const ok = document.createElement('div'); ok.className='msg'; ok.innerHTML = `<span class="ok">✔</span> Layout looks good.`;
+    box.appendChild(ok); return;
+  }
+  msgs.forEach(m=>{
+    const div = document.createElement('div'); div.className = 'msg ' + (m.type==='err'?'err':'warn'); div.textContent = m.text; box.appendChild(div);
+  });
+}
+
+/* =============================
+   File IO & Actions
+============================= */
+$('file').addEventListener('change', async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const text = await f.text();
+    const obj = JSON.parse(text);
+    layout = obj.agent ? obj : { agent: obj };
+    norm();
+    selection={type:'header'}; activeTabIndex=0;
+    renderHeader(); renderNav(); renderTabs(); renderContent(); renderEditor();
+  } catch (err) { alert("Invalid JSON: " + err.message); }
+});
+
+$('downloadJson').addEventListener('click', ()=>{
+  if (!layout) { alert('Load a JSON first.'); return; }
+  const blob = new Blob([JSON.stringify(layout, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (layout.agent?.appTitle?.replace(/\s+/g,'-').toLowerCase()||'desktop-layout') + '.json';
+  a.click(); URL.revokeObjectURL(a.href);
+});
+
+$('copyJson').addEventListener('click', async ()=>{
+  if (!layout) { alert('Load a JSON first.'); return; }
+  await navigator.clipboard.writeText(JSON.stringify(layout, null, 2));
+  alert('JSON copied to clipboard.');
+});
+
+$('exportPng').addEventListener('click', async ()=>{
+  const node = document.querySelector('.stage');
+  const canvas = await html2canvas(node, {backgroundColor: '#0e1117', scale: 2});
+  const a = document.createElement('a');
+  a.download = 'agent-desktop-preview.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+});
+
+/* Adders */
+$('addNavTop').addEventListener('click', ()=>{
+  if (!layout) { alert('Load a JSON first.'); return; }
+  layout.agent.area.navigation.push(createNavItem({align:'top'}));
+  selection={type:'nav', index: layout.agent.area.navigation.length-1};
+  activeTabIndex=0;
+  renderNav(); renderTabs(); renderContent(); renderEditor(); dump();
+});
+$('addNavBottom').addEventListener('click', ()=>{
+  if (!layout) { alert('Load a JSON first.'); return; }
+  layout.agent.area.navigation.push(createNavItem({align:'bottom'}));
+  selection={type:'nav', index: layout.agent.area.navigation.length-1};
+  activeTabIndex=0;
+  renderNav(); renderTabs(); renderContent(); renderEditor(); dump();
+});
+$('addHeaderWidget').addEventListener('click', ()=>{
+  if (!layout) { alert('Load a JSON first.'); return; }
+  openWidgetModal();
+});
+
+/* Header click opens header editor */
+$('headerClick').addEventListener('click', ()=>{ selection={type:'header'}; renderEditor(); });
+
+/* Tiny sample (quick start) */
+$('loadSample').addEventListener('click', ()=>{
+  layout = {
+    agent: {
+      version: "0.2.0",
+      appTitle: "Agent Desktop Designer",
+      logo: "",
+      taskPageIllustration: "",
+      area: {
+        advancedHeader: [
+          createHeaderWidgetIframe("https://example.com/rss", "Company News")
+        ],
+        navigation: [
+          createNavItem({align:'top'}),
+          createNavItem({align:'bottom'})
+        ],
+        footer: { comp:"agentx-wc-iframe", attributes:{ src:"https://example.com/footer"} }
+      }
+    }
+  };
+  selection={type:'header'}; activeTabIndex=0;
+  renderHeader(); renderNav(); renderTabs(); renderContent(); renderEditor(); dump();
+});
+
+/* =============================
+   Kitchen Sink Example Loader
+============================= */
+$('loadKitchenSink').addEventListener('click', ()=>{
+  layout = kitchenSinkLayout();
+  selection={type:'header'}; activeTabIndex=0;
+  renderHeader(); renderNav(); renderTabs(); renderContent(); renderEditor(); dump();
+});
+
+/* =============================
+   Modal: Add Header Widget
+============================= */
+function openWidgetModal() {
+  const dlg = $('modalWidget'); const cfg = $('widgetConfig');
+  $('widgetType').value='rss'; // default to RSS
+  cfg.innerHTML = renderWidgetConfig('rss');
+  dlg.showModal();
+}
+$('widgetType').addEventListener('change', (e)=>{
+  $('widgetConfig').innerHTML = renderWidgetConfig(e.target.value);
+});
+$('cancelWidget').onclick = ()=>$('modalWidget').close();
+$('confirmWidget').onclick = ()=>{
+  const type = $('widgetType').value;
+  if (type==='rss') {
+    const src = $('rssSrc').value.trim();
+    if (!src) return alert('Please enter an RSS embed URL.');
+    layout.agent.area.advancedHeader.push(createHeaderWidgetIframe(src, $('rssTitle').value.trim()||'Company News'));
+  } else {
+    const src = $('customSrc').value.trim();
+    if (!src) return alert('Please enter an iframe URL.');
+    layout.agent.area.advancedHeader.push(createHeaderWidgetIframe(src, $('customTitle').value.trim()||'Custom'));
+  }
+  $('modalWidget').close();
+  selection={type:'header'}; renderHeader(); renderEditor(); dump();
+};
+function renderWidgetConfig(type) {
+  if (type==='rss') {
+    return `
+      <div class="field"><label>RSS Title</label><input id="rssTitle" value="Company News"></div>
+      <div class="field"><label>RSS Embed URL</label><input id="rssSrc" placeholder="https://example.com/rss-embed" value="https://example.com/rss-embed"></div>
+      <div class="help">Tip: Use an HTTPS embed URL.</div>
+    `;
+  }
+  return `
+    <div class="field"><label>Widget Title</label><input id="customTitle" placeholder="Custom Widget"></div>
+    <div class="field"><label>Iframe URL</label><input id="customSrc" placeholder="https://example.com/app"></div>
+    <div class="help">Provide a secure (HTTPS) URL to show in the header widget.</div>
+  `;
+}
+
+/* =============================
+   Kitchen Sink JSON (safe demo)
+============================= */
+function kitchenSinkLayout() {
+  const navIcon = "https://example.com/icon.png";
+  const mkPage = (id, tabs)=>({
+    id, tabs,
+    layout: { areas: [["content"]], size: { cols:[1], rows:[1] } },
+    widgets: { content: { comp: "agentx-wc-iframe", attributes: { src: "about:blank" } } }
+  });
+
+  return {
+    agent: {
+      version: "0.2.0",
+      appTitle: "Agent Desktop Designer",
+      logo: "https://example.com/logo.svg",
+      taskPageIllustration: "https://example.com/illustration.png",
+      area: {
+        advancedHeader: [
+          { comp:"agentx-webex", title:"Presence" },
+          { comp:"ai-assistant", title:"AI Assistant" },
+          { comp:"agentx-wc-iframe", title:"Company News", attributes:{ src:"https://example.com/rss-embed" } },
+          { comp:"agentx-wc-iframe", title:"Calls in Queue", attributes:{ src:"https://example.com/queue-stats" } },
+          { comp:"agentx-wc-iframe", title:"Schedule", attributes:{ src:"https://example.com/schedule" } },
+          { comp:"agentx-wc-iframe", title:"Weather", attributes:{ src:"https://example.com/weather" } }
+        ],
+        navigation: [
+          {
+            nav: { label:"Home", icon:navIcon, iconType:"other", align:"top", navigateTo:"home" },
+            page: mkPage("home", [
+              { label:"Dashboard", src:"https://example.com/dashboard" },
+              { label:"Metrics", src:"https://example.com/metrics" },
+              { label:"Queue Monitor", src:"https://example.com/queue" },
+              { label:"Wallboard", src:"https://example.com/wallboard" }
+            ])
+          },
+          {
+            nav: { label:"CRM Dashboard", icon:navIcon, iconType:"other", align:"top", navigateTo:"crm" },
+            page: mkPage("crm", [
+              { label:"Customer Lookup", src:"https://example.com/crm/search" },
+              { label:"Customer Details", src:"https://example.com/crm/profile" }
+            ])
+          },
+          {
+            nav: { label:"Supervisor Tools", icon:navIcon, iconType:"other", align:"top", navigateTo:"supervisor" },
+            page: mkPage("supervisor", [
+              { label:"Agent Monitor", src:"https://example.com/agent-monitor" },
+              { label:"Reports", src:"https://example.com/reports" }
+            ])
+          },
+          {
+            nav: { label:"Knowledge Base", icon:navIcon, iconType:"other", align:"top", navigateTo:"kb" },
+            page: mkPage("kb", [
+              { label:"Articles", src:"https://example.com/kb" },
+              { label:"Updates", src:"https://example.com/rss-embed" }
+            ])
+          },
+          {
+            nav: { label:"Settings", icon:navIcon, iconType:"other", align:"bottom", navigateTo:"settings" },
+            page: mkPage("settings", [
+              { label:"Profile", src:"https://example.com/profile" },
+              { label:"Preferences", src:"https://example.com/prefs" }
+            ])
+          },
+          {
+            nav: { label:"Help", icon:navIcon, iconType:"other", align:"bottom", navigateTo:"help" },
+            page: mkPage("help", [
+              { label:"Support Portal", src:"https://example.com/support" },
+              { label:"FAQ", src:"https://example.com/faq" }
+            ])
+          }
+        ],
+        footer: { comp:"agentx-wc-iframe", attributes:{ src:"https://example.com/footer" } }
+      }
+    }
+  };
+}
+
+/* Boot with empty normalized layout */
+layout = { agent: { version:"0.2.0", appTitle:"Agent Desktop Designer", logo:"", taskPageIllustration:"", area:{ advancedHeader:[], navigation:[], footer:{ comp:"agentx-wc-iframe", attributes:{ src:"https://example.com/footer"} } } } };
+norm();
+renderHeader(); renderNav(); renderTabs(); renderContent(); renderEditor(); dump();
+</script>
+</body>
+</html>

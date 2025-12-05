@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Retail Demo Manager</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fa;margin:20px;color:#333;}
+  h1,h2{text-align:center;}
+  section{background:#fff;padding:15px;border-radius:10px;margin:20px auto;max-width:1000px;
+          box-shadow:0 2px 5px rgba(0,0,0,.1);}
+  input[type=text],input[type=email],input[type=number],input[type=date],textarea{
+    width:95%;padding:6px;margin:5px 0;border:1px solid #ccc;border-radius:6px;
+  }
+  button{background:#0077cc;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;}
+  button:hover{background:#005fa3;}
+  .group{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;}
+  .field{display:flex;flex-direction:column;}
+  .field label{font-weight:bold;margin-bottom:3px;}
+  .actions{text-align:center;margin-top:12px;}
+  #resultsContainer div{padding:6px 10px;border-bottom:1px solid #eee;cursor:pointer;}
+  #resultsContainer div:hover{background:#e6f2ff;}
+</style>
+</head>
+<body>
+
+<h1>Retail Order Record Manager</h1>
+
+<section>
+  <h2>🔍 Search Orders</h2>
+  <div style="text-align:center;">
+    <input type="text" id="searchInput" placeholder="Search by customer name, email, or order ID">
+    <button onclick="searchRecords()">Search</button>
+    <button onclick="clearForm()">Clear</button>
+  </div>
+  <div id="resultsContainer"></div>
+</section>
+
+<section>
+  <h2>🧾 Order Details</h2>
+  <input type="hidden" id="recordId" />
+
+  <h3>📦 Order Information</h3>
+  <div class="group">
+    <div class="field"><label>Order ID</label><input id="order_id" type="text"></div>
+    <div class="field"><label>Status</label><input id="status" type="text"></div>
+    <div class="field"><label>Product</label><input id="product" type="text"></div>
+    <div class="field"><label>Order Date</label><input id="order_date" type="text"></div>
+    <div class="field"><label>Reason</label><input id="reason" type="text"></div>
+    <div class="field"><label>Delivery Date</label><input id="delivery_date" type="text"></div>
+    <div class="field"><label>Delivery Status</label><input id="delivery_status" type="text"></div>
+  </div>
+
+  <h3>👤 Customer Information</h3>
+  <div class="group">
+    <div class="field"><label>Customer ID</label><input id="customer_id" type="text"></div>
+    <div class="field"><label>Customer Name</label><input id="customer_name" type="text"></div>
+    <div class="field"><label>Date of Birth</label><input id="date_of_birth" type="text"></div>
+    <div class="field"><label>Gender</label><input id="gender" type="text"></div>
+    <div class="field"><label>Phone</label><input id="phone" type="text"></div>
+    <div class="field"><label>Email</label><input id="email" type="email"></div>
+  </div>
+
+  <h3>🏠 Shipping Address</h3>
+  <div class="group">
+    <div class="field"><label>Street</label><input id="street" type="text"></div>
+    <div class="field"><label>City</label><input id="city" type="text"></div>
+    <div class="field"><label>State</label><input id="state" type="text"></div>
+    <div class="field"><label>Zip</label><input id="zip" type="text"></div>
+  </div>
+
+  <h3>💳 Payment</h3>
+  <div class="group">
+    <div class="field"><label>Method</label><input id="method" type="text"></div>
+    <div class="field"><label>Transaction ID</label><input id="transaction_id" type="text"></div>
+    <div class="field"><label>Amount</label><input id="amount" type="text"></div>
+    <div class="field"><label>Currency</label><input id="currency" type="text"></div>
+  </div>
+
+  <h3>👨‍👩‍👧 Billing Contact</h3>
+  <div class="group">
+    <div class="field"><label>Name</label><input id="billing_name" type="text"></div>
+    <div class="field"><label>Relationship</label><input id="billing_relationship" type="text"></div>
+    <div class="field"><label>Phone</label><input id="billing_phone" type="text"></div>
+  </div>
+
+  <h3>🏭 Vendor</h3>
+  <div class="group">
+    <div class="field"><label>Vendor ID</label><input id="vendor_id" type="text"></div>
+    <div class="field"><label>Vendor Name</label><input id="vendor_name" type="text"></div>
+    <div class="field"><label>Location</label><input id="vendor_location" type="text"></div>
+  </div>
+
+  <h3>🛡️ Warranty</h3>
+  <div class="group">
+    <div class="field"><label>Warranty ID</label><input id="warranty_id" type="text"></div>
+    <div class="field"><label>Coverage</label><input id="coverage" type="text"></div>
+    <div class="field"><label>Status</label><input id="warranty_status" type="text"></div>
+    <div class="field"><label>Start Date</label><input id="start_date" type="text"></div>
+    <div class="field"><label>End Date</label><input id="end_date" type="text"></div>
+    <div class="field"><label>Service Center Name</label><input id="center_name" type="text"></div>
+    <div class="field"><label>Service Center Address</label><input id="center_address" type="text"></div>
+    <div class="field"><label>Service Center Phone</label><input id="center_phone" type="text"></div>
+  </div>
+
+  <h3>🧰 Product Details</h3>
+  <div class="group">
+    <div class="field"><label>Model Number</label><input id="model_number" type="text"></div>
+    <div class="field"><label>Serial Number</label><input id="serial_number" type="text"></div>
+    <div class="field"><label>Features</label><textarea id="features" rows="2"></textarea></div>
+  </div>
+
+  <div class="field">
+    <label>Notes</label>
+    <textarea id="notes" rows="3"></textarea>
+  </div>
+
+  <div class="actions">
+    <button onclick="saveRecord()">💾 Save New</button>
+    <button onclick="updateRecord()">✏️ Update</button>
+    <button onclick="deleteRecord()">🗑️ Delete</button>
+  </div>
+</section>
+
+<script>
+const API_URL="https://659f21365023b02bfe894b27.mockapi.io/cx/RetailDemo";
+
+function clearForm(){
+  document.getElementById("recordId").value="";
+  document.querySelectorAll("input,textarea").forEach(i=>i.value="");
+  document.getElementById("resultsContainer").innerHTML="";
+}
+
+function fillForm(rec){
+  document.getElementById("recordId").value=rec.id||"";
+
+  const map={
+    order_id:rec.order_id,
+    status:rec.status,
+    product:rec.product,
+    order_date:rec.order_date,
+    reason:rec.reason,
+    delivery_date:rec.delivery_date,
+    delivery_status:rec.delivery_status,
+    customer_id:rec.customer_id,
+    customer_name:rec.customer_name,
+    date_of_birth:rec.date_of_birth,
+    gender:rec.gender,
+    phone:rec.phone,
+    email:rec.email,
+    notes:rec.notes
+  };
+
+  if(rec.shipping_address){
+    map.street=rec.shipping_address.street;
+    map.city=rec.shipping_address.city;
+    map.state=rec.shipping_address.state;
+    map.zip=rec.shipping_address.zip;
+  }
+
+  if(rec.billing_contact){
+    map.billing_name=rec.billing_contact.name;
+    map.billing_relationship=rec.billing_contact.relationship;
+    map.billing_phone=rec.billing_contact.phone;
+  }
+
+  if(rec.payment){
+    map.method=rec.payment.method;
+    map.transaction_id=rec.payment.transaction_id;
+    map.amount=rec.payment.amount;
+    map.currency=rec.payment.currency;
+  }
+
+  if(rec.vendor){
+    map.vendor_id=rec.vendor.vendor_id;
+    map.vendor_name=rec.vendor.vendor_name;
+    map.vendor_location=rec.vendor.location;
+  }
+
+  if(rec.warranty){
+    map.warranty_id=rec.warranty.warranty_id;
+    map.coverage=rec.warranty.coverage;
+    map.warranty_status=rec.warranty.status;
+    map.start_date=rec.warranty.start_date;
+    map.end_date=rec.warranty.end_date;
+    if(rec.warranty.service_center){
+      map.center_name=rec.warranty.service_center.center_name;
+      map.center_address=rec.warranty.service_center.address;
+      map.center_phone=rec.warranty.service_center.phone;
+    }
+  }
+
+  if(rec.product_details){
+    map.model_number=rec.product_details.model_number;
+    map.serial_number=rec.product_details.serial_number;
+    map.features=(rec.product_details.features||[]).join(", ");
+  }
+
+  for(const key in map){
+    const el=document.getElementById(key);
+    if(el)el.value=map[key]||"";
+  }
+
+  window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+}
+
+async function searchRecords(){
+  const q=document.getElementById("searchInput").value.toLowerCase().trim();
+  if(!q){alert("Enter a search term.");return;}
+  const rc=document.getElementById("resultsContainer");
+  rc.innerHTML="Searching...";
+
+  try{
+    const res=await fetch(API_URL);
+    const data=await res.json();
+    const matches=data.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
+
+    if(matches.length===0){
+      rc.innerHTML=`<p>No results for "${q}".</p>`;return;
+    }
+    if(matches.length===1){
+      rc.innerHTML=`<p>1 record found — loaded.</p>`;
+      fillForm(matches[0]);return;
+    }
+
+    rc.innerHTML="<h4>Select a record:</h4>"+matches.map(m=>`
+      <div onclick='fillForm(${JSON.stringify(m)})'>
+        <strong>${m.customer_name}</strong> — ${m.email}<br>
+        <small>Order: ${m.order_id}, Status: ${m.status}</small>
+      </div>
+    `).join("");
+  }catch(err){rc.innerHTML="Error: "+err;}
+}
+
+async function saveRecord(){
+  const d=collectForm();
+  try{
+    const res=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});
+    alert(res.ok?"✅ Added.":"❌ Add failed.");clearForm();
+  }catch(e){alert(e);}
+}
+
+async function updateRecord(){
+  const id=document.getElementById("recordId").value;
+  if(!id){alert("No record loaded.");return;}
+  const d=collectForm();
+  try{
+    const res=await fetch(`${API_URL}/${id}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});
+    alert(res.ok?"✅ Updated.":"❌ Update failed.");
+  }catch(e){alert(e);}
+}
+
+async function deleteRecord(){
+  const id=document.getElementById("recordId").value;
+  if(!id){alert("No record selected.");return;}
+  if(!confirm("Delete this record?"))return;
+  try{
+    const res=await fetch(`${API_URL}/${id}`,{method:"DELETE"});
+    alert(res.ok?"🗑️ Deleted.":"❌ Delete failed.");clearForm();
+  }catch(e){alert(e);}
+}
+
+function collectForm(){
+  return{
+    order_id:val("order_id"),
+    status:val("status"),
+    product:val("product"),
+    order_date:val("order_date"),
+    reason:val("reason"),
+    delivery_date:val("delivery_date"),
+    delivery_status:val("delivery_status"),
+    customer_id:val("customer_id"),
+    customer_name:val("customer_name"),
+    date_of_birth:val("date_of_birth"),
+    gender:val("gender"),
+    phone:val("phone"),
+    email:val("email"),
+    shipping_address:{
+      street:val("street"),
+      city:val("city"),
+      state:val("state"),
+      zip:val("zip")
+    },
+    billing_contact:{
+      name:val("billing_name"),
+      relationship:val("billing_relationship"),
+      phone:val("billing_phone")
+    },
+    payment:{
+      method:val("method"),
+      transaction_id:val("transaction_id"),
+      amount:val("amount"),
+      currency:val("currency")
+    },
+    vendor:{
+      vendor_id:val("vendor_id"),
+      vendor_name:val("vendor_name"),
+      location:val("vendor_location")
+    },
+    warranty:{
+      warranty_id:val("warranty_id"),
+      coverage:val("coverage"),
+      status:val("warranty_status"),
+      start_date:val("start_date"),
+      end_date:val("end_date"),
+      service_center:{
+        center_name:val("center_name"),
+        address:val("center_address"),
+        phone:val("center_phone")
+      }
+    },
+    product_details:{
+      model_number:val("model_number"),
+      serial_number:val("serial_number"),
+      features:val("features").split(",").map(f=>f.trim())
+    },
+    notes:val("notes")
+  };
+}
+function val(id){return document.getElementById(id).value||"";}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cisco Lab Manager</title>
+<style>
+ body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fa;margin:20px;color:#333;}
+ h1,h2{text-align:center;}
+ section{background:#fff;padding:15px;border-radius:10px;margin:20px auto;max-width:950px;
+         box-shadow:0 2px 5px rgba(0,0,0,.1);}
+ input[type=text],input[type=email]{width:90%;padding:6px;margin:5px 0;border:1px solid #ccc;border-radius:6px;}
+ button{background:#0077cc;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;}
+ button:hover{background:#005fa3;}
+ .group{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;}
+ .field{display:flex;flex-direction:column;}
+ .field label{font-weight:bold;margin-bottom:3px;}
+ .actions{text-align:center;margin-top:12px;}
+ #resultsContainer div{padding:6px 10px;border-bottom:1px solid #eee;cursor:pointer;}
+ #resultsContainer div:hover{background:#e6f2ff;}
+</style>
+</head>
+<body>
+
+<h1>Cisco Lab Record Manager</h1>
+
+<section>
+ <h2>🔍 Search Labs</h2>
+ <div style="text-align:center;">
+   <input type="text" id="searchInput" placeholder="Search any part of Email or Lab name">
+   <button onclick="searchLabs()">Search</button>
+   <button onclick="clearForm()">Clear</button>
+ </div>
+ <div id="resultsContainer"></div>
+</section>
+
+<section>
+ <h2>🧾 Edit / Add Lab Entry</h2>
+ <input type="hidden" id="recordId">
+
+ <h3>👤 Personal Information</h3>
+ <div class="group">
+   <div class="field"><label>First Name</label><input id="First" type="text"></div>
+   <div class="field"><label>Last Name</label><input id="Last" type="text"></div>
+   <div class="field"><label>Phone Number</label><input id="PhoneNumber" type="text"></div>
+   <div class="field"><label>Email</label><input id="Email" type="email"></div>
+ </div>
+
+ <h3>📍 Location</h3>
+ <div class="group">
+   <div class="field"><label>Street</label><input id="Street" type="text"></div>
+   <div class="field"><label>City</label><input id="City" type="text"></div>
+   <div class="field"><label>State</label><input id="State" type="text"></div>
+   <div class="field"><label>Zip</label><input id="Zip" type="text"></div>
+ </div>
+
+ <h3>📦 Order Details</h3>
+ <div class="group">
+   <div class="field"><label>Package Number</label><input id="PackageNumber" type="text"></div>
+   <div class="field"><label>Estimated Delivery</label><input id="estimated_delivery" type="text"></div>
+   <div class="field"><label>Status</label><input id="status" type="text"></div>
+   <div class="field"><label>Account Number</label><input id="AccountNumber" type="text"></div>
+ </div>
+
+ <div class="actions">
+   <button onclick="saveRecord()">💾 Save New</button>
+   <button onclick="updateRecord()">✏️ Update</button>
+   <button onclick="deleteRecord()">🗑️ Delete</button>
+ </div>
+</section>
+
+<script>
+const MOCKAPI_URL="https://659f21365023b02bfe894b27.mockapi.io/cx/ciscolab";
+const fields=["First","Last","PhoneNumber","Email","Street","City","State","Zip",
+              "PackageNumber","estimated_delivery","status","AccountNumber"];
+
+function clearForm(){
+  document.getElementById("recordId").value="";
+  fields.forEach(f=>document.getElementById(f).value="");
+  document.getElementById("resultsContainer").innerHTML="";
+}
+
+function fillForm(rec){
+  document.getElementById("recordId").value=rec.id||"";
+  fields.forEach(f=>document.getElementById(f).value=rec[f]||"");
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+
+// Search and show clickable results
+async function searchLabs(){
+  const q=document.getElementById("searchInput").value.toLowerCase().trim();
+  if(!q){alert("Enter a search term.");return;}
+  const rc=document.getElementById("resultsContainer");
+  rc.innerHTML="Searching...";
+  try{
+    const res=await fetch(MOCKAPI_URL);
+    const data=await res.json();
+    const matches=data.filter(r=>
+      Object.values(r).some(v=>String(v).toLowerCase().includes(q))
+    );
+    if(matches.length===0){
+      rc.innerHTML=`<p>No results for "${q}".</p>`;return;
+    }
+    if(matches.length===1){
+      rc.innerHTML=`<p>1 record found — loaded into form.</p>`;
+      fillForm(matches[0]);
+      return;
+    }
+    rc.innerHTML="<h4>Select a record:</h4>"+matches.map(m=>`
+      <div onclick='fillForm(${JSON.stringify(m)})'>
+        <strong>${m.First} ${m.Last}</strong> — ${m.Email}<br>
+        <small>Pkg: ${m.PackageNumber}, Status: ${m.status}, ID: ${m.id}</small>
+      </div>`).join("");
+  }catch(err){rc.innerHTML="Error: "+err;}
+}
+
+// Create new
+async function saveRecord(){
+  const d={};fields.forEach(f=>d[f]=document.getElementById(f).value||"");
+  try{
+    const res=await fetch(MOCKAPI_URL,{method:"POST",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});
+    if(res.ok){alert("✅ Added.");clearForm();}else alert("❌ Add failed.");
+  }catch(e){alert(e);}
+}
+
+// Update
+async function updateRecord(){
+  const id=document.getElementById("recordId").value;
+  if(!id){alert("No record loaded.");return;}
+  const d={};fields.forEach(f=>d[f]=document.getElementById(f).value||"");
+  try{
+    const res=await fetch(`${MOCKAPI_URL}/${id}`,{method:"PUT",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});
+    alert(res.ok?"✅ Updated.":"❌ Update failed.");
+  }catch(e){alert(e);}
+}
+
+// Delete
+async function deleteRecord(){
+  const id=document.getElementById("recordId").value;
+  if(!id){alert("No record selected.");return;}
+  if(!confirm("Delete this record?"))return;
+  try{
+    const res=await fetch(`${MOCKAPI_URL}/${id}`,{method:"DELETE"});
+    alert(res.ok?"🗑️ Deleted.":"❌ Delete failed.");clearForm();
+  }catch(e){alert(e);}
+}
+</script>
+
+</body>
+</html>

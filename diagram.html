@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interactive Network Diagram</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      margin-top: 20px;
+      color: #333;
+    }
+    .diagram-container {
+      position: relative;
+      display: inline-block;
+      margin-top: 20px;
+    }
+    .diagram-container img {
+      max-width: 900px;
+      width: 90%;
+      height: auto;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+    }
+    .hotspot {
+      position: absolute;
+      background: rgba(0, 128, 255, 0.15);
+      border: 1px solid #0080ff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .hotspot:hover {
+      background: rgba(0, 128, 255, 0.3);
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 900;
+    }
+    #popupForm {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+      width: 300px;
+      display: none;
+      z-index: 1000;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 95%;
+      padding: 5px;
+      margin-top: 3px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #submitBtn {
+      background-color: #007bff;
+      color: white;
+    }
+    #cancelBtn {
+      background-color: #ccc;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Interactive Network Diagram</h1>
+
+  <div class="diagram-container">
+    <!-- Replace with your actual diagram -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Network_diagram_example.svg/1024px-Network_diagram_example.svg.png" alt="Network Diagram">
+
+    <!-- Clickable Hotspots (adjust positions) -->
+    <div class="hotspot" data-device="Router" style="top: 140px; left: 220px; width: 80px; height: 60px;"></div>
+    <div class="hotspot" data-device="Switch" style="top: 310px; left: 420px; width: 90px; height: 60px;"></div>
+    <div class="hotspot" data-device="Server" style="top: 470px; left: 600px; width: 80px; height: 60px;"></div>
+  </div>
+
+  <!-- Overlay and Form -->
+  <div id="overlay"></div>
+  <div id="popupForm">
+    <h2 id="formTitle">Device Info</h2>
+    <form id="deviceForm">
+      <input type="hidden" id="deviceType" name="deviceType">
+      <label for="hostname">Hostname</label>
+      <input type="text" id="hostname" required>
+
+      <label for="ip">IP Address</label>
+      <input type="text" id="ip" required>
+
+      <label for="notes">Notes</label>
+      <textarea id="notes" rows="3"></textarea>
+
+      <button type="submit" id="submitBtn">Submit</button>
+      <button type="button" id="cancelBtn">Cancel</button>
+    </form>
+  </div>
+
+  <script>
+    const hotspots = document.querySelectorAll('.hotspot');
+    const popupForm = document.getElementById('popupForm');
+    const overlay = document.getElementById('overlay');
+    const formTitle = document.getElementById('formTitle');
+    const deviceTypeInput = document.getElementById('deviceType');
+    const deviceForm = document.getElementById('deviceForm');
+
+    // Click hotspot to open popup
+    hotspots.forEach(hs => {
+      hs.addEventListener('click', () => {
+        const device = hs.dataset.device;
+        formTitle.textContent = `${device} Information`;
+        deviceTypeInput.value = device;
+        popupForm.style.display = 'block';
+        overlay.style.display = 'block';
+      });
+    });
+
+    // Cancel button
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      popupForm.style.display = 'none';
+      overlay.style.display = 'none';
+      deviceForm.reset();
+    });
+
+    // Submit form
+    deviceForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        deviceType: deviceTypeInput.value,
+        hostname: document.getElementById('hostname').value,
+        ip: document.getElementById('ip').value,
+        notes: document.getElementById('notes').value,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        // Replace this webhook URL with your actual Webex Connect flow URL
+        const webhookURL = "https://hooks.us.webexconnect.io/events/YOUR_WEBHOOK_ID";
+
+        const response = await fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          alert("✅ Data sent successfully to Webex Connect!");
+        } else {
+          alert("⚠️ Failed to send data. Check webhook URL.");
+        }
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+      }
+
+      popupForm.style.display = 'none';
+      overlay.style.display = 'none';
+      deviceForm.reset();
+    });
+  </script>
+
+</body>
+</html>

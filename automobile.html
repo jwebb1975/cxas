@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vehicle Repair Approval Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #f4f4f4;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .chat-button {
+      background-color: #007bff;
+    }
+
+    .chat-button:hover {
+      background-color: #0056b3;
+    }
+
+    .status {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Vehicle Repair Approval</h2>
+
+  <form id="repairForm">
+    <label for="name">Customer Name</label>
+    <input type="text" id="name" required />
+
+    <label for="vehicle">Vehicle Information</label>
+    <input type="text" id="vehicle" placeholder="Make, Model, Year" required />
+
+    <label for="description">Repair Description</label>
+    <textarea id="description" rows="4" required></textarea>
+
+    <label for="cost">Estimated Cost</label>
+    <input type="number" id="cost" required />
+
+    <label for="mobile">Mobile Number</label>
+    <input type="tel" id="mobile" required />
+
+    <label for="email">Email Address</label>
+    <input type="email" id="email" required />
+
+    <button type="submit">Submit for Approval</button>
+    <div class="status" id="status"></div>
+  </form>
+
+  <button class="chat-button" onclick="openWebexChat()">💬 Message Repair Business</button>
+
+  <!-- Webex Connect Chat Widget Script -->
+  <script>
+    function openWebexChat() {
+      if (window.embedded_svc) {
+        embedded_svc.init();
+      } else {
+        console.warn('Webex Connect chat widget not loaded yet.');
+      }
+    }
+
+    document.getElementById("repairForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const status = document.getElementById("status");
+      const formData = {
+        name: document.getElementById("name").value.trim(),
+        vehicle: document.getElementById("vehicle").value.trim(),
+        description: document.getElementById("description").value.trim(),
+        cost: parseFloat(document.getElementById("cost").value),
+        mobile: document.getElementById("mobile").value.trim(),
+        email: document.getElementById("email").value.trim()
+      };
+
+      fetch("https://hooks.us.webexconnect.io/events/BYOJYB0W2D", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => {
+        if (response.ok) {
+          status.textContent = "Form submitted successfully!";
+          status.style.color = "green";
+          document.getElementById("repairForm").reset();
+        } else {
+          throw new Error("Submission failed.");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        status.textContent = "Failed to submit. Please try again.";
+        status.style.color = "red";
+      });
+    });
+  </script>
+
+  <!-- Placeholder for actual Webex Connect Chat Widget embed -->
+  <!-- 
+  <script src="https://chat.webexconnect.io/widget/loader.js?orgId=YOUR_ORG_ID&widgetId=YOUR_WIDGET_ID" async></script> 
+  -->
+</body>
+</html>

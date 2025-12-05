@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CXAS updateNotes Sender</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f3f3f3;
+    }
+    .card {
+      background: #fff;
+      padding: 24px 32px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 340px;
+      text-align: center;
+    }
+    .logo {
+      width: 208px;
+      height: 47px;
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin: 12px 0 4px;
+      font-weight: bold;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background: #006aff;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .message {
+      margin-top: 12px;
+      font-size: 14px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo"
+         src="https://cxsol.com/wp-content/uploads/2024/01/CX-Advanced-Solutions-header-208x47.png"
+         alt="CX Advanced Solutions Logo">
+    <h2>Webhook Test Form</h2>
+
+    <form id="webhookForm">
+      <label for="name">Name</label>
+      <input id="name" type="text" required value="Jon Webb">
+
+      <label for="phone">Phone</label>
+      <input id="phone" type="text" required value="8019950433">
+
+      <label for="description">Description</label>
+      <input id="description" type="text" required value="Insert summary notes here">
+
+      <button id="submitBtn" type="submit">Send to Webhook</button>
+      <div id="messageBox" class="message"></div>
+    </form>
+  </div>
+
+  <script>
+    const webhookUrl = "https://hooks.us.webexconnect.io/events/QFIIHOZIE5";
+
+    document.getElementById("webhookForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const btn = document.getElementById("submitBtn");
+      const msg = document.getElementById("messageBox");
+      btn.disabled = true;
+      btn.textContent = "Sending…";
+
+      const payload = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        description: document.getElementById("description").value
+      };
+
+      try {
+        const res = await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error("Server error");
+
+        msg.textContent = "Webhook successfully sent!";
+        msg.style.color = "green";
+      } catch (err) {
+        msg.textContent = "Error: " + err.message;
+        msg.style.color = "red";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Send to Webhook";
+      }
+    });
+  </script>
+</body>
+</html>
