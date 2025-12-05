@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Nexus Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#6366f1',
+                        },
+                        secondary: {
+                            500: '#ec4899',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <custom-navbar></custom-navbar>
+    
+    <main class="container mx-auto px-4 py-12">
+        <section class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+                Demo <span class="text-primary-500">Nexus</span> Hub
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Your gateway to interactive demonstrations and customer-facing examples
+            </p>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Demo Card 1 -->
+            <div class="demo-card bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                <div class="h-48 bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+                    <i data-feather="box" class="w-16 h-16 text-white"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Product Demo</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Interactive showcase of our flagship product features.</p>
+                    <a href="#" class="demo-button inline-flex items-center px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-300">
+                        Explore <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Demo Card 2 -->
+            <div class="demo-card bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                <div class="h-48 bg-gradient-to-r from-secondary-500 to-primary-500 flex items-center justify-center">
+                    <i data-feather="bar-chart-2" class="w-16 h-16 text-white"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Analytics Demo</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">See our powerful data visualization tools in action.</p>
+                    <a href="#" class="demo-button inline-flex items-center px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-300">
+                        Explore <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Demo Card 3 -->
+            <div class="demo-card bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                <div class="h-48 bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+                    <i data-feather="settings" class="w-16 h-16 text-white"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Configuration Demo</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Customize and see how our solution adapts to your needs.</p>
+                    <a href="#" class="demo-button inline-flex items-center px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-300">
+                        Explore <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Demo Card 4 -->
+            <div class="demo-card bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                <div class="h-48 bg-gradient-to-r from-secondary-500 to-primary-500 flex items-center justify-center">
+                    <i data-feather="users" class="w-16 h-16 text-white"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Team Demo</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Collaboration features that bring teams together.</p>
+                    <a href="#" class="demo-button inline-flex items-center px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-300">
+                        Explore <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Demo Card 5 -->
+            <div class="demo-card bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                <div class="h-48 bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+                    <i data-feather="shield" class="w-16 h-16 text-white"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Security Demo</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">See our enterprise-grade security features.</p>
+                    <a href="#" class="demo-button inline-flex items-center px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-300">
+                        Explore <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Demo Card 6 -->
+            <div class="demo-card bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                <div class="h-48 bg-gradient-to-r from-secondary-500 to-primary-500 flex items-center justify-center">
+                    <i data-feather="zap" class="w-16 h-16 text-white"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Performance Demo</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Experience our lightning-fast processing speeds.</p>
+                    <a href="#" class="demo-button inline-flex items-center px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-300">
+                        Explore <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <custom-footer></custom-footer>
+
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="script.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>
