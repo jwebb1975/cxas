@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CX Customer CRM</title>
+<style>
+  body {
+    margin:0; font-family:"Segoe UI",Arial,sans-serif;
+    background:#f6f8fc center/cover fixed no-repeat;
+  }
+  header {
+    display:flex; align-items:center; justify-content:space-between;
+    background:#173a7a; color:#fff; padding:10px 20px; flex-wrap:wrap;
+  }
+  header h1 {margin:0; font-size:18px;}
+  .searchbar {
+    display:flex; align-items:center; gap:8px;
+    background:#ffffff22; border-radius:6px; padding:4px 8px;
+  }
+  .searchbar input {
+    padding:6px 8px; border:none; border-radius:4px; font-size:13px;
+  }
+  .searchbar button {
+    background:#1a73e8; color:#fff; border:none;
+    border-radius:6px; padding:6px 10px; font-size:13px; cursor:pointer;
+  }
+  .toolbar {display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .btn, .btn-file {
+    display:inline-flex; align-items:center; gap:4px;
+    border:none; cursor:pointer;
+    background:#ffffff22; color:#fff;
+    padding:8px 10px; border-radius:6px; font-size:13px;
+  }
+  .btn:hover, .btn-file:hover {background:#ffffff33;}
+  .btn.primary {background:#fff; color:#173a7a;}
+  .container {max-width:1100px; margin:20px auto; padding:0 20px;}
+  .grid {display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  .card {
+    background:#fff; border:1px solid #e0e0e0; border-radius:10px;
+    box-shadow:0 3px 10px rgba(0,0,0,.06);
+  }
+  .card h3 {
+    background:#f2f5ff; margin:0; padding:10px 15px;
+    border-bottom:1px solid #ddd; color:#173a7a;
+  }
+  .body {padding:15px;}
+  .fields {display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media (max-width:700px){.fields{grid-template-columns:1fr}}
+  label {font-size:12px; color:#555;}
+  input {
+    width:100%; padding:7px; border:1px solid #ccc; border-radius:6px; font-size:14px;
+  }
+  .save-row {text-align:right; padding:0 15px 15px;}
+  .save {background:#1a73e8; color:#fff; border:none; border-radius:8px; padding:6px 12px; cursor:pointer;}
+  .json-preview {
+    background:#f1f4f8; border:1px solid #d0d7e1; border-radius:6px;
+    padding:10px; margin:10px 15px 15px; font-family:monospace;
+    font-size:13px; white-space:pre-wrap; color:#173a7a;
+  }
+  .status {margin-top:20px; font-size:14px; color:#173a7a;}
+</style>
+</head>
+<body>
+<header>
+  <h1>CX Demo</h1>
+  <div class="searchbar">
+    <input id="searchPhoneInput" placeholder="Search by Phone..." />
+    <button id="searchBtn">Search</button>
+  </div>
+  <div class="toolbar">
+    <label for="bgUpload" class="btn-file">Upload Background</label>
+    <input id="bgUpload" type="file" accept="image/*" style="display:none;">
+    <button class="btn" id="bgClear">Clear BG</button>
+    <button class="btn primary" id="goHome">Go To Homepage</button>
+  </div>
+</header>
+
+<div class="container" id="formArea" style="display:none;">
+  <div class="grid">
+    <!-- CONTACT -->
+    <div class="card" id="contact">
+      <h3>Contact Information</h3>
+      <div class="body fields" id="contact-fields">
+        <div><label>FirstName</label><input id="FirstName"></div>
+        <div><label>LastName</label><input id="LastName"></div>
+        <div><label>Phone</label><input id="Phone"></div>
+        <div><label>Email</label><input id="Email"></div>
+        <div><label>AgentEmail</label><input id="AgentEmail"></div>
+        <div><label>DateOfBirth</label><input id="DateOfBirth"></div>
+        <div><label>EmergencyContactName</label><input id="EmergencyContactName"></div>
+        <div><label>EmergencyContactNumber</label><input id="EmergencyContactNumber"></div>
+      </div>
+      <div class="save-row"><button class="save" data-section="Contact">Save Contact</button></div>
+      <pre class="json-preview" id="preview-Contact"></pre>
+    </div>
+
+    <!-- ADDRESS -->
+    <div class="card" id="address">
+      <h3>Address Information</h3>
+      <div class="body fields" id="address-fields">
+        <div><label>Street</label><input id="Street"></div>
+        <div><label>City</label><input id="City"></div>
+        <div><label>State</label><input id="State"></div>
+        <div><label>Zip</label><input id="Zip"></div>
+      </div>
+      <div class="save-row"><button class="save" data-section="Address">Save Address</button></div>
+      <pre class="json-preview" id="preview-Address"></pre>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="card" id="account">
+      <h3>Account Information</h3>
+      <div class="body fields" id="account-fields">
+        <div><label>AccountNumber</label><input id="AccountNumber"></div>
+        <div><label>Balance</label><input id="Balance"></div>
+        <div><label>Pin</label><input id="Pin"></div>
+        <div><label>SecurityWord</label><input id="SecurityWord"></div>
+        <div><label>EmployeeNumber</label><input id="EmployeeNumber"></div>
+        <div><label>VIP</label><input id="VIP"></div>
+      </div>
+      <div class="save-row"><button class="save" data-section="Account">Save Account</button></div>
+      <pre class="json-preview" id="preview-Account"></pre>
+    </div>
+
+    <!-- ORDER -->
+    <div class="card" id="order">
+      <h3>Order Information</h3>
+      <div class="body fields" id="order-fields">
+        <div><label>Product</label><input id="Product"></div>
+        <div><label>OrderNumber</label><input id="OrderNumber"></div>
+        <div><label>PurchaseDate</label><input id="PurchaseDate"></div>
+        <div><label>TicketNumber</label><input id="TicketNumber"></div>
+        <div><label>status</label><input id="status"></div>
+        <div><label>surveyOptin</label><input id="surveyOptin"></div>
+        <div><label>lastSurveyDate</label><input id="lastSurveyDate"></div>
+      </div>
+      <div class="save-row"><button class="save" data-section="Order">Save Order</button></div>
+      <pre class="json-preview" id="preview-Order"></pre>
+    </div>
+
+    <!-- VEHICLE -->
+    <div class="card" id="vehicle">
+      <h3>Vehicle Information</h3>
+      <div class="body fields" id="vehicle-fields">
+        <div><label>vinNumber</label><input id="vinNumber"></div>
+        <div><label>Year</label><input id="Year"></div>
+        <div><label>Make</label><input id="Make"></div>
+        <div><label>Model</label><input id="Model"></div>
+        <div><label>Payment</label><input id="Payment"></div>
+        <div><label>carBalance</label><input id="carBalance"></div>
+        <div><label>DriverCode</label><input id="DriverCode"></div>
+      </div>
+      <div class="save-row"><button class="save" data-section="Vehicle">Save Vehicle</button></div>
+      <pre class="json-preview" id="preview-Vehicle"></pre>
+    </div>
+
+    <!-- PACKAGE -->
+    <div class="card" id="package">
+      <h3>Package / Delivery Information</h3>
+      <div class="body fields" id="package-fields">
+        <div><label>PackageNumber</label><input id="PackageNumber"></div>
+        <div><label>estimated_delivery</label><input id="estimated_delivery"></div>
+        <div><label>TripStatus</label><input id="TripStatus"></div>
+        <div><label>LoadStatus</label><input id="LoadStatus"></div>
+        <div><label>DeliveryStatus</label><input id="DeliveryStatus"></div>
+      </div>
+      <div class="save-row"><button class="save" data-section="Package">Save Package</button></div>
+      <pre class="json-preview" id="preview-Package"></pre>
+    </div>
+  </div>
+
+  <div class="status" id="status">Ready.</div>
+</div>
+
+<script>
+const API_BASE="https://659f21365023b02bfe894b27.mockapi.io/cx/CustomerDatabase";
+const WEBHOOK_URL="https://hooks.us.webexconnect.io/events/BYOJYB0W2D";
+let currentRecord=null;
+
+// Search
+document.getElementById("searchBtn").addEventListener("click", async ()=>{
+  const phone=document.getElementById("searchPhoneInput").value.trim();
+  if(!phone) return alert("Enter a phone number");
+  try {
+    document.getElementById("status").textContent="Searching...";
+    let res=await fetch(`${API_BASE}?Phone=${encodeURIComponent(phone)}`);
+    let data=await res.json();
+    if(!data.length){
+      res=await fetch(`${API_BASE}?searchPhone=${encodeURIComponent(phone)}`);
+      data=await res.json();
+    }
+    if(!data.length){document.getElementById("status").textContent="No record found.";return;}
+    currentRecord=data[0];
+    fillForm(currentRecord);
+    document.getElementById("formArea").style.display="block";
+    document.getElementById("status").textContent="Record loaded.";
+  } catch(e){document.getElementById("status").textContent="Error: "+e.message;}
+});
+
+// Fill form with fetched data
+function fillForm(record){
+  Object.keys(record).forEach(k=>{
+    const el=document.getElementById(k);
+    if(el) el.value=record[k];
+  });
+}
+
+// Save Section (Webhook + MockAPI)
+document.querySelectorAll(".save").forEach(btn=>{
+  btn.addEventListener("click", async ()=>{
+    const section=btn.dataset.section;
+    const fields=document.querySelectorAll(`#${section.toLowerCase()}-fields input`);
+    if(!currentRecord) return alert("Load a record first.");
+
+    const payload={section:section};
+    fields.forEach(f=>payload[f.id]=f.value);
+    payload.FirstName=document.getElementById("FirstName").value||"";
+    payload.LastName=document.getElementById("LastName").value||"";
+    payload.Email=document.getElementById("Email").value||"";
+    payload.Phone=document.getElementById("Phone").value||"";
+
+    console.log("Webhook payload:", payload);
+    document.getElementById(`preview-${section}`).textContent=JSON.stringify(payload,null,2);
+
+    try {
+      await fetch(`${API_BASE}/${currentRecord.id}`,{
+        method:"PUT",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+      await fetch(WEBHOOK_URL,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+      document.getElementById("status").textContent=`✅ ${section} data sent.`;
+    } catch(e){
+      document.getElementById("status").textContent=`❌ Error: ${e.message}`;
+    }
+  });
+});
+
+// Background upload
+const bgUpload=document.getElementById("bgUpload");
+const bgClear=document.getElementById("bgClear");
+function applyBG(){const img=localStorage.getItem("crm:bg");if(img)document.body.style.backgroundImage=`url(${img})`;}
+applyBG();
+bgUpload.addEventListener("change",()=>{const f=bgUpload.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{localStorage.setItem("crm:bg",r.result);document.body.style.backgroundImage=`url(${r.result})`;};r.readAsDataURL(f);});
+bgClear.addEventListener("click",()=>{localStorage.removeItem("crm:bg");document.body.style.backgroundImage="none";});
+
+// Homepage
+document.getElementById("goHome").addEventListener("click",()=>window.location.href="landing.html");
+</script>
+
+<!-- Chat Widget -->
+<div id="divicw" data-bind="039C35E7-C85F-4267-A75F-639B2698314B" data-org="" data-guid="7291f625-e94c-48eb-9a31-b0b97c59214d"></div>
+<script>
+var i={t:function(t){var e="https://media.imi.chat/widget/js/imichatinit.js";try{var o=new XMLHttpRequest;o.onreadystatechange=function(){if(this.readyState==4){var t=document.getElementById("divicw");if(this.status==0){i.o(t);return}var e=document.createElement("script");e.innerHTML=this.responseText;t.parentNode.insertBefore(e,t.nextSibling)}};o.open("GET",e,true);o.send()}catch(s){console.error(s)}},o:function(t){t.insertAdjacentHTML("afterend",'<iframe id="tls_al_frm" frameborder="0" style="overflow:hidden;height:208px;width:394px;position:fixed;right:48px;bottom:12px;z-index:99999;display:none;"></iframe>');},s:function(){document.getElementById("tls_al_frm").remove()}};i.t(function(t){});
+</script>
+</body>
+</html>
