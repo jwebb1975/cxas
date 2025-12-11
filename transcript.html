@@ -1,177 +1,868 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Transcript Word Cloud Viewer</title>
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <meta charset="UTF-8" />
+  <title>CX Interaction Word Clouds</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-<style>
     body {
-        background: #0f0f11;
-        color: #fff;
-        font-family: Arial, sans-serif;
-        padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at top left, #1e293b, #020617);
+      color: #e5e7eb;
     }
-    h1 {
-        text-align: center;
-        color: #00eaff;
-        margin-bottom: 20px;
+
+    .app {
+      width: 100%;
+      max-width: 1320px;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 24px;
+      padding: 24px 24px 28px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      backdrop-filter: blur(18px);
     }
-    #searchBox {
-        width: 300px;
-        padding: 10px;
-        font-size: 18px;
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
     }
-    #container {
-        margin-top: 20px;
-        text-align: center;
+
+    .app-title {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
-    #wordCloud svg {
-        margin: auto;
-        display: block;
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(96, 165, 250, 0.6);
+      background: radial-gradient(circle at top left, #0f172a, #020617);
+      color: #93c5fd;
     }
-    .resultBox {
-        margin-top: 30px;
-        padding: 20px;
-        background: #1a1d20;
-        border-radius: 10px;
-        border: 1px solid #00eaff;
+
+    .app-title h1 {
+      font-size: 1.85rem;
+      letter-spacing: 0.03em;
     }
-    .interactionLabel {
-        color: #ffcc00;
-        font-weight: bold;
+
+    .app-title p {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      max-width: 620px;
     }
-</style>
+
+    .endpoint-tag {
+      font-size: 0.8rem;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      padding: 6px 12px;
+      border: 1px solid rgba(75, 85, 99, 0.8);
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+
+    .endpoint-tag span {
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.7rem;
+    }
+
+    .endpoint-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #4ade80, #16a34a);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 2.1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* LEFT PANEL */
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,0.94));
+      border-radius: 20px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 18px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .panel h2 {
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 1);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .input-row {
+        flex-direction: column;
+      }
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at top left, #020617, #020617);
+      color: #e5e7eb;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+    }
+
+    input[type="text"]::placeholder {
+      color: #6b7280;
+    }
+
+    input[type="text"]:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.7);
+      transform: translateY(-1px);
+    }
+
+    button[type="submit"] {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: radial-gradient(circle at top left, #2563eb, #22c55e);
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.5);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+      white-space: nowrap;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.65);
+      filter: brightness(1.05);
+    }
+
+    button[type="submit"]:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.9);
+      filter: brightness(0.98);
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hint span {
+      font-size: 1.1rem;
+      opacity: 0.7;
+    }
+
+    .status {
+      min-height: 20px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .status--error {
+      color: #fca5a5;
+    }
+
+    .status--ok {
+      color: #a7f3d0;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .stat-card {
+      border-radius: 16px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.95), rgba(17,24,39,0.95));
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-label {
+      color: #9ca3af;
+    }
+
+    .stat-value {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .stat-sub {
+      font-size: 0.7rem;
+      color: #6b7280;
+    }
+
+    .selected-word {
+      margin-top: 4px;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .selected-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(96, 165, 250, 0.9);
+      background: rgba(15, 23, 42, 1);
+      font-size: 0.78rem;
+      color: #d1d5db;
+      max-width: fit-content;
+    }
+
+    .selected-pill strong {
+      color: #bfdbfe;
+    }
+
+    .selected-pill .count {
+      font-family: "SF Mono", Menlo, Monaco, monospace;
+      font-size: 0.78rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    .selected-tip {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .selected-table {
+      font-size: 0.76rem;
+      border-radius: 12px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,0.96));
+      padding: 8px 10px;
+      max-height: 180px;
+      overflow: auto;
+    }
+
+    .selected-table-header {
+      display: grid;
+      grid-template-columns: 1.2fr 0.4fr;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+
+    .selected-row {
+      display: grid;
+      grid-template-columns: 1.2fr 0.4fr;
+      gap: 6px;
+      padding: 2px 0;
+      border-top: 1px solid rgba(31,41,55,0.9);
+    }
+
+    .selected-row:first-of-type {
+      border-top: none;
+    }
+
+    .selected-row-id {
+      font-family: "SF Mono", Menlo, Monaco, monospace;
+      font-size: 0.72rem;
+      color: #e5e7eb;
+      word-break: break-all;
+    }
+
+    .selected-row-count {
+      text-align: right;
+      font-family: "SF Mono", Menlo, Monaco, monospace;
+    }
+
+    /* RIGHT: clouds list */
+
+    .clouds-panel {
+      background: radial-gradient(circle at top right, rgba(15,23,42,0.98), rgba(15,23,42,0.95));
+      border-radius: 20px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 18px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 640px;
+      overflow: hidden;
+    }
+
+    .clouds-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .clouds-header h2 {
+      font-size: 1.05rem;
+    }
+
+    .clouds-legend {
+      font-size: 0.72rem;
+      color: #6b7280;
+    }
+
+    .clouds-scroll {
+      margin-top: 8px;
+      border-radius: 16px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.94), rgba(2,6,23,0.98));
+      padding: 10px;
+      overflow-y: auto;
+      max-height: 540px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cloud-card {
+      border-radius: 14px;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cloud-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .cloud-card-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cloud-card-title span:first-child {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .cloud-card-id {
+      font-family: "SF Mono", Menlo, Monaco, monospace;
+      font-size: 0.78rem;
+      color: #e5e7eb;
+    }
+
+    .cloud-card-meta {
+      font-size: 0.72rem;
+      color: #6b7280;
+      text-align: right;
+    }
+
+    .cloud-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 6px;
+      align-items: flex-start;
+      min-height: 28px;
+    }
+
+    .cloud-word {
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 1px 7px;
+      background: transparent;
+      border: none;
+      color: #e5e7eb;
+      transition: transform 0.08s ease, filter 0.08s ease, text-shadow 0.08s ease, background 0.08s ease, box-shadow 0.08s ease;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .cloud-word:hover {
+      transform: translateY(-1px) scale(1.03);
+      filter: brightness(1.15);
+      text-shadow: 0 0 10px rgba(59, 130, 246, 0.9);
+    }
+
+    .cloud-word--active {
+      background: radial-gradient(circle at top left, #22c55e, #22c55e);
+      color: #022c22;
+      text-shadow: none;
+      box-shadow: 0 0 12px rgba(34,197,94,0.9);
+    }
+
+    .cloud-empty {
+      font-size: 0.86rem;
+      color: #6b7280;
+      padding: 20px 10px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <header class="app-header">
+      <div class="app-title">
+        <div class="badge">CX transcript explorer · per interaction cloud</div>
+        <h1>Interaction Word Clouds</h1>
+        <p>
+          Each interaction ID gets its own word cloud. Type a word or click any word
+          in a cloud to see how often it appears and which interaction it came from.
+        </p>
+      </div>
+      <div class="endpoint-tag" title="Mock API endpoint">
+        <div class="endpoint-dot"></div>
+        <span>GET https://659f21365023b02bfe894b27.mockapi.io/cx/callTranscriptions</span>
+      </div>
+    </header>
 
-<h1>Conversation Word Cloud Analyzer</h1>
+    <main class="layout">
+      <!-- LEFT: search + global stats -->
+      <section class="panel">
+        <div>
+          <h2>
+            Search a word
+            <span class="pill">per interaction</span>
+          </h2>
+          <form id="word-form">
+            <div class="input-row">
+              <input
+                id="search-input"
+                type="text"
+                placeholder="e.g. interaction, transcription, API, agent…"
+                autocomplete="off"
+              />
+              <button type="submit">
+                Analyze
+                <span>⏵</span>
+              </button>
+            </div>
+            <div class="hint">
+              <span>ⓘ</span>
+              We fetch your mock API, build a word cloud for each interactionId, and let you drill into any word.
+            </div>
+          </form>
+        </div>
 
-<input id="searchBox" type="text" placeholder="Enter word…">
-<button onclick="searchWord()">Search</button>
+        <div id="status" class="status"></div>
 
-<div id="container">
-    <div id="wordCloud"></div>
-    <div id="results" class="resultBox"></div>
-</div>
+        <div>
+          <h2>Conversation stats</h2>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-label">Interactions</div>
+              <div id="stat-interactions" class="stat-value">—</div>
+              <div class="stat-sub">Total unique interactionId values</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Global words</div>
+              <div id="stat-global-words" class="stat-value">—</div>
+              <div class="stat-sub">After cleaning common words</div>
+            </div>
+          </div>
 
-<script>
-const API_URL = "https://659f21365023b02bfe894b27.mockapi.io/cx/callTranscriptions";
+          <div class="selected-word" id="selected-section" style="display:none;">
+            <div class="selected-pill">
+              <span>Selected word:</span>
+              <strong id="selected-word">—</strong>
+              <span class="count" id="selected-total-count">0</span>
+            </div>
+            <div class="selected-tip">
+              Global count (all interactions combined). Table below shows per-interaction usage.
+            </div>
+            <div class="selected-table" id="selected-table">
+              <div class="selected-table-header">
+                <div>Interaction ID</div>
+                <div style="text-align:right;">Count</div>
+              </div>
+              <!-- rows injected here -->
+            </div>
+          </div>
+        </div>
+      </section>
 
-let interactionData = {};  // { interactionId: "full transcript text" }
-let allWords = {};         // Combined word frequencies
+      <!-- RIGHT: clouds per interaction -->
+      <section class="clouds-panel">
+        <div class="clouds-header">
+          <h2>Word clouds by interaction</h2>
+          <div class="clouds-legend">
+            Bigger & brighter = used more often · click any word to inspect.
+          </div>
+        </div>
+        <div class="clouds-scroll" id="clouds-scroll">
+          <div id="clouds-empty" class="cloud-empty">
+            Loading interactions and building clouds from your callTranscriptions endpoint…
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 
-async function loadData() {
-    const response = await fetch(API_URL);
-    const raw = await response.json();
+  <script>
+    const ENDPOINT = "https://659f21365023b02bfe894b27.mockapi.io/cx/callTranscriptions";
 
-    raw.forEach(call => {
-        const id = call.interactionId;
-        let combinedTranscript = "";
+    // Simple English stopwords so the cloud focuses on meaningful terms
+    const STOPWORDS = new Set([
+      "the","and","or","a","an","of","to","in","it","is","for","on","that","this","with",
+      "you","i","we","they","he","she","be","are","was","were","at","by","as","from",
+      "about","so","if","but","not","just","can","could","should","would","will","your",
+      "our","their","them","me","my","us","do","did","done","have","has","had","there",
+      "then","than","when","what","which","who","how","why","up","down","out","in","all"
+    ]);
 
-        call.responseContents.forEach(segment => {
-            const alt = segment?.recognitionResult?.alternatives?.[0];
-            if (alt && alt.transcript) {
-                combinedTranscript += " " + alt.transcript;
-            }
-        });
+    let interactions = [];   // { id, transcript, freq, totalWords }
+    let globalWordFreq = {}; // word -> total across all interactions
+    let globalTotalWords = 0;
 
-        interactionData[id] = combinedTranscript.trim();
-    });
+    const statusEl = document.getElementById("status");
+    const statInteractionsEl = document.getElementById("stat-interactions");
+    const statGlobalWordsEl = document.getElementById("stat-global-words");
+    const cloudsScrollEl = document.getElementById("clouds-scroll");
+    const cloudsEmptyEl = document.getElementById("clouds-empty");
 
-    buildWordCloud();
-}
+    const selectedSectionEl = document.getElementById("selected-section");
+    const selectedWordEl = document.getElementById("selected-word");
+    const selectedTotalCountEl = document.getElementById("selected-total-count");
+    const selectedTableEl = document.getElementById("selected-table");
 
-function buildWordCloud() {
-    allWords = {};
-
-    Object.values(interactionData).forEach(text => {
-        text.split(/\s+/).forEach(word => {
-            const clean = word.toLowerCase().replace(/[^a-z0-9]/g, "");
-            if (!clean) return;
-            allWords[clean] = (allWords[clean] || 0) + 1;
-        });
-    });
-
-    renderCloud(allWords);
-}
-
-function renderCloud(words) {
-    document.getElementById("wordCloud").innerHTML = "";
-
-    const entries = Object.entries(words).map(([text, count]) => ({
-        text, size: 10 + count * 8
-    }));
-
-    const layout = d3.layout.cloud()
-        .size([900, 500])
-        .words(entries)
-        .padding(5)
-        .rotate(() => ~~(Math.random() * 2) * 90)
-        .font("Arial")
-        .fontSize(d => d.size)
-        .on("end", draw);
-
-    layout.start();
-
-    function draw(words) {
-        d3.select("#wordCloud")
-            .append("svg")
-            .attr("width", 900)
-            .attr("height", 500)
-            .append("g")
-            .attr("transform", "translate(450,250)")
-            .selectAll("text")
-            .data(words)
-            .enter().append("text")
-            .style("font-size", d => d.size + "px")
-            .style("fill", "#00eaff")
-            .attr("text-anchor", "middle")
-            .attr("transform", d => `translate(${d.x},${d.y}) rotate(${d.rotate})`)
-            .text(d => d.text)
-            .style("cursor", "pointer")
-            .on("click", d => showWordDetails(d.text));
+    function setStatus(message, type = "info") {
+      statusEl.textContent = message || "";
+      statusEl.className = "status";
+      if (type === "error") statusEl.classList.add("status--error");
+      if (type === "ok") statusEl.classList.add("status--ok");
     }
-}
 
-function searchWord() {
-    const word = document.getElementById("searchBox").value.toLowerCase();
-    showWordDetails(word);
-}
+    function buildWordFrequencies(text) {
+      const freq = {};
+      const cleaned = text.toLowerCase();
+      const words = cleaned.match(/\b[\p{L}\p{N}']+\b/gu) || [];
 
-function showWordDetails(word) {
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "";
+      let total = 0;
+      for (const raw of words) {
+        const w = raw.trim();
+        if (!w || STOPWORDS.has(w)) continue;
+        total++;
+        freq[w] = (freq[w] || 0) + 1;
+      }
+      return { freq, totalWords: total };
+    }
 
-    if (!word) return;
+    async function fetchInteractions() {
+      setStatus("Fetching callTranscriptions from mock API…");
+      try {
+        const res = await fetch(ENDPOINT);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
 
-    let html = `<h2>Search Results for "<span style='color:#00eaff'>${word}</span>"</h2>`;
+        interactions = data.map(item => {
+          const id = item.interactionId || "(missing interactionId)";
+          let combinedTranscript = "";
 
-    Object.entries(interactionData).forEach(([id, transcript]) => {
-        const regex = new RegExp("\\b" + word + "\\b", "gi");
-        const matches = transcript.match(regex);
+          if (Array.isArray(item.responseContents)) {
+            for (const rc of item.responseContents) {
+              const alt = rc?.recognitionResult?.alternatives?.[0];
+              if (alt && typeof alt.transcript === "string") {
+                combinedTranscript += " " + alt.transcript;
+              }
+            }
+          }
 
-        if (matches && matches.length > 0) {
-            html += `
-                <p>
-                    <span class="interactionLabel">Interaction ID:</span> ${id}<br>
-                    Count: <strong>${matches.length}</strong><br>
-                    <em>Excerpt:</em> ${highlightWord(transcript, word)}
-                </p>
-                <hr />
-            `;
+          combinedTranscript = combinedTranscript.trim();
+
+          const { freq, totalWords } = buildWordFrequencies(combinedTranscript);
+          return { id, transcript: combinedTranscript, freq, totalWords };
+        });
+
+        // Build global frequency
+        globalWordFreq = {};
+        globalTotalWords = 0;
+        for (const it of interactions) {
+          globalTotalWords += it.totalWords;
+          for (const [word, count] of Object.entries(it.freq)) {
+            globalWordFreq[word] = (globalWordFreq[word] || 0) + count;
+          }
         }
+
+        updateStats();
+        renderClouds();
+        setStatus("Loaded interactions and built word clouds.", "ok");
+      } catch (err) {
+        console.error(err);
+        cloudsEmptyEl.textContent = "Failed to load data from the mock API.";
+        setStatus(`Error loading data: ${err.message}`, "error");
+      }
+    }
+
+    function updateStats() {
+      statInteractionsEl.textContent = interactions.length.toString();
+      statGlobalWordsEl.textContent = globalTotalWords ? globalTotalWords.toLocaleString() : "0";
+    }
+
+    function renderClouds(selectedWord = null) {
+      cloudsScrollEl.innerHTML = "";
+      if (!interactions.length) {
+        cloudsScrollEl.appendChild(cloudsEmptyEl);
+        cloudsEmptyEl.style.display = "block";
+        return;
+      }
+
+      cloudsEmptyEl.style.display = "none";
+
+      interactions.forEach(it => {
+        const card = document.createElement("div");
+        card.className = "cloud-card";
+        card.dataset.interactionId = it.id;
+
+        const header = document.createElement("div");
+        header.className = "cloud-card-header";
+
+        const title = document.createElement("div");
+        title.className = "cloud-card-title";
+        const label = document.createElement("span");
+        label.textContent = "Interaction ID";
+        const idSpan = document.createElement("span");
+        idSpan.className = "cloud-card-id";
+        idSpan.textContent = it.id;
+        title.appendChild(label);
+        title.appendChild(idSpan);
+
+        const meta = document.createElement("div");
+        meta.className = "cloud-card-meta";
+        meta.textContent = `${it.totalWords.toLocaleString()} words`;
+
+        header.appendChild(title);
+        header.appendChild(meta);
+
+        const inner = document.createElement("div");
+        inner.className = "cloud-inner";
+
+        const entries = Object.entries(it.freq);
+        if (!entries.length) {
+          const small = document.createElement("div");
+          small.className = "cloud-empty";
+          small.textContent = "No meaningful words found for this interaction.";
+          inner.appendChild(small);
+        } else {
+          // sort by local frequency (desc)
+          entries.sort((a, b) => b[1] - a[1]);
+          const topEntries = entries.slice(0, 120); // limit cloud size
+
+          const counts = topEntries.map(([, c]) => c);
+          const minCount = Math.min(...counts);
+          const maxCount = Math.max(...counts);
+
+          const minFont = 11;
+          const maxFont = 32;
+
+          function scaleFont(count) {
+            if (maxCount === minCount) return (minFont + maxFont) / 2;
+            const ratio = (count - minCount) / (maxCount - minCount);
+            return minFont + ratio * (maxFont - minFont);
+          }
+
+          function scaleColor(count) {
+            if (maxCount === minCount) return 200;
+            const ratio = (count - minCount) / (maxCount - minCount);
+            // 140 (greenish) to 210 (blue-ish)
+            return 140 + (1 - ratio) * 70;
+          }
+
+          topEntries.forEach(([word, count]) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "cloud-word";
+            const fontSize = scaleFont(count);
+            const hue = scaleColor(count); // lower hue = 'hotter'
+
+            btn.style.fontSize = `${fontSize}px`;
+            btn.style.color = `hsl(${hue}, 90%, 80%)`;
+            btn.style.opacity = 0.35 + (fontSize - minFont) / (maxFont - minFont) * 0.6;
+
+            btn.textContent = word;
+
+            if (selectedWord && word === selectedWord) {
+              btn.classList.add("cloud-word--active");
+            }
+
+            btn.addEventListener("click", () => {
+              setSelectedWord(word);
+            });
+
+            inner.appendChild(btn);
+          });
+        }
+
+        card.appendChild(header);
+        card.appendChild(inner);
+        cloudsScrollEl.appendChild(card);
+      });
+    }
+
+    function setSelectedWord(wordRaw) {
+      const word = (wordRaw || "").trim().toLowerCase();
+      if (!word) return;
+
+      // Build per-interaction counts for this word
+      const rows = [];
+      let total = 0;
+
+      for (const it of interactions) {
+        const count = it.freq[word] || 0;
+        if (count > 0) {
+          total += count;
+          rows.push({ id: it.id, count });
+        }
+      }
+
+      if (rows.length === 0) {
+        setStatus(`“${word}” does not appear in any interaction (after cleaning stopwords).`);
+        selectedSectionEl.style.display = "none";
+      } else {
+        rows.sort((a, b) => b.count - a.count);
+        setStatus(
+          `“${word}” appears ${total.toLocaleString()} time${total === 1 ? "" : "s"} across ${rows.length} interaction${rows.length === 1 ? "" : "s"}.`,
+          "ok"
+        );
+
+        selectedSectionEl.style.display = "flex";
+        selectedWordEl.textContent = word;
+        selectedTotalCountEl.textContent = total.toLocaleString();
+
+        // Rebuild table
+        selectedTableEl.innerHTML = `
+          <div class="selected-table-header">
+            <div>Interaction ID</div>
+            <div style="text-align:right;">Count</div>
+          </div>
+        `;
+        for (const row of rows) {
+          const r = document.createElement("div");
+          r.className = "selected-row";
+          const idDiv = document.createElement("div");
+          idDiv.className = "selected-row-id";
+          idDiv.textContent = row.id;
+          const countDiv = document.createElement("div");
+          countDiv.className = "selected-row-count";
+          countDiv.textContent = row.count.toLocaleString();
+          r.appendChild(idDiv);
+          r.appendChild(countDiv);
+          selectedTableEl.appendChild(r);
+        }
+      }
+
+      // Update cloud highlighting
+      renderClouds(word);
+    }
+
+    async function handleSearch(word) {
+      const w = (word || "").trim().toLowerCase();
+      if (!w) {
+        setStatus("Enter a word to search (or click any word in the clouds).");
+        return;
+      }
+      if (!interactions.length) return;
+      setSelectedWord(w);
+
+      // Optionally scroll to the first cloud containing that word
+      const firstWithWord = interactions.find(it => it.freq[w] > 0);
+      if (firstWithWord) {
+        const card = cloudsScrollEl.querySelector(`.cloud-card[data-interaction-id="${CSS.escape(firstWithWord.id)}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    }
+
+    document.getElementById("word-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("search-input");
+      handleSearch(input.value);
     });
 
-    resultsDiv.innerHTML = html;
-}
-
-function highlightWord(text, word) {
-    const regex = new RegExp(`(${word})`, "gi");
-    return text.replace(regex, `<span style="color:#ff0066; font-weight:bold;">$1</span>`);
-}
-
-loadData();
-</script>
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("search-input").focus();
+      fetchInteractions();
+    });
+  </script>
 </body>
 </html>
