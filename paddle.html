@@ -1,40 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  
 <head>
-  <meta charset="UTF-8" />
-  <title>MightyPaddle: Torque & Stroke</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <style>
-    body {
-      margin: 0;
-      background: #0a3d62;
-      font-family: Arial, sans-serif;
-      color: white;
-      text-align: center;
-      overflow: hidden;
-    }
-    canvas {
-      background: linear-gradient(#1e90ff, #0a3d62);
-      display: block;
-      margin: 0 auto;
-    }
-    .hud {
-      position: fixed;
-      top: 10px;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      font-size: 14px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>MightyPaddle – River Run</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #1e90ff;
+    font-family: Arial, sans-serif;
+  }
+  canvas {
+    display: block;
+    margin: auto;
+    background: linear-gradient(#4facfe, #1e90ff);
+  }
+  .hud {
+    position: fixed;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+  }
+</style>
 </head>
+
 <body>
 
 <div class="hud">
-  <div>🏓 Stamina: <span id="stamina">100</span></div>
-  <div>🔋 Battery: <span id="battery">100</span></div>
-  <div>🏁 Distance: <span id="distance">0</span>m</div>
+  Distance: <span id="score">0</span> m
 </div>
 
 <canvas id="game" width="360" height="640"></canvas>
@@ -43,52 +39,100 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-let stamina = 100;
-let battery = 100;
-let distance = 0;
-let speed = 2;
+let paddleX = 180;
+let paddleY = 520;
+let speed = 3;
+let score = 0;
+let rocks = [];
+let gameOver = false;
 
-function drawBoard() {
-  ctx.fillStyle = "#f1c40f";
-  ctx.fillRect(160, 500, 40, 80);
+function spawnRock() {
+  rocks.push({
+    x: Math.random() * 300 + 20,
+    y: -50,
+    size: Math.random() * 20 + 20
+  });
 }
 
-function update() {
+function drawPaddle() {
+  ctx.fillStyle = "#f1c40f";
+  ctx.fillRect(paddleX - 15, paddleY, 30, 60);
+}
+
+function drawRocks() {
+  ctx.fillStyle = "#555";
+  rocks.forEach(r => {
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, r.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function updateRocks() {
+  rocks.forEach(r => r.y += speed);
+  rocks = rocks.filter(r => r.y < canvas.height + 50);
+}
+
+function checkCollision() {
+  rocks.forEach(r => {
+    const dx = r.x - paddleX;
+    const dy = r.y - paddleY;
+    if (Math.abs(dx) < r.size && Math.abs(dy) < r.size) {
+      gameOver = true;
+    }
+  });
+}
+
+function drawGameOver() {
+  ctx.fillStyle = "rgba(0,0,0,0.7)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#fff";
+  ctx.font = "28px Arial";
+  ctx.fillText("Game Over", 90, 300);
+  ctx.font = "16px Arial";
+  ctx.fillText("Refresh to try again", 90, 340);
+}
+
+function gameLoop() {
+  if (gameOver) {
+    drawGameOver();
+    return;
+  }
+
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // Distance
-  distance += speed;
-  document.getElementById("distance").innerText = Math.floor(distance);
+  score += speed * 0.1;
+  document.getElementById("score").innerText = Math.floor(score);
 
-  // Natural drain
-  stamina = Math.min(100, stamina + 0.05);
-  document.getElementById("stamina").innerText = Math.floor(stamina);
-  document.getElementById("battery").innerText = Math.floor(battery);
+  drawPaddle();
+  drawRocks();
+  updateRocks();
+  checkCollision();
 
-  drawBoard();
-
-  requestAnimationFrame(update);
+  requestAnimationFrame(gameLoop);
 }
 
-// Paddle stroke (left side)
+setInterval(spawnRock, 1200);
+
+// Touch controls
 canvas.addEventListener("touchstart", e => {
   const x = e.touches[0].clientX;
-  if (x < window.innerWidth / 2 && stamina > 5) {
-    stamina -= 5;
-    speed = Math.min(4, speed + 0.5);
-  } else if (battery > 5) {
-    // Motor boost (right side)
-    battery -= 5;
-    speed = Math.min(6, speed + 1);
-  }
+  if (x < window.innerWidth / 2) paddleX -= 30;
+  else paddleX += 30;
 });
 
-// Gradual slow-down
-setInterval(() => {
-  speed = Math.max(2, speed - 0.2);
-}, 300);
+canvas.addEventListener("touchmove", e => {
+  const x = e.touches[0].clientX;
+  paddleX = Math.max(30, Math.min(330, x));
+});
 
-update();
+// Boost zone (top of screen)
+canvas.addEventListener("touchstart", e => {
+  if (e.touches[0].clientY < 120) speed = 6;
+});
+canvas.addEventListener("touchend", () => speed = 3);
+
+gameLoop();
 </script>
 
 </body>
