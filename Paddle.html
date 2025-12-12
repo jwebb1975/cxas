@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MightyPaddle: Torque & Stroke</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      margin: 0;
+      background: #0a3d62;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+    canvas {
+      background: linear-gradient(#1e90ff, #0a3d62);
+      display: block;
+      margin: 0 auto;
+    }
+    .hud {
+      position: fixed;
+      top: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="hud">
+  <div>🏓 Stamina: <span id="stamina">100</span></div>
+  <div>🔋 Battery: <span id="battery">100</span></div>
+  <div>🏁 Distance: <span id="distance">0</span>m</div>
+</div>
+
+<canvas id="game" width="360" height="640"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let stamina = 100;
+let battery = 100;
+let distance = 0;
+let speed = 2;
+
+function drawBoard() {
+  ctx.fillStyle = "#f1c40f";
+  ctx.fillRect(160, 500, 40, 80);
+}
+
+function update() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Distance
+  distance += speed;
+  document.getElementById("distance").innerText = Math.floor(distance);
+
+  // Natural drain
+  stamina = Math.min(100, stamina + 0.05);
+  document.getElementById("stamina").innerText = Math.floor(stamina);
+  document.getElementById("battery").innerText = Math.floor(battery);
+
+  drawBoard();
+
+  requestAnimationFrame(update);
+}
+
+// Paddle stroke (left side)
+canvas.addEventListener("touchstart", e => {
+  const x = e.touches[0].clientX;
+  if (x < window.innerWidth / 2 && stamina > 5) {
+    stamina -= 5;
+    speed = Math.min(4, speed + 0.5);
+  } else if (battery > 5) {
+    // Motor boost (right side)
+    battery -= 5;
+    speed = Math.min(6, speed + 1);
+  }
+});
+
+// Gradual slow-down
+setInterval(() => {
+  speed = Math.max(2, speed - 0.2);
+}, 300);
+
+update();
+</script>
+
+</body>
+</html>
