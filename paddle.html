@@ -8,21 +8,21 @@
   body {
     margin: 0;
     overflow: hidden;
-    background: #1e90ff;
+    background: #0b3c5d;
     font-family: Arial, sans-serif;
   }
   canvas {
     display: block;
     margin: auto;
-    background: linear-gradient(#4facfe, #1e90ff);
   }
   .hud {
     position: fixed;
-    top: 10px;
+    top: 12px;
     width: 100%;
     text-align: center;
     color: white;
     font-size: 16px;
+    z-index: 10;
   }
 </style>
 </head>
@@ -39,100 +39,180 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-let paddleX = 180;
-let paddleY = 520;
+let boardX = canvas.width / 2;
+let boardY = canvas.height * 0.72;
 let speed = 3;
+let baseSpeed = 3;
 let score = 0;
-let rocks = [];
 let gameOver = false;
 
+let rocks = [];
+let mirrors = [];
+let boostTimer = 0;
+
+// ------------------- SPAWNERS -------------------
 function spawnRock() {
   rocks.push({
-    x: Math.random() * 300 + 20,
-    y: -50,
-    size: Math.random() * 20 + 20
+    x: Math.random() * 260 + 50,
+    y: -40,
+    r: Math.random() * 14 + 18
   });
 }
 
-function drawPaddle() {
-  ctx.fillStyle = "#f1c40f";
-  ctx.fillRect(paddleX - 15, paddleY, 30, 60);
+function spawnMirror() {
+  mirrors.push({
+    x: Math.random() * 260 + 50,
+    y: -40,
+    size: 22
+  });
+}
+
+// ------------------- DRAWING -------------------
+function drawRiver() {
+  const grd = ctx.createLinearGradient(0,0,0,canvas.height);
+  grd.addColorStop(0, "#3fa9f5");
+  grd.addColorStop(1, "#005f8f");
+  ctx.fillStyle = grd;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // river banks
+  ctx.fillStyle = "#2e7d32";
+  ctx.fillRect(0,0,40,canvas.height);
+  ctx.fillRect(canvas.width-40,0,40,canvas.height);
+}
+
+function drawBoard() {
+  ctx.save();
+  ctx.translate(boardX, boardY);
+
+  // shadow
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.beginPath();
+  ctx.ellipse(0, 40, 14, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // board body
+  ctx.fillStyle = boostTimer > 0 ? "#ffe066" : "#f5f5f5";
+  ctx.beginPath();
+  ctx.moveTo(0, -50);
+  ctx.quadraticCurveTo(22, 0, 14, 60);
+  ctx.lineTo(-14, 60);
+  ctx.quadraticCurveTo(-22, 0, 0, -50);
+  ctx.fill();
+
+  // center stripe
+  ctx.strokeStyle = "#1e88e5";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, -45);
+  ctx.lineTo(0, 55);
+  ctx.stroke();
+
+  // fin
+  ctx.fillStyle = "#333";
+  ctx.beginPath();
+  ctx.moveTo(0, 60);
+  ctx.lineTo(6, 72);
+  ctx.lineTo(-6, 72);
+  ctx.fill();
+
+  ctx.restore();
 }
 
 function drawRocks() {
   ctx.fillStyle = "#555";
   rocks.forEach(r => {
     ctx.beginPath();
-    ctx.arc(r.x, r.y, r.size, 0, Math.PI * 2);
+    ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
     ctx.fill();
   });
 }
 
-function updateRocks() {
-  rocks.forEach(r => r.y += speed);
-  rocks = rocks.filter(r => r.y < canvas.height + 50);
+function drawMirrors() {
+  mirrors.forEach(m => {
+    ctx.fillStyle = "#cfd8dc";
+    ctx.fillRect(m.x - 10, m.y - 10, 20, 20);
+    ctx.strokeStyle = "#ffffff";
+    ctx.strokeRect(m.x - 10, m.y - 10, 20, 20);
+  });
 }
 
-function checkCollision() {
+// ------------------- UPDATE -------------------
+function updateObjects() {
+  rocks.forEach(r => r.y += speed);
+  mirrors.forEach(m => m.y += speed);
+
+  rocks = rocks.filter(r => r.y < canvas.height + 50);
+  mirrors = mirrors.filter(m => m.y < canvas.height + 50);
+}
+
+function checkCollisions() {
   rocks.forEach(r => {
-    const dx = r.x - paddleX;
-    const dy = r.y - paddleY;
-    if (Math.abs(dx) < r.size && Math.abs(dy) < r.size) {
+    const dx = r.x - boardX;
+    const dy = r.y - boardY;
+    if (Math.abs(dx) < r.r && Math.abs(dy) < r.r) {
       gameOver = true;
+    }
+  });
+
+  mirrors.forEach((m, i) => {
+    const dx = m.x - boardX;
+    const dy = m.y - boardY;
+    if (Math.abs(dx) < 25 && Math.abs(dy) < 40) {
+      boostTimer = 180;
+      speed = baseSpeed + 3;
+      mirrors.splice(i,1);
     }
   });
 }
 
+// ------------------- GAME LOOP -------------------
 function drawGameOver() {
-  ctx.fillStyle = "rgba(0,0,0,0.7)";
+  ctx.fillStyle = "rgba(0,0,0,0.6)";
   ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle = "#fff";
   ctx.font = "28px Arial";
-  ctx.fillText("Game Over", 90, 300);
+  ctx.fillText("Game Over", 95, 300);
   ctx.font = "16px Arial";
-  ctx.fillText("Refresh to try again", 90, 340);
+  ctx.fillText("Refresh to try again", 95, 335);
 }
 
-function gameLoop() {
+function loop() {
   if (gameOver) {
     drawGameOver();
     return;
   }
 
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawRiver();
+  drawRocks();
+  drawMirrors();
+  drawBoard();
+
+  updateObjects();
+  checkCollisions();
+
+  if (boostTimer > 0) {
+    boostTimer--;
+    if (boostTimer === 0) speed = baseSpeed;
+  }
 
   score += speed * 0.1;
   document.getElementById("score").innerText = Math.floor(score);
 
-  drawPaddle();
-  drawRocks();
-  updateRocks();
-  checkCollision();
-
-  requestAnimationFrame(gameLoop);
+  requestAnimationFrame(loop);
 }
 
-setInterval(spawnRock, 1200);
-
-// Touch controls
-canvas.addEventListener("touchstart", e => {
-  const x = e.touches[0].clientX;
-  if (x < window.innerWidth / 2) paddleX -= 30;
-  else paddleX += 30;
-});
-
+// ------------------- INPUT -------------------
 canvas.addEventListener("touchmove", e => {
   const x = e.touches[0].clientX;
-  paddleX = Math.max(30, Math.min(330, x));
+  boardX = Math.max(60, Math.min(canvas.width - 60, x));
 });
 
-// Boost zone (top of screen)
-canvas.addEventListener("touchstart", e => {
-  if (e.touches[0].clientY < 120) speed = 6;
-});
-canvas.addEventListener("touchend", () => speed = 3);
+// ------------------- SPAWN TIMERS -------------------
+setInterval(spawnRock, 1000);
+setInterval(spawnMirror, 4000);
 
-gameLoop();
+loop();
 </script>
 
 </body>
