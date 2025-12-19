@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Conversation Explorer – Live Demo</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+
+    h1 { margin-bottom: 10px; }
+
+    input {
+      padding: 8px;
+      width: 300px;
+    }
+
+    button {
+      padding: 8px 14px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    #results div {
+      background: white;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      border-left: 5px solid #0078d4;
+    }
+
+    #results div:hover {
+      background: #eef6ff;
+    }
+
+    .clouds {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    canvas {
+      width: 300px;
+      height: 250px;
+      background: white;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    #conversation {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      max-width: 70%;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .customer {
+      align-self: flex-start;
+      background: #e7f0ff;
+    }
+
+    .agent {
+      align-self: flex-end;
+      background: #e8ffe8;
+    }
+
+    .icon {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📞 Conversation Explorer (Live Demo)</h1>
+
+<input id="search" placeholder="Search ANI, taskId, or keyword">
+<button onclick="search()">Search</button>
+
+<div id="results"></div>
+
+<hr>
+
+<h2>☁️ Word Clouds</h2>
+<div class="clouds">
+  <canvas id="cloudAll"></canvas>
+  <canvas id="cloudCustomer"></canvas>
+  <canvas id="cloudAgent"></canvas>
+</div>
+
+<hr>
+
+<h2>💬 Conversation Flow</h2>
+<div id="conversation"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.js"></script>
+
+<script>
+/* ================================
+   FAKE DATA (MockAPI simulation)
+   ================================ */
+
+const interactions = [
+  {
+    taskId: "e890a591-63f0-4984-a8f2-00e631368fb4",
+    ani: "+12125551212",
+    messages: [
+      { speaker: "Customer", text: "Hi I need help with my order" },
+      { speaker: "Agent", text: "Sure I can help you with that" },
+      { speaker: "Customer", text: "It has not arrived yet" },
+      { speaker: "Agent", text: "Let me check the shipping status" }
+    ],
+    wordFrequency: {
+      all: { help: 2, order: 2, arrived: 1, shipping: 1 },
+      customer: { help: 1, order: 2, arrived: 1 },
+      agent: { help: 1, shipping: 1 }
+    }
+  },
+  {
+    taskId: "a73f1c92-91aa-4c88-bcfa-98f1bcb0d902",
+    ani: "+13105559876",
+    messages: [
+      { speaker: "Customer", text: "I want a refund for my purchase" },
+      { speaker: "Agent", text: "I can help with the refund process" },
+      { speaker: "Customer", text: "How long will it take" },
+      { speaker: "Agent", text: "Refunds take five business days" }
+    ],
+    wordFrequency: {
+      all: { refund: 3, purchase: 1, process: 1, days: 1 },
+      customer: { refund: 2, purchase: 1 },
+      agent: { refund: 1, process: 1, days: 1 }
+    }
+  }
+];
+
+/* ================================
+   SEARCH + RENDER
+   ================================ */
+
+function search() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const results = document.getElementById("results");
+  results.innerHTML = "";
+
+  interactions
+    .filter(i =>
+      i.taskId.includes(q) ||
+      i.ani.includes(q) ||
+      JSON.stringify(i.wordFrequency).includes(q)
+    )
+    .forEach(i => {
+      const div = document.createElement("div");
+      div.innerHTML = `<strong>${i.ani}</strong><br>${i.taskId}`;
+      div.onclick = () => renderInteraction(i);
+      results.appendChild(div);
+    });
+}
+
+function renderInteraction(i) {
+  renderCloud("cloudAll", i.wordFrequency.all);
+  renderCloud("cloudCustomer", i.wordFrequency.customer);
+  renderCloud("cloudAgent", i.wordFrequency.agent);
+  renderConversation(i.messages);
+}
+
+function renderCloud(id, freq) {
+  WordCloud(document.getElementById(id), {
+    list: Object.entries(freq),
+    gridSize: 8,
+    weightFactor: 12,
+    color: "random-dark",
+    backgroundColor: "#ffffff"
+  });
+}
+
+function renderConversation(messages) {
+  const c = document.getElementById("conversation");
+  c.innerHTML = "";
+
+  messages.forEach(m => {
+    const div = document.createElement("div");
+    div.className = `bubble ${m.speaker === "Agent" ? "agent" : "customer"}`;
+    div.innerHTML = `
+      <div class="icon">${m.speaker === "Agent" ? "🎧 Agent" : "👤 Customer"}</div>
+      ${m.text}
+    `;
+    c.appendChild(div);
+  });
+}
+</script>
+
+</body>
+</html>
