@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Conversation Explorer – Live Demo</title>
+  <title>Conversation Explorer – Speaker Analysis</title>
 
   <style>
     body {
@@ -39,16 +39,28 @@
 
     .clouds {
       display: flex;
-      gap: 20px;
+      justify-content: space-between;
+      gap: 30px;
       margin-top: 20px;
     }
 
-    canvas {
-      width: 300px;
-      height: 250px;
+    .cloudBox {
+      flex: 1;
       background: white;
-      border-radius: 5px;
+      padding: 10px;
+      border-radius: 6px;
       border: 1px solid #ddd;
+    }
+
+    .cloudTitle {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 260px;
     }
 
     #conversation {
@@ -82,20 +94,27 @@
 </head>
 <body>
 
-<h1>📞 Conversation Explorer (Live Demo)</h1>
+<h1>📞 Conversation Explorer</h1>
 
-<input id="search" placeholder="Search ANI, taskId, or keyword">
+<input id="search" placeholder="Search ANI, Task ID, or keyword">
 <button onclick="search()">Search</button>
 
 <div id="results"></div>
 
 <hr>
 
-<h2>☁️ Word Clouds</h2>
+<h2>☁️ Speaker Word Clouds</h2>
+
 <div class="clouds">
-  <canvas id="cloudAll"></canvas>
-  <canvas id="cloudCustomer"></canvas>
-  <canvas id="cloudAgent"></canvas>
+  <div class="cloudBox">
+    <div class="cloudTitle">👤 Customer</div>
+    <canvas id="cloudCustomer"></canvas>
+  </div>
+
+  <div class="cloudBox">
+    <div class="cloudTitle">🎧 Agent</div>
+    <canvas id="cloudAgent"></canvas>
+  </div>
 </div>
 
 <hr>
@@ -106,9 +125,9 @@
 <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.js"></script>
 
 <script>
-/* ================================
-   FAKE DATA (MockAPI simulation)
-   ================================ */
+/* =========================================
+   DEMO DATA (matches MockAPI structure)
+   ========================================= */
 
 const interactions = [
   {
@@ -121,9 +140,8 @@ const interactions = [
       { speaker: "Agent", text: "Let me check the shipping status" }
     ],
     wordFrequency: {
-      all: { help: 2, order: 2, arrived: 1, shipping: 1 },
-      customer: { help: 1, order: 2, arrived: 1 },
-      agent: { help: 1, shipping: 1 }
+      customer: { help: 1, order: 1, arrived: 1 },
+      agent: { help: 1, shipping: 1, check: 1 }
     }
   },
   {
@@ -136,16 +154,15 @@ const interactions = [
       { speaker: "Agent", text: "Refunds take five business days" }
     ],
     wordFrequency: {
-      all: { refund: 3, purchase: 1, process: 1, days: 1 },
       customer: { refund: 2, purchase: 1 },
       agent: { refund: 1, process: 1, days: 1 }
     }
   }
 ];
 
-/* ================================
-   SEARCH + RENDER
-   ================================ */
+/* =========================================
+   SEARCH + RENDER LOGIC
+   ========================================= */
 
 function search() {
   const q = document.getElementById("search").value.toLowerCase();
@@ -167,7 +184,6 @@ function search() {
 }
 
 function renderInteraction(i) {
-  renderCloud("cloudAll", i.wordFrequency.all);
   renderCloud("cloudCustomer", i.wordFrequency.customer);
   renderCloud("cloudAgent", i.wordFrequency.agent);
   renderConversation(i.messages);
@@ -177,15 +193,15 @@ function renderCloud(id, freq) {
   WordCloud(document.getElementById(id), {
     list: Object.entries(freq),
     gridSize: 8,
-    weightFactor: 12,
+    weightFactor: 14,
     color: "random-dark",
     backgroundColor: "#ffffff"
   });
 }
 
 function renderConversation(messages) {
-  const c = document.getElementById("conversation");
-  c.innerHTML = "";
+  const container = document.getElementById("conversation");
+  container.innerHTML = "";
 
   messages.forEach(m => {
     const div = document.createElement("div");
@@ -194,7 +210,7 @@ function renderConversation(messages) {
       <div class="icon">${m.speaker === "Agent" ? "🎧 Agent" : "👤 Customer"}</div>
       ${m.text}
     `;
-    c.appendChild(div);
+    container.appendChild(div);
   });
 }
 </script>
