@@ -907,7 +907,7 @@
     modalOverlay.addEventListener("click", (e)=>{ if(e.target === modalOverlay) closeModal(); });
 
     function openModal(videoUrl){
-      if(!videoUrl || videoUrl.includes("VIDCAST_LINK")){
+      if(!videoUrl || videoUrl.includes("https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893")){
         toast("Add Vidcast link for this section in SECTION_HELP_VIDEOS.");
         return;
       }
