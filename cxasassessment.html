@@ -113,7 +113,19 @@
       color: var(--muted);
     }
 
-    /* Futuristic chat beacon */
+    /* Bottom-right futuristic chat beacon (placed ABOVE chat icon, not covering it) */
+    .chatBeaconFloating{
+      position:fixed;
+      right: 18px;
+
+      /* IMPORTANT:
+         This places the beacon ABOVE the chat widget icon.
+         Adjust this value if your widget sits higher/lower. */
+      bottom: 96px;
+
+      z-index: 99998; /* below some widgets that use 99999, but above page */
+      user-select:none;
+    }
     .chatBeacon{
       position:relative;
       padding:10px 14px;
@@ -122,7 +134,6 @@
       background: linear-gradient(180deg, rgba(53,243,255,.18), rgba(14,20,48,.40));
       box-shadow: 0 0 28px rgba(53,243,255,.18), var(--shadow);
       display:flex; align-items:center; gap:10px;
-      user-select:none;
       animation: beacon 1.35s ease-in-out infinite;
     }
     @keyframes beacon{
@@ -188,12 +199,11 @@
       white-space:nowrap;
     }
     .help{
-      position:relative;
       color:var(--muted);
       font-size:12px;
       display:flex; gap:10px; align-items:center;
     }
-    .whatsThis{
+    .helpLink{
       font-family:var(--mono);
       cursor:pointer;
       padding:6px 10px;
@@ -201,16 +211,13 @@
       border:1px dashed rgba(168,179,214,.45);
       color: var(--muted);
       background: rgba(7,10,18,.35);
+      white-space:nowrap;
     }
-    .whatsThis:hover{
+    .helpLink:hover{
       color: var(--text);
       border-color: rgba(53,243,255,.55);
       box-shadow: 0 0 0 3px rgba(53,243,255,.10);
     }
-
-    details{ border-radius: var(--radius); }
-    details[open] .chev{ transform: rotate(180deg); }
-    .chev{ transition: transform .15s ease; }
 
     .cardBody{ padding: 14px; }
 
@@ -253,44 +260,6 @@
       border-top:1px solid rgba(34,48,103,.55);
     }
 
-    /* Modal */
-    .modalOverlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      display:none;
-      align-items:center; justify-content:center;
-      padding: 18px;
-      z-index:200;
-    }
-    .modalOverlay.show{ display:flex; }
-    .modal{
-      width:min(980px, 100%);
-      background: rgba(14,20,48,.92);
-      border:1px solid rgba(53,243,255,.35);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .modalTop{
-      display:flex; justify-content:space-between; align-items:center;
-      padding: 12px 12px;
-      border-bottom:1px solid rgba(34,48,103,.7);
-      background: linear-gradient(180deg, rgba(53,243,255,.12), rgba(14,20,48,.65));
-    }
-    .modalTitle{
-      font-weight:800;
-      letter-spacing:.2px;
-      display:flex; align-items:center; gap:10px;
-    }
-    .modalBody{ padding: 12px; }
-    .videoFrame{
-      width:100%;
-      aspect-ratio: 16 / 9;
-      border:1px solid rgba(34,48,103,.7);
-      border-radius: 14px;
-      overflow:hidden;
-      background:#000;
-    }
     .toast{
       position:fixed;
       left:50%; transform:translateX(-50%);
@@ -361,13 +330,6 @@
         <div class="actions">
           <div class="pill" id="saveState">autosave: <span id="autosaveState">on</span></div>
 
-          <!-- Futuristic CTA for embedded chat widget -->
-          <div class="chatBeacon" role="button" tabindex="0" id="chatBeacon" title="Open chat widget">
-            <span class="dot" aria-hidden="true"></span>
-            <span style="font-weight:900; letter-spacing:.3px;">CLICK HERE TO CHAT</span>
-            <span style="color:var(--muted); font-size:12px; font-family:var(--mono);">Connect</span>
-          </div>
-
           <button class="btn ghost" id="expandAll">Expand All</button>
           <button class="btn ghost" id="collapseAll">Collapse All</button>
           <button class="btn primary" id="submitAll">Submit All Sections</button>
@@ -386,8 +348,7 @@
           <div class="title">Document Information</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="documentInfo">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -403,7 +364,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="documentInfo">Copy questions for chat</button>
-          <a class="btn" href="https://demo.cxsol.com/share/migration_plan" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="documentInfo">Submit this section</button>
         </div>
       </div>
@@ -417,8 +378,7 @@
           <div class="title">Site & Location Overview</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="siteLocation">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -432,7 +392,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="siteLocation">Copy questions for chat</button>
-          <a class="btn" href="https://demo.cxsol.com/share/migration_plan" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="siteLocation">Submit this section</button>
         </div>
       </div>
@@ -446,8 +406,7 @@
           <div class="title">High-Level Network Topology</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="highLevelTopology">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -461,7 +420,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="highLevelTopology">Copy questions for chat</button>
-          <a class="btn" href="https://demo.cxsol.com/share/migration_plan" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="highLevelTopology">Submit this section</button>
         </div>
       </div>
@@ -475,8 +434,7 @@
           <div class="title">WAN / Internet Connectivity</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_WAN">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="wanInternet">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -491,7 +449,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="wanInternet">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="wanInternet">Submit this section</button>
         </div>
       </div>
@@ -505,8 +463,7 @@
           <div class="title">LAN Architecture</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_LAN">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="lanArchitecture">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -521,7 +478,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="lanArchitecture">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="lanArchitecture">Submit this section</button>
         </div>
       </div>
@@ -535,8 +492,7 @@
           <div class="title">IP Addressing & Routing</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_IP">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="ipRouting">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -550,7 +506,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="ipRouting">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="ipRouting">Submit this section</button>
         </div>
       </div>
@@ -564,8 +520,7 @@
           <div class="title">Firewall & Security Architecture</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_FW">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="firewallSecurity">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -580,7 +535,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="firewallSecurity">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="firewallSecurity">Submit this section</button>
         </div>
       </div>
@@ -594,8 +549,7 @@
           <div class="title">Voice & Media Readiness (A2Q Impact)</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_MEDIA">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="voiceMedia">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -610,7 +564,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="voiceMedia">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="voiceMedia">Submit this section</button>
         </div>
       </div>
@@ -624,8 +578,7 @@
           <div class="title">High Availability & Resiliency</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_HA">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="haResiliency">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -640,7 +593,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="haResiliency">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="haResiliency">Submit this section</button>
         </div>
       </div>
@@ -654,8 +607,7 @@
           <div class="title">Telephony Edge & Media Devices</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_EDGE">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="telephonyEdge">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -670,7 +622,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="telephonyEdge">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="telephonyEdge">Submit this section</button>
         </div>
       </div>
@@ -684,8 +636,7 @@
           <div class="title">Cloud & SaaS Connectivity</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_CLOUD">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="cloudSaaS">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -699,7 +650,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="cloudSaaS">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="cloudSaaS">Submit this section</button>
         </div>
       </div>
@@ -713,8 +664,7 @@
           <div class="title">Security, Compliance & Constraints</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_COMPLIANCE">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="securityCompliance">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -728,7 +678,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="securityCompliance">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="securityCompliance">Submit this section</button>
         </div>
       </div>
@@ -742,8 +692,7 @@
           <div class="title">Additional Notes / Open Items</div>
         </div>
         <div class="help">
-          <span class="whatsThis" data-video="VIDCAST_LINK_NOTES">What’s this?</span>
-          <span class="chev">▾</span>
+          <button class="helpLink" type="button" data-help="notes">Watch a 2 minute help video</button>
         </div>
       </div>
       <div class="cardBody">
@@ -754,7 +703,7 @@
 
         <div class="sectionActions">
           <button class="btn ghost" data-copy-questions="notes">Copy questions for chat</button>
-          <a class="btn" href="AI_STORYLINE_DEMO_URL" target="_blank" rel="noopener">Open AI Storyline Demo</a>
+          <a class="btn" href="https://demo.cxsol.com/share/mydkecsasnha" target="_blank" rel="noopener">Open AI Storyline Demo</a>
           <button class="btn primary" data-submit-section="notes">Submit this section</button>
         </div>
       </div>
@@ -781,6 +730,15 @@
 
   </main>
 
+  <!-- Floating "CLICK HERE TO CHAT" beacon placed above the chat icon -->
+  <div class="chatBeaconFloating" aria-hidden="false">
+    <div class="chatBeacon" role="button" tabindex="0" id="chatBeacon" title="Open chat widget">
+      <span class="dot" aria-hidden="true"></span>
+      <span style="font-weight:900; letter-spacing:.3px;">CLICK HERE TO CHAT</span>
+      <span style="color:var(--muted); font-size:12px; font-family:var(--mono);">Connect</span>
+    </div>
+  </div>
+
   <div class="footerBar">
     <div class="footerInner">
       <div class="status">
@@ -794,49 +752,31 @@
     </div>
   </div>
 
-  <!-- Video Modal -->
-  <div class="modalOverlay" id="modalOverlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="modalTop">
-        <div class="modalTitle">Section Help Video</div>
-        <button class="btn ghost" id="closeModal">Close</button>
-      </div>
-      <div class="modalBody">
-        <div class="videoFrame">
-          <iframe id="videoIframe" title="Help Video" width="100%" height="100%" frameborder="0"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowfullscreen></iframe>
-        </div>
-        <div style="margin-top:10px; color:var(--muted); font-size:12px;">
-          Tip: Use “Copy questions for chat” to paste the questions into your Connect chat widget.
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="toast" id="toast"></div>
 
   <script>
     /************** CONFIG **************/
     const WEBHOOK_URL = "https://hooks.us.webexconnect.io/events/ACJKCN9N80";
-    const AI_STORYLINE_DEMO_URL = "PASTE_YOUR_AI_STORYLINE_DEMO_PAGE_URL_HERE";
+    const AI_STORYLINE_DEMO_URL = "https://demo.cxsol.com/share/mydkecsasnha";
 
-    // Replace placeholders with your real Vidcast links per section.
-    // If your vidcast supports embedding, use its embed URL. Otherwise, link to a page that can be embedded.
+    // Holding/placeholder vidcast for ALL sections (replace later per section)
+    const HOLDING_VIDCAST_URL = "https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893";
+
+    // Map per section (all currently point to holding video)
     const SECTION_HELP_VIDEOS = {
-      documentInfo: "VIDCAST_LINK_DOCINFO",
-      siteLocation: "VIDCAST_LINK_SITE",
-      highLevelTopology: "VIDCAST_LINK_TOPOLOGY",
-      wanInternet: "VIDCAST_LINK_WAN",
-      lanArchitecture: "VIDCAST_LINK_LAN",
-      ipRouting: "VIDCAST_LINK_IP",
-      firewallSecurity: "VIDCAST_LINK_FW",
-      voiceMedia: "VIDCAST_LINK_MEDIA",
-      haResiliency: "VIDCAST_LINK_HA",
-      telephonyEdge: "VIDCAST_LINK_EDGE",
-      cloudSaaS: "VIDCAST_LINK_CLOUD",
-      securityCompliance: "VIDCAST_LINK_COMPLIANCE",
-      notes: "VIDCAST_LINK_NOTES"
+      documentInfo: HOLDING_VIDCAST_URL,
+      siteLocation: HOLDING_VIDCAST_URL,
+      highLevelTopology: HOLDING_VIDCAST_URL,
+      wanInternet: HOLDING_VIDCAST_URL,
+      lanArchitecture: HOLDING_VIDCAST_URL,
+      ipRouting: HOLDING_VIDCAST_URL,
+      firewallSecurity: HOLDING_VIDCAST_URL,
+      voiceMedia: HOLDING_VIDCAST_URL,
+      haResiliency: HOLDING_VIDCAST_URL,
+      telephonyEdge: HOLDING_VIDCAST_URL,
+      cloudSaaS: HOLDING_VIDCAST_URL,
+      securityCompliance: HOLDING_VIDCAST_URL,
+      notes: HOLDING_VIDCAST_URL
     };
 
     // OPTIONAL: If your Connect chat widget exposes an open function, call it here.
@@ -844,7 +784,7 @@
     function openChatWidget(){
       // Example stub:
       // if (window.ConnectChat && typeof window.ConnectChat.open === "function") window.ConnectChat.open();
-      document.querySelector('[data-chat-anchor]')?.scrollIntoView({behavior:'smooth'});
+      document.getElementById("divicw")?.scrollIntoView({behavior:'smooth'});
     }
 
     /************** UI helpers **************/
@@ -856,7 +796,7 @@
       window.__toastT = setTimeout(()=>toastEl.classList.remove("show"), 2200);
     }
 
-    // Update header webhook status
+    // Update footer webhook status
     const hookStatus = document.getElementById("hookStatus");
     const hookGood = WEBHOOK_URL && !WEBHOOK_URL.includes("PASTE_");
     hookStatus.innerHTML = hookGood ? `<b>set</b> ${WEBHOOK_URL}` : `<b>not set</b> (edit WEBHOOK_URL in script)`;
@@ -900,41 +840,18 @@
       if(e.target.matches("input, textarea")) save();
     });
 
-    /************** Modal video **************/
-    const modalOverlay = document.getElementById("modalOverlay");
-    const videoIframe = document.getElementById("videoIframe");
-    document.getElementById("closeModal").addEventListener("click", closeModal);
-    modalOverlay.addEventListener("click", (e)=>{ if(e.target === modalOverlay) closeModal(); });
-
-    function openModal(videoUrl){
-      if(!videoUrl || videoUrl.includes("https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893")){
-        toast("Add Vidcast link for this section in SECTION_HELP_VIDEOS.");
-        return;
-      }
-      videoIframe.src = videoUrl;
-      modalOverlay.classList.add("show");
-      modalOverlay.setAttribute("aria-hidden","false");
+    /************** Help video (NEW WINDOW) **************/
+    function openHelpVideo(sectionKey){
+      const url = SECTION_HELP_VIDEOS[sectionKey] || HOLDING_VIDCAST_URL;
+      window.open(url, "_blank", "noopener,noreferrer");
     }
-    function closeModal(){
-      modalOverlay.classList.remove("show");
-      modalOverlay.setAttribute("aria-hidden","true");
-      videoIframe.src = "";
-    }
-
-    document.querySelectorAll(".whatsThis").forEach(btn=>{
+    document.querySelectorAll("[data-help]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
-        // Section help videos are mapped by section; this attribute is a placeholder for UI only.
-        // We infer section by walking up to nearest card body.
-        const card = btn.closest(".card");
-        const section = card?.querySelector("[data-section]")?.getAttribute("data-section");
-        if(!section) return;
-        openModal(SECTION_HELP_VIDEOS[section]);
+        openHelpVideo(btn.getAttribute("data-help"));
       });
     });
 
     /************** Expand/Collapse **************/
-    // (Cards are not <details> to keep style simple; you can convert them if desired.)
-    // We'll implement "collapse" by toggling cardBody display.
     function setAll(open){
       document.querySelectorAll(".card .cardBody").forEach(b=>{
         b.style.display = open ? "" : "none";
@@ -1059,7 +976,7 @@
 
     /************** Submit per section (each section = its own JSON) **************/
     async function postSection(sectionKey){
-      if(!WEBHOOK_URL || WEBHOOK_URL.includes("PASTE_")){
+      if(!WEBHOOK_URL){
         toast("Set WEBHOOK_URL in the script first.");
         return { ok:false, error:"WEBHOOK_URL not set" };
       }
@@ -1074,7 +991,6 @@
         data: full[sectionKey] || {}
       };
 
-      // Send each section as its own POST
       const res = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type":"application/json" },
@@ -1126,7 +1042,6 @@
     /************** Chat beacon behavior **************/
     const chatBeacon = document.getElementById("chatBeacon");
     chatBeacon.addEventListener("click", ()=>{
-      // Prefer calling a widget open function; fallback scroll.
       openChatWidget();
       toast("Chat opened (or scrolled to chat).");
     });
@@ -1134,6 +1049,13 @@
       if(e.key === "Enter" || e.key === " "){ e.preventDefault(); chatBeacon.click(); }
     });
   </script>
-  <div id="divicw" data-bind="795EFFBE-55B4-4DDF-A3B2-A659BCC9CEA1" data-org="" data-guid="af60ec7b-fe51-4389-a24d-1ee7cb106f16"></div><script>{3}var i={t:function(){try{var e=document.getElementById("divicw"),t=document.createElement("script");t.src="https://media.imi.chat/widget/js/imichatinit.js?t="+new Date().toISOString(),e.insertAdjacentElement("afterend",t),t.addEventListener("load",function(){console.log(new Date().toISOString(),"Livechat script loaded successfully!")}),t.addEventListener("error",function(){console.log(new Date().toISOString(),"Error loading Livechat script");i.o(e)})}catch(e){console.error(e)}},o:function(e){e.insertAdjacentHTML("afterend",'<iframe id="tls_al_frm" frameborder="0" style="overflow:hidden;height:208px;width:394px;position:fixed;display:block;right:48px;bottom:12px;z-index:99999;display:none;"></iframe>');var t=document.getElementById("tls_al_frm"),n=t.contentWindow,d=n.document;d.open();d.write("<!doctype html><html><head><meta charset='utf-8'><title>Untitled Document</title><style>body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#99a0b0;font-size:14px}.popover__content{background-color:#fbfbfe;padding:1.5rem;border-radius:5px;width:300px;box-shadow:0 2px 5px 0 rgba(0,0,0,0.26);position:relative}.popover__message{font-weight:600;color:#56627c;font-size:16px}.pull-left{float:left}.clearfix{clear:both}.hdr-txt{width:218px;margin-top:3px}.para-txt a{text-decoration:none;color:#005cde}.close-btn{position:absolute;right:15px;top:15px}.close-btn a{text-decoration:none;font-weight:400;color:#56627c;font-size:16px}</style></head><body><div class='popover__content'><div class='close-btn'><a href='#' onclick='closeTLSAlert()'>X</a></div><div class='popover__message'><div class='pull-left hdr-txt'>This browser version is not supported on LiveChat.</div></div><div class='clearfix'></div><p class='para-txt'>Please update your browser to the latest version and re-open the website to access the widget.</p></div><script>function closeTLSAlert(){window.parent.postMessage({key:'close_tls_alert',value:'close_tls_alert',action:'close_tls_alert'},'*');}<\/script></body></html>");d.close();t.style.display='block';window.addEventListener('message',function(e){'close_tls_alert'===e.data.action&&i.s()})},s:function(){var e=document.getElementById('tls_al_frm');e&&e.remove()}};i.t();</script>
+
+  <!-- Connect chat widget anchor -->
+  <div id="divicw" data-chat-anchor data-bind="795EFFBE-55B4-4DDF-A3B2-A659BCC9CEA1" data-org="" data-guid="af60ec7b-fe51-4389-a24d-1ee7cb106f16"></div>
+  <script>
+    var i={t:function(){try{var e=document.getElementById("divicw"),t=document.createElement("script");t.src="https://media.imi.chat/widget/js/imichatinit.js?t="+new Date().toISOString(),e.insertAdjacentElement("afterend",t),t.addEventListener("load",function(){console.log(new Date().toISOString(),"Livechat script loaded successfully!")}),t.addEventListener("error",function(){console.log(new Date().toISOString(),"Error loading Livechat script");i.o(e)})}catch(e){console.error(e)}},
+    o:function(e){e.insertAdjacentHTML("afterend",'<iframe id="tls_al_frm" frameborder="0" style="overflow:hidden;height:208px;width:394px;position:fixed;display:block;right:48px;bottom:12px;z-index:99999;display:none;"></iframe>');var t=document.getElementById("tls_al_frm"),n=t.contentWindow,d=n.document;d.open();d.write("<!doctype html><html><head><meta charset='utf-8'><title>Untitled Document</title><style>body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#99a0b0;font-size:14px}.popover__content{background-color:#fbfbfe;padding:1.5rem;border-radius:5px;width:300px;box-shadow:0 2px 5px 0 rgba(0,0,0,0.26);position:relative}.popover__message{font-weight:600;color:#56627c;font-size:16px}.pull-left{float:left}.clearfix{clear:both}.hdr-txt{width:218px;margin-top:3px}.para-txt a{text-decoration:none;color:#005cde}.close-btn{position:absolute;right:15px;top:15px}.close-btn a{text-decoration:none;font-weight:400;color:#56627c;font-size:16px}</style></head><body><div class='popover__content'><div class='close-btn'><a href='#' onclick='closeTLSAlert()'>X</a></div><div class='popover__message'><div class='pull-left hdr-txt'>This browser version is not supported on LiveChat.</div></div><div class='clearfix'></div><p class='para-txt'>Please update your browser to the latest version and re-open the website to access the widget.</p></div><script>function closeTLSAlert(){window.parent.postMessage({key:'close_tls_alert',value:'close_tls_alert',action:'close_tls_alert'},'*');}<\/script></body></html>");d.close();t.style.display='block';window.addEventListener('message',function(e){'close_tls_alert'===e.data.action&&i.s()})},
+    s:function(){var e=document.getElementById('tls_al_frm');e&&e.remove()}};i.t();
+  </script>
 </body>
 </html>
