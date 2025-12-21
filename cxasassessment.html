@@ -37,19 +37,25 @@
       overflow-x:hidden;
     }
 
-    /* Subtle animated grid */
+    /* NEW: Soft “particle field” overlay (no lines) */
     .grid{
       position:fixed; inset:0;
-      background-image:
-        linear-gradient(rgba(53,243,255,.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(53,243,255,.06) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: radial-gradient(circle at 50% 30%, rgba(0,0,0,1) 0%, rgba(0,0,0,.55) 50%, rgba(0,0,0,0) 85%);
       pointer-events:none;
-      animation: drift 18s linear infinite;
-      opacity:.85;
+      opacity:.35;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(53,243,255,.16), transparent 45%),
+        radial-gradient(circle at 85% 25%, rgba(181,107,255,.14), transparent 48%),
+        radial-gradient(circle at 55% 85%, rgba(60,255,143,.10), transparent 52%),
+        radial-gradient(rgba(231,238,255,.08) 1px, transparent 1px);
+      background-size: auto, auto, auto, 28px 28px;
+      mask-image: radial-gradient(circle at 50% 30%, rgba(0,0,0,1) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 88%);
+      filter: blur(.15px);
+      animation: floaty 16s ease-in-out infinite;
     }
-    @keyframes drift { from{transform:translateY(0)} to{transform:translateY(42px)} }
+    @keyframes floaty{
+      0%,100%{ transform: translateY(0) }
+      50%{ transform: translateY(18px) }
+    }
 
     header{
       position:sticky; top:0;
@@ -117,13 +123,8 @@
     .chatBeaconFloating{
       position:fixed;
       right: 18px;
-
-      /* IMPORTANT:
-         This places the beacon ABOVE the chat widget icon.
-         Adjust this value if your widget sits higher/lower. */
       bottom: 96px;
-
-      z-index: 99998; /* below some widgets that use 99999, but above page */
+      z-index: 99998;
       user-select:none;
     }
     .chatBeacon{
@@ -779,11 +780,7 @@
       notes: HOLDING_VIDCAST_URL
     };
 
-    // OPTIONAL: If your Connect chat widget exposes an open function, call it here.
-    // Otherwise, we scroll to the embed block.
     function openChatWidget(){
-      // Example stub:
-      // if (window.ConnectChat && typeof window.ConnectChat.open === "function") window.ConnectChat.open();
       document.getElementById("divicw")?.scrollIntoView({behavior:'smooth'});
     }
 
@@ -863,13 +860,7 @@
     /************** Copy questions for chat **************/
     const QUESTIONS = {
       documentInfo: [
-        "Customer Name",
-        "Project Name",
-        "Discovery Date",
-        "Partner",
-        "Prepared By",
-        "Lucid Diagram URL",
-        "SharePoint / Documentation URL"
+        "Customer Name","Project Name","Discovery Date","Partner","Prepared By","Lucid Diagram URL","SharePoint / Documentation URL"
       ],
       siteLocation: [
         "How many physical sites are included in scope?",
@@ -955,8 +946,7 @@
         "Known constraints or risks"
       ],
       notes: [
-        "Additional notes",
-        "Open items / TBDs"
+        "Additional notes","Open items / TBDs"
       ]
     };
 
@@ -1026,10 +1016,10 @@
     }
 
     document.getElementById("submitAll").addEventListener("click", submitAll);
-    document.getElementById("submitAll2").addEventListener("click", submitAll);
+    document.getElementById("submitAll2")?.addEventListener("click", submitAll);
 
     /************** Export JSON **************/
-    document.getElementById("exportJson").addEventListener("click", ()=>{
+    document.getElementById("exportJson")?.addEventListener("click", ()=>{
       const data = serialize();
       const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
       const a = document.createElement("a");
