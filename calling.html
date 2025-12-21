@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Webex Calling Discovery Questionnaire</title>
+  <meta name="color-scheme" content="dark light" />
+  <style>
+    :root{
+      --bg0:#070A12; --bg1:#0B1020;
+      --card:rgba(255,255,255,.06); --card2:rgba(255,255,255,.09);
+      --text:rgba(255,255,255,.92); --muted:rgba(255,255,255,.65);
+      --line:rgba(255,255,255,.12);
+      --a:#7c5cff; --b:#21d4fd; --g:#25d366; --r:#ff4d4f;
+      --shadow: 0 20px 70px rgba(0,0,0,.45);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg0:#f7f8ff; --bg1:#ffffff;
+        --card:rgba(20,24,40,.05); --card2:rgba(20,24,40,.07);
+        --text:rgba(10,12,22,.92); --muted:rgba(10,12,22,.65);
+        --line:rgba(10,12,22,.14);
+        --shadow: 0 20px 70px rgba(25,30,60,.16);
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:var(--sans); color:var(--text);
+      background:
+        radial-gradient(900px 520px at 16% 10%, color-mix(in oklab, var(--a) 35%, transparent), transparent 60%),
+        radial-gradient(820px 520px at 86% 12%, color-mix(in oklab, var(--b) 26%, transparent), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      min-height:100vh;
+    }
+    .wrap{max-width:1120px; margin:0 auto; padding:18px 18px 28px;}
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(0,0,0,.32), rgba(0,0,0,0));
+      border-bottom:1px solid var(--line);
+    }
+    .top{
+      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    }
+    .brand{display:flex; gap:12px; align-items:center;}
+    .logo{
+      width:40px; height:40px; border-radius:14px;
+      background:
+        radial-gradient(14px 14px at 30% 30%, rgba(255,255,255,.85), transparent 56%),
+        linear-gradient(135deg, var(--a), var(--b));
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 14px 40px rgba(124,92,255,.22);
+    }
+    h1{margin:0; font-size:16px; letter-spacing:.2px;}
+    .sub{margin-top:2px; font-size:12px; color:var(--muted);}
+    .bar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .pill{
+      display:flex; gap:8px; align-items:center;
+      padding:10px 12px; border-radius:999px;
+      border:1px solid var(--line); background:var(--card);
+      box-shadow: 0 12px 36px rgba(0,0,0,.10);
+      font-size:13px;
+    }
+    .pill input{
+      width:320px; max-width:52vw;
+      border:0; outline:none; background:transparent; color:var(--text);
+      font-size:13px;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(124,92,255,.96), rgba(33,212,253,.55));
+      color:#fff; font-weight:700;
+      padding:10px 14px; border-radius:999px;
+      cursor:pointer;
+      box-shadow: 0 16px 44px rgba(124,92,255,.22);
+      transition: transform .06s ease, filter .2s ease;
+      font-size:13px;
+    }
+    .btn:active{transform: translateY(1px) scale(.99)}
+    .btn.secondary{background:var(--card); color:var(--text); box-shadow:none;}
+    .grid{display:grid; grid-template-columns: 340px 1fr; gap:14px; align-items:start;}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} .pill input{width:220px} }
+    .card{
+      background:var(--card); border:1px solid var(--line);
+      border-radius:var(--radius); box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .card .hd strong{font-size:13px}
+    .card .bd{padding:14px}
+    .kpi{display:flex; justify-content:space-between; gap:10px; padding:8px 0; font-size:12px; color:var(--muted);}
+    .tag{
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(37,211,102,.25);
+      background: rgba(37,211,102,.12);
+      color:var(--text);
+    }
+    .tag.bad{
+      border-color: rgba(255,77,79,.25);
+      background: rgba(255,77,79,.10);
+    }
+    .mono{font-family:var(--mono); font-size:11px; opacity:.9;}
+    pre{
+      margin:10px 0 0; padding:10px 12px; border-radius:14px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid var(--line);
+      overflow:auto;
+      max-height: 240px;
+    }
+    .note{font-size:12px; color:var(--muted); line-height:1.4}
+    .toast{margin-top:10px; font-size:12px; color:var(--muted);}
+    .toast.ok{color: color-mix(in oklab, var(--g) 85%, var(--text));}
+    .toast.err{color: color-mix(in oklab, var(--r) 85%, var(--text));}
+
+    /* Accordion sections */
+    details.section{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      margin-bottom:14px;
+    }
+    details.section[open] summary{border-bottom:1px solid var(--line);}
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:14px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      background: linear-gradient(90deg, rgba(124,92,255,.10), rgba(33,212,253,.06));
+    }
+    summary::-webkit-details-marker{display:none}
+    .sum-left{display:flex; align-items:center; gap:10px;}
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: rgba(255,255,255,.22);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .dot.done{background: rgba(37,211,102,.65); border-color: rgba(37,211,102,.35);}
+    .dot.warn{background: rgba(255,77,79,.65); border-color: rgba(255,77,79,.35);}
+    .title{font-weight:700; font-size:14px;}
+    .meta{font-size:12px; color:var(--muted)}
+    .body{padding: 10px 16px 6px;}
+
+    /* Q/A rows */
+    .qa{
+      display:grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .qa:last-child{border-bottom:0}
+    @media (max-width: 760px){ .qa{grid-template-columns:1fr} }
+    .q{font-size:13px; line-height:1.35;}
+    .q .req{
+      margin-left:8px; font-size:11px; padding:3px 8px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.16); color:var(--muted);
+      background: rgba(255,255,255,.06);
+    }
+    .help{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35;}
+    input, select, textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:var(--card2);
+      color:var(--text);
+      outline:none;
+      font-size:13px;
+    }
+    textarea{min-height:84px; resize:vertical;}
+    .inline{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .chip{
+      padding:8px 10px; border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.08);
+      font-size:12px; color:var(--muted);
+    }
+
+    /* Modal (success / errors) */
+    .modalBack{
+      position:fixed; inset:0; display:none; place-items:center; z-index:100;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
+      padding:18px;
+    }
+    .modal{
+      width:min(720px, 96vw);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal .mh{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(37,211,102,.14), rgba(33,212,253,.08));
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .modal .mb{padding:14px 16px 16px;}
+    .x{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.10);
+      color:var(--text);
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .list{margin:0; padding-left:18px; color:var(--muted); font-size:12px; line-height:1.45;}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <div class="top">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Webex Calling Discovery Questionnaire</h1>
+            <div class="sub">Modern form + JSON payload + webhook submit</div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <label class="pill" title="POST destination (must allow CORS if submitting from browser)">
+            <span style="opacity:.85">Webhook</span>
+            <input id="webhook" type="url" placeholder="https://your-webhook.example/endpoint" />
+          </label>
+          <button class="btn secondary" id="saveBtn" type="button">Save Draft</button>
+          <button class="btn secondary" id="loadBtn" type="button">Load Draft</button>
+          <button class="btn" id="submitBtn" type="button">Submit</button>
+        </div>
+      </div>
+      <div id="status" class="toast"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <!-- LEFT: Control + Preview -->
+      <aside>
+        <div class="card">
+          <div class="hd">
+            <strong>Form Health</strong>
+            <span id="healthTag" class="tag">Draft</span>
+          </div>
+          <div class="bd">
+            <div class="kpi"><span>Completed required</span><span id="reqDone">0 / 0</span></div>
+            <div class="kpi"><span>Completed total</span><span id="allDone">0 / 0</span></div>
+
+            <div class="inline" style="margin:10px 0 6px;">
+              <span class="chip">Required fields are marked</span>
+              <span class="chip">Copy JSON any time</span>
+            </div>
+
+            <button class="btn secondary" id="copyBtn" type="button">Copy JSON</button>
+
+            <div class="note" style="margin-top:10px;">
+              Payload preview (truncated)
+            </div>
+            <pre class="mono" id="preview">{}</pre>
+
+            <div class="note" style="margin-top:10px;">
+              Browser submits require the webhook to allow <span class="mono">CORS</span>.
+              If not, submit from a server or use a proxy.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT: Questionnaire -->
+      <section>
+        <form id="form" autocomplete="on">
+          <!-- SECTION: Customer & Project -->
+          <details class="section" data-section="customer" open>
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="customer"></span>
+                <div>
+                  <div class="title">Customer & Project Information</div>
+                  <div class="meta">Basics, contacts, timeline</div>
+                </div>
+              </div>
+              <div class="meta" data-count="customer"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Customer Name <span class="req">Required</span></div>
+                <div><input name="customer.customerName" data-required="true" placeholder="Acme Corporation" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Project Name</div>
+                <div><input name="customer.projectName" placeholder="Webex Calling Migration" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Primary Technical Contact <span class="req">Required</span></div>
+                <div><input name="customer.primaryTechnicalContact" data-required="true" placeholder="Jane Doe" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Contact Email</div>
+                <div><input type="email" name="customer.contactEmail" placeholder="jane.doe@acme.com" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Contact Phone</div>
+                <div><input type="tel" name="customer.contactPhone" placeholder="+1 555 123 4567" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Target Go-Live Date <span class="req">Required</span></div>
+                <div><input type="date" name="customer.targetGoLiveDate" data-required="true" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Number of Phases / Go-Lives</div>
+                <div><input type="number" min="0" step="1" name="customer.numberOfPhases" placeholder="1" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Current Calling Platform</div>
+                <div><input name="customer.currentCallingPlatform" placeholder="CUCM / Avaya / RingCentral / Teams Phone / Other" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Reason for Transition</div>
+                <div><textarea name="customer.reasonForTransition" placeholder="Drivers (DR, features, cost, consolidation, etc.)"></textarea></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: Deployment -->
+          <details class="section" data-section="deployment">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="deployment"></span>
+                <div>
+                  <div class="title">Deployment Overview</div>
+                  <div class="meta">Scope, model, Control Hub</div>
+                </div>
+              </div>
+              <div class="meta" data-count="deployment"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Users in scope <span class="req">Required</span></div>
+                <div><input type="number" min="0" step="1" name="deployment.usersInScope" data-required="true" placeholder="250" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Locations / sites <span class="req">Required</span></div>
+                <div><input type="number" min="0" step="1" name="deployment.locationsCount" data-required="true" placeholder="5" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Deployment type <span class="req">Required</span></div>
+                <div>
+                  <select name="deployment.deploymentType" data-required="true">
+                    <option value="">Select…</option>
+                    <option>New</option><option>Migration</option><option>Hybrid</option>
+                  </select>
+                </div>
+              </div>
+              <div class="qa">
+                <div class="q">Webex Control Hub Org ID</div>
+                <div><input name="deployment.controlHubOrgId" placeholder="TBD if unknown" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Webex App used for calling?</div>
+                <div>
+                  <select name="deployment.webexAppCalling">
+                    <option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option>
+                  </select>
+                </div>
+              </div>
+              <div class="qa">
+                <div class="q">Coexistence with on-prem PBX required?</div>
+                <div>
+                  <select name="deployment.coexistenceRequired">
+                    <option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: Dial Plan & Features -->
+          <details class="section" data-section="features">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="features"></span>
+                <div>
+                  <div class="title">Dial Plan & Calling Features</div>
+                  <div class="meta">Extensions, AAs, HGs, recording</div>
+                </div>
+              </div>
+              <div class="meta" data-count="features"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Extension length</div>
+                <div><input name="dialPlan.extensionLength" placeholder="4-digit / 5-digit / mixed" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Inter-site dialing requirements</div>
+                <div><input name="dialPlan.interSiteDialing" placeholder="e.g., 4-digit dial between all sites" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">International dialing requirements</div>
+                <div><input name="dialPlan.internationalDialing" placeholder="Allowed / restricted / by role / TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Auto Attendants required?</div>
+                <div><select name="features.autoAttendants"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Hunt Groups required?</div>
+                <div><select name="features.huntGroups"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Forwarding / SNR requirements</div>
+                <div><input name="features.forwardingSNR" placeholder="Describe if any" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Call recording requirements</div>
+                <div><input name="features.callRecording" placeholder="Who/where/retention/compliance" /></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: Devices -->
+          <details class="section" data-section="devices">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="devices"></span>
+                <div>
+                  <div class="title">Endpoints & Devices</div>
+                  <div class="meta">MPP, Webex App, analog</div>
+                </div>
+              </div>
+              <div class="meta" data-count="devices"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Desk phone models (MPP)</div>
+                <div><input name="devices.mppModels" placeholder="8841, 8861, 9871, TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Physical phone quantity</div>
+                <div><input type="number" min="0" step="1" name="devices.physicalPhoneQty" placeholder="200" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Softphone usage</div>
+                <div><input name="devices.softphoneUsage" placeholder="Webex App for all / subset / TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Mobile client required?</div>
+                <div><select name="devices.mobileClient"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Workspaces / shared devices</div>
+                <div><input name="devices.workspaces" placeholder="Room Kits, lobby phones, huddle rooms" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Analog devices</div>
+                <div><textarea name="devices.analogDevices" placeholder="Type, qty, use-case, and location"></textarea></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: PSTN -->
+          <details class="section" data-section="pstn">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="pstn"></span>
+                <div>
+                  <div class="title">PSTN & Numbering</div>
+                  <div class="meta">Model, carriers, DIDs, porting</div>
+                </div>
+              </div>
+              <div class="meta" data-count="pstn"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">PSTN model <span class="req">Required</span></div>
+                <div>
+                  <select name="pstn.model" data-required="true">
+                    <option value="">Select…</option>
+                    <option value="Cisco Calling Plan">Cisco Calling Plan</option>
+                    <option value="Local Gateway">Local Gateway</option>
+                    <option value="Hybrid / Mix">Hybrid / Mix</option>
+                    <option value="TBD">TBD</option>
+                  </select>
+                </div>
+              </div>
+              <div class="qa">
+                <div class="q">Current carrier(s)</div>
+                <div><input name="pstn.currentCarriers" placeholder="AT&T, Verizon, Lumen…" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">DID count</div>
+                <div><input type="number" min="0" step="1" name="pstn.didCount" placeholder="300" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">DID porting required?</div>
+                <div><select name="pstn.didPortingRequired"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Target porting timeline</div>
+                <div><input name="pstn.portingTimeline" placeholder="March 2026 / phased / TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Toll-free numbers in scope</div>
+                <div><input name="pstn.tollFreeNumbers" placeholder="Qty and list if available" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Call forwarding during migration?</div>
+                <div><select name="pstn.callForwardingDuringMigration"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: LGW/CUBE -->
+          <details class="section" data-section="lgw">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="lgw"></span>
+                <div>
+                  <div class="title">Local Gateway / CUBE</div>
+                  <div class="meta">Type, HA, concurrency</div>
+                </div>
+              </div>
+              <div class="meta" data-count="lgw"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Local Gateway required?</div>
+                <div><select name="lgw.required"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">CUBE type</div>
+                <div><select name="lgw.cubeType"><option value="">Select…</option><option>Physical</option><option>Virtual</option><option>Both</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">CUBE model(s)</div>
+                <div><input name="lgw.cubeModels" placeholder="ISR/ASR/C8000V…" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">IOS-XE / firmware version</div>
+                <div><input name="lgw.cubeFirmware" placeholder="17.x / 16.x / TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Registration vs Certificate</div>
+                <div><select name="lgw.registrationMethod"><option value="">Select…</option><option>Registration</option><option>Certificate</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">High Availability required?</div>
+                <div><select name="lgw.haRequired"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Peak concurrent calls</div>
+                <div><input type="number" min="0" step="1" name="lgw.peakConcurrentCalls" placeholder="250" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">LGW deployed country</div>
+                <div><input name="lgw.country" placeholder="United States / Canada / UK / etc." /></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: Network -->
+          <details class="section" data-section="network">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="network"></span>
+                <div>
+                  <div class="title">Network & Connectivity</div>
+                  <div class="meta">ISP, firewall, QoS, media health</div>
+                </div>
+              </div>
+              <div class="meta" data-count="network"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Primary ISP per site</div>
+                <div><textarea name="network.primaryIspPerSite" placeholder="List ISP(s) per site; include secondary links"></textarea></div>
+              </div>
+              <div class="qa">
+                <div class="q">Internet bandwidth per site</div>
+                <div><textarea name="network.bandwidthPerSite" placeholder="HQ 1Gb DIA, Branch 200Mb, etc."></textarea></div>
+              </div>
+              <div class="qa">
+                <div class="q">WAN type</div>
+                <div><select name="network.wanType"><option value="">Select…</option><option>DIA</option><option>MPLS</option><option>SD-WAN</option><option>Hybrid</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Firewall vendor/model</div>
+                <div><input name="network.firewall" placeholder="Palo Alto / Fortinet / ASA / etc." /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Public IPs for voice</div>
+                <div><input name="network.publicIps" placeholder="CIDR block(s) or TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">QoS configured for voice?</div>
+                <div><select name="network.qosConfigured"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Latency/jitter/packet loss concerns</div>
+                <div><textarea name="network.mediaConcerns" placeholder="Any known performance issues or constraints"></textarea></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: E911 -->
+          <details class="section" data-section="e911">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="e911"></span>
+                <div>
+                  <div class="title">E911 / Emergency Services</div>
+                  <div class="meta">RedSky, buildings, nomadic users</div>
+                </div>
+              </div>
+              <div class="meta" data-count="e911"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">E911 required?</div>
+                <div><select name="e911.required"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">RedSky Horizon planned?</div>
+                <div><select name="e911.redsky"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Buildings/locations count</div>
+                <div><input type="number" min="0" step="1" name="e911.buildingsCount" placeholder="10" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Nomadic / remote users in scope</div>
+                <div><select name="e911.nomadicUsers"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: Integrations -->
+          <details class="section" data-section="integrations">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="integrations"></span>
+                <div>
+                  <div class="title">Integrations & Dependencies</div>
+                  <div class="meta">Teams, CRM, paging, WxCC</div>
+                </div>
+              </div>
+              <div class="meta" data-count="integrations"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Microsoft Teams integration</div>
+                <div><select name="integrations.microsoftTeams"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">CRM integration</div>
+                <div><input name="integrations.crm" placeholder="Salesforce / Dynamics / ServiceNow / None / TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Paging / Informacast</div>
+                <div><select name="integrations.pagingInformacast"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">WxCC planned?</div>
+                <div><select name="integrations.wxccPlanned"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Third-party SIP integrations</div>
+                <div><textarea name="integrations.thirdPartySip" placeholder="Door systems, paging, SIP apps, trunks, etc."></textarea></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- SECTION: Capacity / Migration / Risks (compact) -->
+          <details class="section" data-section="final">
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="final"></span>
+                <div>
+                  <div class="title">Capacity, Migration, Risks</div>
+                  <div class="meta">Sizing + cutover plan + constraints</div>
+                </div>
+              </div>
+              <div class="meta" data-count="final"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Peak concurrent calls (overall)</div>
+                <div><input type="number" min="0" step="1" name="capacity.peakConcurrentCalls" placeholder="80" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Expected growth (12–24 months)</div>
+                <div><input name="capacity.expectedGrowth" placeholder="+15% / +50 users / TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Migration approach</div>
+                <div><select name="migration.approach"><option value="">Select…</option><option>Phased rollout</option><option>Single cutover</option><option>Hybrid (coexistence)</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Blackout periods</div>
+                <div><input name="migration.blackoutPeriods" placeholder="Month-end, weekends only, none" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Training required</div>
+                <div><select name="migration.trainingRequired"><option value="">Select…</option><option>Admin only</option><option>Admin + End Users</option><option>End Users only</option><option>TBD</option></select></div>
+              </div>
+              <div class="qa">
+                <div class="q">Technical constraints / risks</div>
+                <div><textarea name="risks.technicalConstraints" placeholder="Firewall/NAT constraints, analog limitations, etc."></textarea></div>
+              </div>
+              <div class="qa">
+                <div class="q">Carrier contract / porting constraints</div>
+                <div><textarea name="risks.carrierConstraints" placeholder="Contract end date, TFN ownership, porting restrictions, etc."></textarea></div>
+              </div>
+              <div class="qa">
+                <div class="q">Compliance requirements</div>
+                <div><input name="risks.compliance" placeholder="HIPAA / PCI / SOX / GDPR / none / TBD" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Additional notes</div>
+                <div><textarea name="risks.additionalNotes" placeholder="Open comments"></textarea></div>
+              </div>
+            </div>
+          </details>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true" aria-label="Submission status">
+    <div class="modal">
+      <div class="mh">
+        <strong id="modalTitle">Status</strong>
+        <button class="x" id="modalClose" type="button">Close</button>
+      </div>
+      <div class="mb">
+        <div id="modalMsg" class="note"></div>
+        <div id="modalExtra" style="margin-top:10px; display:none;">
+          <div class="note">Missing required fields:</div>
+          <ul class="list" id="missingList"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (s, r=document)=>r.querySelector(s);
+    const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+
+    const STORAGE_DRAFT = "wxc_draft_v2";
+    const STORAGE_WEBHOOK = "wxc_webhook_v2";
+
+    function toast(msg, kind=""){
+      const el = $("#status");
+      el.className = "toast " + (kind==="ok" ? "ok" : kind==="err" ? "err" : "");
+      el.textContent = msg || "";
+    }
+
+    function openModal(title, msg, missing=[]){
+      $("#modalTitle").textContent = title;
+      $("#modalMsg").textContent = msg;
+      const extra = $("#modalExtra");
+      const list = $("#missingList");
+      list.innerHTML = "";
+      if(missing.length){
+        missing.forEach(m => {
+          const li = document.createElement("li");
+          li.textContent = m;
+          list.appendChild(li);
+        });
+        extra.style.display = "block";
+      } else {
+        extra.style.display = "none";
+      }
+      $("#modalBack").style.display = "grid";
+    }
+    function closeModal(){ $("#modalBack").style.display="none"; }
+
+    function setDeep(obj, path, value){
+      const parts = path.split(".");
+      let cur = obj;
+      for(let i=0;i<parts.length-1;i++){
+        const p = parts[i];
+        if(!cur[p] || typeof cur[p] !== "object") cur[p] = {};
+        cur = cur[p];
+      }
+      cur[parts[parts.length-1]] = value;
+    }
+
+    function buildPayload(){
+      const payload = {
+        meta: {
+          form: "webex_calling_discovery_questionnaire",
+          version: "2.0",
+          submittedAt: new Date().toISOString(),
+          source: "web_form",
+          userAgent: navigator.userAgent
+        },
+        data: {}
+      };
+
+      const fields = $$("#form input[name], #form select[name], #form textarea[name]");
+      fields.forEach(el=>{
+        let v = el.value;
+        if(el.type === "number") v = v === "" ? "" : Number(v);
+        setDeep(payload.data, el.name, v);
+      });
+
+      return payload;
+    }
+
+    function requiredMissing(){
+      const req = $$("#form [data-required='true']");
+      const missing = [];
+      req.forEach(el=>{
+        const v = (el.value ?? "").toString().trim();
+        if(!v) missing.push(el.name);
+      });
+      return missing;
+    }
+
+    function sectionCounts(){
+      // count completion per section by prefix of name (first token)
+      const fields = $$("#form input[name], #form select[name], #form textarea[name]");
+      const bySection = new Map();
+      fields.forEach(f=>{
+        const root = f.name.split(".")[0] || "other";
+        const v = (f.value ?? "").toString().trim();
+        if(!bySection.has(root)) bySection.set(root, {done:0,total:0});
+        const obj = bySection.get(root);
+        obj.total += 1;
+        if(v) obj.done += 1;
+      });
+      return bySection;
+    }
+
+    function updateUI(){
+      const fields = $$("#form input[name], #form select[name], #form textarea[name]");
+      const totalAll = fields.length;
+      const doneAll = fields.filter(f => ((f.value ?? "").toString().trim().length > 0)).length;
+
+      const reqFields = $$("#form [data-required='true']");
+      const reqTotal = reqFields.length;
+      const reqDone = reqFields.filter(f => ((f.value ?? "").toString().trim().length > 0)).length;
+
+      $("#allDone").textContent = `${doneAll} / ${totalAll}`;
+      $("#reqDone").textContent = `${reqDone} / ${reqTotal}`;
+
+      const missing = requiredMissing();
+      const health = $("#healthTag");
+      if(missing.length){
+        health.textContent = "Needs Required";
+        health.className = "tag bad";
+      } else {
+        health.textContent = "Ready";
+        health.className = "tag";
+      }
+
+      // section dots + counters
+      const sc = sectionCounts();
+
+      // Map UI sections to root keys they contain
+      const sectionMap = {
+        customer:["customer"],
+        deployment:["deployment"],
+        features:["dialPlan","features"],
+        devices:["devices"],
+        pstn:["pstn"],
+        lgw:["lgw"],
+        network:["network"],
+        e911:["e911"],
+        integrations:["integrations"],
+        final:["capacity","migration","risks"]
+      };
+
+      Object.entries(sectionMap).forEach(([uiKey, roots])=>{
+        let done=0,total=0;
+        roots.forEach(r=>{
+          const x = sc.get(r);
+          if(x){ done += x.done; total += x.total; }
+        });
+        const dot = $(`[data-dot="${uiKey}"]`);
+        const cnt = $(`[data-count="${uiKey}"]`);
+        if(cnt) cnt.textContent = total ? `${done}/${total}` : "";
+        if(dot){
+          dot.classList.remove("done","warn");
+          if(total && done===total) dot.classList.add("done");
+          else if(total && done>0) dot.classList.add("warn");
+        }
+      });
+
+      // preview
+      const json = JSON.stringify(buildPayload(), null, 2);
+      $("#preview").textContent = json.slice(0, 4096) + (json.length > 4096 ? "\n…(truncated)" : "");
+    }
+
+    function saveDraft(){
+      const payload = buildPayload();
+      localStorage.setItem(STORAGE_DRAFT, JSON.stringify(payload));
+      localStorage.setItem(STORAGE_WEBHOOK, $("#webhook").value.trim());
+      toast("Draft saved in this browser.", "ok");
+      updateUI();
+    }
+
+    function loadDraft(){
+      const raw = localStorage.getItem(STORAGE_DRAFT);
+      if(!raw){ toast("No draft found in this browser.", "err"); return; }
+      const saved = JSON.parse(raw);
+      $("#webhook").value = localStorage.getItem(STORAGE_WEBHOOK) || "";
+
+      const fields = $$("#form input[name], #form select[name], #form textarea[name]");
+      fields.forEach(el=>{
+        const parts = el.name.split(".");
+        let cur = saved.data;
+        for(const p of parts){ if(cur==null) break; cur = cur[p]; }
+        if(cur === undefined || cur === null) return;
+        el.value = (typeof cur === "number") ? String(cur) : String(cur);
+      });
+
+      toast("Draft loaded.", "ok");
+      updateUI();
+    }
+
+    async function copyJson(){
+      const json = JSON.stringify(buildPayload(), null, 2);
+      try{
+        await navigator.clipboard.writeText(json);
+        toast("JSON copied to clipboard.", "ok");
+      }catch{
+        toast("Copy failed. Select JSON from preview and copy manually.", "err");
+      }
+    }
+
+    function validateWebhook(url){
+      if(!url) return "Webhook URL is empty.";
+      if(!/^https?:\/\//i.test(url)) return "Webhook URL must start with http:// or https://";
+      return "";
+    }
+
+    async function submit(){
+      const url = $("#webhook").value.trim();
+      const wErr = validateWebhook(url);
+      if(wErr){
+        openModal("Cannot Submit", wErr, []);
+        toast(wErr, "err");
+        return;
+      }
+
+      const missing = requiredMissing();
+      if(missing.length){
+        openModal(
+          "Missing Required Fields",
+          "Please complete the required fields before submitting.",
+          missing
+        );
+        toast("Complete required fields before submitting.", "err");
+        return;
+      }
+
+      const payload = buildPayload();
+
+      toast("Submitting…");
+      try{
+        const res = await fetch(url, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        });
+        if(!res.ok){
+          const text = await res.text().catch(()=> "");
+          throw new Error(`HTTP ${res.status} ${res.statusText}${text ? " — " + text.slice(0,400) : ""}`);
+        }
+
+        openModal("Submitted", "Submission succeeded. Your webhook returned HTTP " + res.status + ".", []);
+        toast("Submitted successfully.", "ok");
+      }catch(e){
+        openModal("Submit Failed", e.message || String(e), []);
+        toast("Submit failed.", "err");
+      }finally{
+        updateUI();
+      }
+    }
+
+    // init
+    $("#modalClose").addEventListener("click", closeModal);
+    $("#modalBack").addEventListener("click", (e)=>{ if(e.target.id==="modalBack") closeModal(); });
+
+    $("#saveBtn").addEventListener("click", saveDraft);
+    $("#loadBtn").addEventListener("click", loadDraft);
+    $("#copyBtn").addEventListener("click", copyJson);
+    $("#submitBtn").addEventListener("click", submit);
+
+    $("#webhook").value = localStorage.getItem(STORAGE_WEBHOOK) || "";
+    $$("#form input, #form select, #form textarea").forEach(el=>{
+      el.addEventListener("input", updateUI);
+      el.addEventListener("change", updateUI);
+    });
+
+    updateUI();
+    toast("Ready. Add webhook URL, fill answers, Submit.");
+  </script>
+</body>
+</html>
