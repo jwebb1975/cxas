@@ -37,12 +37,8 @@
     .top{
       display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;
     }
-    .title{
-      font-weight:900; letter-spacing:.3px;
-    }
-    .meta{
-      color:var(--muted); font-family:var(--mono); font-size:12px;
-    }
+    .title{ font-weight:900; letter-spacing:.3px; }
+    .meta{ color:var(--muted); font-family:var(--mono); font-size:12px; }
     .btn{
       cursor:pointer;
       border:1px solid rgba(53,243,255,.35);
@@ -55,7 +51,6 @@
     }
     .btn:hover{ box-shadow: 0 0 0 3px rgba(53,243,255,.12); }
 
-    /* Main stage */
     .stage{
       max-width:1200px;
       margin: 16px auto 28px;
@@ -76,17 +71,14 @@
       user-select:none;
       -webkit-user-drag:none;
     }
-
-    /* SVG overlay is absolute on top of the image */
     svg.overlay{
       position:absolute;
       inset:0;
       width:100%;
       height:100%;
-      pointer-events:none; /* overlay is display-only */
+      pointer-events:none;
     }
 
-    /* Note styling inside SVG (via <foreignObject> HTML) */
     .note{
       background: var(--note);
       border: 2px solid var(--noteBorder);
@@ -108,9 +100,7 @@
       line-height:1.25;
       margin: 2px 0;
     }
-    .note .k{
-      font-weight: 800;
-    }
+    .note .k{ font-weight: 800; }
     .note .v{
       font-family: var(--mono);
       font-size: 12px;
@@ -118,6 +108,7 @@
       padding: 1px 6px;
       border-radius: 999px;
       display:inline-block;
+      word-break: break-word;
     }
 
     .statusBar{
@@ -137,6 +128,22 @@
       padding: 8px 10px;
       border-radius: 999px;
     }
+    .pill input{
+      width: 220px;
+      margin-left:8px;
+      padding:6px 8px;
+      border-radius: 10px;
+      border:1px solid rgba(53,243,255,.20);
+      background: rgba(7,10,18,.35);
+      color:#E7EEFF;
+      font-family: var(--mono);
+      font-size:12px;
+      outline:none;
+    }
+    .pill input:focus{ box-shadow: 0 0 0 3px rgba(53,243,255,.12); border-color: rgba(53,243,255,.35); }
+    .small{ font-size:11px; opacity:.9; }
+    a { color: rgba(53,243,255,.95); text-decoration: none; }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 
@@ -145,7 +152,7 @@
   <div class="wrap">
     <div class="top">
       <div>
-        <div class="title">Network Topology Map (Auto-Populated)</div>
+        <div class="title">Network Topology Map (Template + Customer Overlay)</div>
         <div class="meta" id="meta">Loading…</div>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -157,11 +164,7 @@
 
 <main class="stage">
   <div class="frame" id="frame">
-    <!-- Background diagram image -->
     <img class="diagram" id="diagram" alt="Topology Diagram" src="" />
-
-    <!-- SVG overlay: viewBox must match the “design coordinate system”
-         We’ll use the image’s natural width/height once loaded. -->
     <svg class="overlay" id="overlay" preserveAspectRatio="none"></svg>
   </div>
 
@@ -169,29 +172,67 @@
     <div class="pill">Data source: <span id="source">MockAPI</span></div>
     <div class="pill">Record: <span id="recordId">—</span></div>
     <div class="pill">Updated: <span id="updatedAt">—</span></div>
+
+    <!-- NEW: pick a specific customer/project by query string or input -->
+    <div class="pill">
+      Customer (optional)
+      <input id="customerFilter" placeholder="e.g., Equity Bank" />
+    </div>
+    <div class="pill small">
+      Tip: You can also use <span class="v">?customer=Equity%20Bank</span>
+    </div>
   </div>
 </main>
 
 <script>
   /************** CONFIG **************/
-  const MOCKAPI_BASE_URL = "https://659f21365023b02bfe894b27.mockapi.io/cx/"; // <-- change
-  const RESOURCE = "Topology"; // <-- your MockAPI resource
-  const DIAGRAM_IMAGE_URL = "Equity Bank- On Prem_Cloud Hybrid setup  - Calling Normalization - Hybrid Design.png"; // <-- change
+  // Your MockAPI endpoint (resource already included)
+  const MOCKAPI_COLLECTION_URL = "https://659f21365023b02bfe894b27.mockapi.io/cx/Topology";
 
-  // Which record should render?
-  // Option A: latest record by updatedAt (fallback: last item)
-  async function fetchLatestRecord() {
-    const url = `${MOCKAPI_BASE_URL}/${RESOURCE}?sortBy=updatedAt&order=desc&limit=1`;
-    const res = await fetch(url);
+  // Your GitHub repo images folder (raw content)
+  // Put files in: cxas/images/
+  const GITHUB_IMAGES_BASE =
+    "https://raw.githubusercontent.com/jwebb1975/cxas/main/images/";
+
+  // Template image name stored in /images
+  const TEMPLATE_IMAGE = "topology.png";
+
+  // If customer-specific image doesn't exist, we fall back to TEMPLATE_IMAGE
+  function customerToImageName(customerName) {
+    if (!customerName) return TEMPLATE_IMAGE;
+
+    // slugify
+    const slug = String(customerName)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+    return `${slug}-topology.png`;
+  }
+
+  // Query string helper
+  function qs(name) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(name);
+  }
+
+  // Fetch records, optionally filter by customerName
+  async function fetchRecord(customerName) {
+    // MockAPI supports typical query params but filtering can vary.
+    // Robust approach: fetch a reasonable set, then filter client-side.
+    const res = await fetch(`${MOCKAPI_COLLECTION_URL}?sortBy=updatedAt&order=desc`);
     if (!res.ok) throw new Error(`MockAPI error ${res.status}`);
-    const arr = await res.json();
-    if (Array.isArray(arr) && arr.length) return arr[0];
+    const all = await res.json();
 
-    // fallback (if updatedAt not in your data)
-    const res2 = await fetch(`${MOCKAPI_BASE_URL}/${RESOURCE}`);
-    if (!res2.ok) throw new Error(`MockAPI error ${res2.status}`);
-    const all = await res2.json();
-    return all[all.length - 1];
+    if (!Array.isArray(all) || !all.length) throw new Error("No records found in MockAPI.");
+
+    if (!customerName) return all[0];
+
+    const lower = customerName.toLowerCase().trim();
+    const match = all.find(r => String(r.customerName || "").toLowerCase().trim() === lower);
+
+    // If exact match not found, fallback to latest
+    return match || all[0];
   }
 
   /************** SVG helpers **************/
@@ -199,7 +240,6 @@
     while (svg.firstChild) svg.removeChild(svg.firstChild);
   }
 
-  // Create a sticky-note box using <foreignObject> so we can style with HTML/CSS
   function addNote(svg, x, y, w, h, innerHtml) {
     const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
     fo.setAttribute("x", x);
@@ -216,7 +256,6 @@
     svg.appendChild(fo);
   }
 
-  // Safely read nested values
   function get(obj, path, fallback="Not Provided") {
     try {
       return path.split(".").reduce((o,k)=> (o && o[k] !== undefined ? o[k] : undefined), obj) ?? fallback;
@@ -230,68 +269,84 @@
     const meta = document.getElementById("meta");
     meta.textContent = "Loading from MockAPI…";
 
-    const record = await fetchLatestRecord();
+    const customerFromUrl = qs("customer");
+    const customerFromInput = document.getElementById("customerFilter").value.trim();
+    const customerName = customerFromInput || customerFromUrl || "";
 
+    const record = await fetchRecord(customerName);
+
+    // Display status
     document.getElementById("recordId").textContent = record?.id ?? "—";
     document.getElementById("updatedAt").textContent = record?.updatedAt ?? "—";
-    meta.textContent = `Rendering fields for record id=${record?.id ?? "?"}`;
 
+    const effectiveCustomer = record?.customerName || customerName || "Latest record";
+    meta.innerHTML = `Rendering: <b>${escapeHtml(effectiveCustomer)}</b> &nbsp;·&nbsp; <span class="small">Image auto-selects from /images (falls back to template)</span>`;
+
+    // Choose image file: customer-specific copy or template
+    const imageFile = customerToImageName(record?.customerName || customerName);
     const diagram = document.getElementById("diagram");
-    diagram.src = DIAGRAM_IMAGE_URL;
 
-    // Wait for image to know natural size => set overlay viewBox
+    // Try customer image first
+    diagram.src = GITHUB_IMAGES_BASE + imageFile;
+
+    // If not found, fallback to template
+    diagram.onerror = () => {
+      diagram.onerror = null;
+      diagram.src = GITHUB_IMAGES_BASE + TEMPLATE_IMAGE;
+    };
+
+    // Wait for image to load to get natural dimensions
     await new Promise((resolve, reject) => {
       if (diagram.complete && diagram.naturalWidth) return resolve();
       diagram.onload = resolve;
-      diagram.onerror = () => reject(new Error("Diagram image failed to load"));
+      diagram.onerror = () => reject(new Error("Diagram image failed to load (template missing?)."));
     });
 
     const svg = document.getElementById("overlay");
     svg.setAttribute("viewBox", `0 0 ${diagram.naturalWidth} ${diagram.naturalHeight}`);
     clearOverlay(svg);
 
-    /**
-     * IMPORTANT:
-     * The x/y/w/h below are tuned to your diagram layout.
-     * If you swap images or crop, you’ll adjust these coordinates.
-     */
-
-    // Top-left: Calling Type
+    // === NOTES (same boxes as before) ===
     addNote(svg, 30, 25, 300, 115, `
       <h3>Calling Type</h3>
-      <div class="line"><span class="k">CCP / CCP / LGW:</span> <span class="v">${get(record,"callingType")}</span></div>
-      <div class="line"><span class="k">Porting:</span> <span class="v">${get(record,"porting")}</span></div>
+      <div class="line"><span class="k">CCP / CCP / LGW:</span> <span class="v">${escapeHtml(get(record,"callingType"))}</span></div>
+      <div class="line"><span class="k">Porting:</span> <span class="v">${escapeHtml(get(record,"porting"))}</span></div>
     `);
 
-    // Top-center: Project Scope
     addNote(svg, 600, 20, 460, 170, `
       <h3>Project Scope</h3>
-      <div class="line"><span class="k">CUBE:</span> <span class="v">${get(record,"projectScope.cube")}</span></div>
-      <div class="line"><span class="k">IT Vendor:</span> <span class="v">${get(record,"projectScope.itVendor")}</span></div>
-      <div class="line"><span class="k">Firewall:</span> <span class="v">${get(record,"projectScope.firewallModel")}</span></div>
+      <div class="line"><span class="k">CUBE:</span> <span class="v">${escapeHtml(get(record,"projectScope.cube"))}</span></div>
+      <div class="line"><span class="k">IT Vendor:</span> <span class="v">${escapeHtml(get(record,"projectScope.itVendor"))}</span></div>
+      <div class="line"><span class="k">Firewall:</span> <span class="v">${escapeHtml(get(record,"projectScope.firewallModel"))}</span></div>
     `);
 
-    // Top-right: Transport Network
     addNote(svg, 1260, 25, 360, 210, `
       <h3>Transport Network</h3>
-      <div class="line"><span class="k">Provider Name:</span> <span class="v">${get(record,"transportNetwork.providerName")}</span></div>
-      <div class="line"><span class="k">SIP CCS:</span> <span class="v">${get(record,"transportNetwork.sipCcs")}</span></div>
-      <div class="line"><span class="k">PRI Qty:</span> <span class="v">${get(record,"transportNetwork.priQty")}</span></div>
-      <div class="line"><span class="k">DID Qty:</span> <span class="v">${get(record,"transportNetwork.didQty")}</span></div>
+      <div class="line"><span class="k">Provider Name:</span> <span class="v">${escapeHtml(get(record,"transportNetwork.providerName"))}</span></div>
+      <div class="line"><span class="k">SIP CCS:</span> <span class="v">${escapeHtml(get(record,"transportNetwork.sipCcs"))}</span></div>
+      <div class="line"><span class="k">PRI Qty:</span> <span class="v">${escapeHtml(get(record,"transportNetwork.priQty"))}</span></div>
+      <div class="line"><span class="k">DID Qty:</span> <span class="v">${escapeHtml(get(record,"transportNetwork.didQty"))}</span></div>
     `);
 
-    // Bottom-left: Contact Center Integrations
     addNote(svg, 40, 880, 520, 250, `
       <h3>Contact Center Integrations</h3>
-      <div class="line"><span class="k">CRM:</span> <span class="v">${get(record,"ccIntegrations.crm")}</span></div>
-      <div class="line"><span class="k">REST API:</span> <span class="v">${get(record,"ccIntegrations.restApi")}</span></div>
-      <div class="line"><span class="k">TTS:</span> <span class="v">${get(record,"ccIntegrations.tts")}</span></div>
-      <div class="line"><span class="k">WFO:</span> <span class="v">${get(record,"ccIntegrations.wfo")}</span></div>
-      <div class="line"><span class="k">Call Recording:</span> <span class="v">${get(record,"ccIntegrations.callRecording")}</span></div>
-      <div class="line"><span class="k">Reporting/Dashboards:</span> <span class="v">${get(record,"ccIntegrations.reportingDashboards")}</span></div>
+      <div class="line"><span class="k">CRM:</span> <span class="v">${escapeHtml(get(record,"ccIntegrations.crm"))}</span></div>
+      <div class="line"><span class="k">REST API:</span> <span class="v">${escapeHtml(get(record,"ccIntegrations.restApi"))}</span></div>
+      <div class="line"><span class="k">TTS:</span> <span class="v">${escapeHtml(get(record,"ccIntegrations.tts"))}</span></div>
+      <div class="line"><span class="k">WFO:</span> <span class="v">${escapeHtml(get(record,"ccIntegrations.wfo"))}</span></div>
+      <div class="line"><span class="k">Call Recording:</span> <span class="v">${escapeHtml(get(record,"ccIntegrations.callRecording"))}</span></div>
+      <div class="line"><span class="k">Reporting/Dashboards:</span> <span class="v">${escapeHtml(get(record,"ccIntegrations.reportingDashboards"))}</span></div>
     `);
   }
 
+  // Basic HTML escape (prevents breaking the overlay if values contain < > etc.)
+  function escapeHtml(str){
+    return String(str ?? "").replace(/[&<>"']/g, (m)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  // UI: refresh button
   document.getElementById("refreshBtn").addEventListener("click", ()=>{
     render().catch(err=>{
       document.getElementById("meta").textContent = `Error: ${err.message}`;
@@ -299,7 +354,22 @@
     });
   });
 
-  // initial
+  // UI: re-render when customer filter changes (debounced)
+  let t=null;
+  document.getElementById("customerFilter").addEventListener("input", ()=>{
+    clearTimeout(t);
+    t = setTimeout(()=> {
+      render().catch(err=>{
+        document.getElementById("meta").textContent = `Error: ${err.message}`;
+        console.error(err);
+      });
+    }, 400);
+  });
+
+  // initial: set input from query string if provided
+  const c = qs("customer");
+  if (c) document.getElementById("customerFilter").value = c;
+
   render().catch(err=>{
     document.getElementById("meta").textContent = `Error: ${err.message}`;
     console.error(err);
