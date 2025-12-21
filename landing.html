@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <title>DEMO Landing Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     body {
       margin: 0;
-      padding: 20px;
+      padding: 20px 20px 140px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       background: #efefef;
       display: flex;
@@ -15,12 +16,14 @@
       justify-content: center;
       gap: 20px;
     }
+
+    /* App icons */
     .icon {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(to bottom, #fff, #ddd);
-      border-radius: 20px;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(to bottom, #ffffff, #e0e0e0);
+      border-radius: 22px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .15);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -31,216 +34,224 @@
       padding: 8px;
       transition: transform .1s ease-in-out;
     }
-    .icon:active {
-      transform: scale(.95);
-    }
+    .icon:hover { transform: translateY(-2px); }
+    .icon:active { transform: scale(.95); }
+
     .icon img {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 5px;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 6px;
     }
+
     .label {
-      line-height: 1.1;
       text-align: center;
+      line-height: 1.1;
     }
+
+    /* Bottom dock */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 42px;
       background: #1e1e1f;
       color: #fff;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      box-shadow: 0 -2px 8px rgba(0, 0, 0, .25);
+      padding: 10px 14px;
+      font-size: 13px;
+      border-top-left-radius: 14px;
+      border-top-right-radius: 14px;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, .35);
       transform: translateY(110%);
       opacity: 0;
       transition: all .4s ease;
+      z-index: 999;
     }
     .bottom-nav.show {
       transform: translateY(0);
       opacity: 1;
     }
-    .bottom-nav .dot {
-      font-size: 16px;
-      line-height: 0;
+
+    .dock-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .dot {
       color: #6ea0ff;
+      margin: 0 8px;
+    }
+
+    /* Analytics panels */
+    .analytics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .panel {
+      background: #2b2b2d;
+      border-radius: 10px;
+      padding: 10px;
+      max-height: 160px;
+      overflow: auto;
+      font-size: 12px;
+    }
+
+    .panel h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      color: #9ecbff;
+      font-weight: 600;
+    }
+
+    canvas {
+      width: 100%;
+      height: 120px;
+      background: #111;
+      border-radius: 8px;
+    }
+
+    .ip-entry {
+      font-family: monospace;
+      color: #d4d4d4;
+      margin-bottom: 4px;
     }
   </style>
 </head>
+
 <body>
 
-<!-- Login Page -->
-  <a class="icon" href="index.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/990/990960.png" alt="Login">
-    <span class="label">Login Page</span>
-  </a>
+<!-- Icons (topic-specific) -->
+<a class="icon" href="index.html" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png">
+  <span class="label">Login</span>
+</a>
 
-<!-- POC -->
-  <a class="icon" href="pocgoals.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" alt="POC">
-    <span class="label">POC</span>
-  </a>
+<a class="icon" href="networkassessment.html" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/3212/3212608.png">
+  <span class="label">Network<br>Assessment</span>
+</a>
 
-<!-- Network Assessment -->
-  <a class="icon" href="networkassessment.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" alt="Network">
-    <span class="label">Network Assessment</span>
-  </a>
+<a class="icon" href="topology.html" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/1011/1011886.png">
+  <span class="label">Topology</span>
+</a>
 
-<!-- Original Demo Page -->
-  <a class="icon" href="main6.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/616/616575.png" alt="Demo">
-    <span class="label">Main Demo</span>
-  </a>
-  
-<!-- Retail Page -->
-  <a class="icon" href="retail.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/616/616575.png" alt="Demo">
-    <span class="label">Retail Demo</span>
-  </a>
-  <!-- Healthcare Page -->
-  <a class="icon" href="healthcare.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/616/616575.png" alt="Demo">
-    <span class="label">Healthcare Demo</span>
-  </a>
-  <!-- Banking Page -->
-  <a class="icon" href="banking.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/616/616575.png" alt="Demo">
-    <span class="label">Banking Demo</span>
-  </a>
-  
-<!-- Master Control -->
-  <a class="icon" href="https://cxadvancedsolutions.my.salesforce-sites.com/scheduler" target="_blank">
-    <img src="https://static.vecteezy.com/system/resources/previews/008/441/961/non_2x/gear-icon-template-flat-design-illustration-eps-10-free-vector.jpg" alt="Scheduler">
-    <span class="label">Master Control</span>
-  </a>
+<a class="icon" href="main6.html" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/2620/2620555.png">
+  <span class="label">Main Demo</span>
+</a>
 
-<!-- Send Email -->
-  <a class="icon" href="sendEmail.html" target="_blank">
-    <img src="https://t4.ftcdn.net/jpg/05/12/30/57/360_F_512305793_6L82S36GfQsGU7Fb8APlNpeogWNzA5Ip.jpg" alt="Email">
-    <span class="label">Send Email</span>
-  </a>
-  
-<!-- Send SMS -->
-  <a class="icon" href="sendSMS.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/88/88144.png" alt="SMS">
-    <span class="label">Send SMS</span>
-  </a>
-  
-<!-- Send automobile update -->
-  <a class="icon" href="automobile.html" target="_blank">
-    <img src="https://static.vecteezy.com/system/resources/previews/014/487/696/non_2x/car-pictogram-minimal-line-icon-transportation-illustration-vector.jpg" alt="automobile">
-    <span class="label">Automobile Update</span>
-  </a>
+<a class="icon" href="demohub.html" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/2917/2917990.png">
+  <span class="label">Demo Hub</span>
+</a>
 
-<!-- Cisco Wiki -->
-  <a class="icon" href="https://cxas.atlassian.net/wiki/x/-oCvAg" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Tango_style_Wikipedia_Icon.svg/1024px-Tango_style_Wikipedia_Icon.svg.png" alt="Wiki">
-    <span class="label">CXAS Wiki</span>
-  </a>
+<a class="icon" href="https://www.cxsol.com/demo/aibootcamp3.html" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/5776/5776795.png">
+  <span class="label">AI Bootcamp</span>
+</a>
 
-<!-- Graphql -->
-  <a class="icon" href="https://www.cxsol.com/demo/graphql9.html" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/1024px-GraphQL_Logo.svg.png" alt="GraphQL">
-    <span class="label">GraphQL</span>
-  </a>
+<a class="icon" href="sendEmail.html" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png">
+  <span class="label">Send Email</span>
+</a>
 
-  <!-- demohub -->
-  <a class="icon" href="demohub.html" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/1024px-GraphQL_Logo.svg.png" alt="GraphQL">
-    <span class="label">Demo Hub</span>
-  </a>
-  
-  <!-- aibootcamp -->
-  <a class="icon" href="https://www.cxsol.com/demo/aibootcamp3.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/5776/5776795.png" alt="GraphQL">
-    <span class="label">AI Bootcamp</span>
-  </a>
-  
-    <!-- EPOCH -->
-  <a class="icon" href="https://krich5.github.io/EPOCH_Time" target="_blank">
-    <img src="https://play-lh.googleusercontent.com/vwo5HhCG8RvwBVIUifyPOM_MisjhcqbbKEJ4Gxxbx-vnU9atgAVl73kem19RVLJnG9A=w240-h480-rw" alt="GraphQL">
-    <span class="label">EPOCH Creator</span>
-  </a>
+<a class="icon" href="sendSMS.html" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/88/88144.png">
+  <span class="label">Send SMS</span>
+</a>
 
-    <!-- Transcript Parse -->
-  <a class="icon" href="transcript.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
-    <span class="label">Transcription Parser</span>
-  </a>
+<a class="icon" href="https://cxsol.com/contact" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828765.png">
+  <span class="label">Contact Us</span>
+</a>
 
-    <!-- asseddment -->
-  <a class="icon" href="cxasassessment.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
-    <span class="label">CXAS Assessment</span>
-  </a>
-
-    <!-- topology -->
-  <a class="icon" href="topology.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
-    <span class="label">Topology</span>
-  </a>
-
-  
-
-
-  <!-- interaction Parse -->
-  <a class="icon" href="interactions.html" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
-    <span class="label">interaction Parser</span>
-  </a>
-  
-  <!-- Air Table -->
-  <a class="icon" href="https://airtable.com/appI7lPJ3mBVuPsVN/pagGASxlJjcAIhdFa?3p7D8=recb1palk4EouVDgt
-" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
-    <span class="label">Air Table</span>
-  </a>
-
-  <!-- Contact Us -->
-  <a class="icon" href="https://cxsol.com/contact" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
-    <span class="label">Contact Us</span>
-  </a>
-  
-  <!-- Bottom Dock -->
-  <div class="bottom-nav" id="bottomNav">
+<!-- Bottom Analytics Dock -->
+<div class="bottom-nav" id="bottomNav">
+  <div class="dock-top">
     <span id="hitCounter">Hits: 0</span>
     <span class="dot">•</span>
     <span id="liveClock">--:--:--</span>
   </div>
 
-  <script>
-    (function () {
-      const hitEl = document.getElementById('hitCounter');
-      const hits = Number(localStorage.getItem('pageHits') || 0) + 1;
-      localStorage.setItem('pageHits', hits);
-      hitEl.textContent = `Hits: ${hits}`;
+  <div class="analytics">
+    <div class="panel">
+      <h4>Visits Over Time</h4>
+      <canvas id="hitChart"></canvas>
+    </div>
 
-      const clkEl = document.getElementById('liveClock');
-      function tick() {
-        const now = new Date();
-        clkEl.textContent = now.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        });
-      }
-      tick();
-      setInterval(tick, 1000);
+    <div class="panel">
+      <h4>Visitor IP Log</h4>
+      <div id="ipLog"></div>
+    </div>
+  </div>
+</div>
 
-      requestAnimationFrame(() =>
-        document.getElementById('bottomNav').classList.add('show')
-      );
-    })();
-  </script>
+<script>
+(function () {
+  /* ===== HIT COUNTER ===== */
+  const hits = Number(localStorage.getItem('pageHits') || 0) + 1;
+  localStorage.setItem('pageHits', hits);
+  document.getElementById('hitCounter').textContent = `Hits: ${hits}`;
+
+  /* ===== TIME ===== */
+  function tick() {
+    document.getElementById('liveClock').textContent =
+      new Date().toLocaleTimeString();
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ===== HIT HISTORY ===== */
+  const hitHistory = JSON.parse(localStorage.getItem('hitHistory') || '[]');
+  hitHistory.push(Date.now());
+  localStorage.setItem('hitHistory', JSON.stringify(hitHistory.slice(-50)));
+
+  /* ===== DRAW GRAPH ===== */
+  const canvas = document.getElementById('hitChart');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = '#6ea0ff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+
+  hitHistory.slice(-20).forEach((_, i, arr) => {
+    const x = (i / (arr.length - 1 || 1)) * canvas.width;
+    const y = canvas.height - (i / arr.length) * canvas.height;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  /* ===== IP LOGGER ===== */
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => {
+      const ipHistory = JSON.parse(localStorage.getItem('ipHistory') || '[]');
+      ipHistory.unshift({
+        ip: data.ip,
+        time: new Date().toLocaleString()
+      });
+      localStorage.setItem('ipHistory', JSON.stringify(ipHistory.slice(0, 30)));
+
+      const log = document.getElementById('ipLog');
+      log.innerHTML = ipHistory
+        .map(e => `<div class="ip-entry">${e.time} — ${e.ip}</div>`)
+        .join('');
+    });
+
+  /* ===== SHOW DOCK ===== */
+  requestAnimationFrame(() =>
+    document.getElementById('bottomNav').classList.add('show')
+  );
+})();
+</script>
 
 </body>
 </html>
