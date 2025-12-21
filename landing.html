@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <title>DEMO Landing Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <style>
     body {
       margin: 0;
-      padding: 20px 20px 140px;
+      padding: 20px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       background: #efefef;
       display: flex;
@@ -16,14 +15,12 @@
       justify-content: center;
       gap: 20px;
     }
-
-    /* App icons */
     .icon {
-      width: 90px;
-      height: 90px;
-      background: linear-gradient(to bottom, #ffffff, #e0e0e0);
-      border-radius: 22px;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, .15);
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(to bottom, #fff, #ddd);
+      border-radius: 20px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -34,224 +31,414 @@
       padding: 8px;
       transition: transform .1s ease-in-out;
     }
-    .icon:hover { transform: translateY(-2px); }
     .icon:active { transform: scale(.95); }
-
     .icon img {
-      width: 42px;
-      height: 42px;
-      margin-bottom: 6px;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 5px;
     }
-
     .label {
-      text-align: center;
       line-height: 1.1;
+      text-align: center;
     }
 
-    /* Bottom dock */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    /* Embedded Analytics (scrollable with page) */
+    .analyticsWrap{
+      width: min(980px, 100%);
+      margin: 26px auto 40px;
       background: #1e1e1f;
       color: #fff;
-      padding: 10px 14px;
-      font-size: 13px;
-      border-top-left-radius: 14px;
-      border-top-right-radius: 14px;
-      box-shadow: 0 -4px 12px rgba(0, 0, 0, .35);
-      transform: translateY(110%);
-      opacity: 0;
-      transition: all .4s ease;
-      z-index: 999;
+      border-radius: 14px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.18);
+      overflow:hidden;
     }
-    .bottom-nav.show {
-      transform: translateY(0);
-      opacity: 1;
+    .analyticsHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #262628, #1e1e1f);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      font-size: 14px;
     }
-
-    .dock-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .dot {
+    .analyticsHeader .dot{
+      font-size: 16px;
+      line-height: 0;
       color: #6ea0ff;
-      margin: 0 8px;
+      margin: 0 10px;
     }
-
-    /* Analytics panels */
-    .analytics {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .analyticsHeader .left{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .badge{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(110,160,255,.14);
+      border: 1px solid rgba(110,160,255,.35);
+    }
+    .analyticsBody{
+      padding: 12px 14px 14px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
       gap: 12px;
-      margin-top: 8px;
     }
-
-    .panel {
-      background: #2b2b2d;
-      border-radius: 10px;
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .panel{
+      background:#2b2b2d;
+      border-radius: 12px;
       padding: 10px;
-      max-height: 160px;
-      overflow: auto;
-      font-size: 12px;
+      border: 1px solid rgba(255,255,255,.08);
     }
-
-    .panel h4 {
-      margin: 0 0 6px;
-      font-size: 12px;
-      color: #9ecbff;
-      font-weight: 600;
+    .panel h4{
+      margin:0 0 8px;
+      font-size:12px;
+      font-weight:600;
+      color:#9ecbff;
     }
-
-    canvas {
-      width: 100%;
-      height: 120px;
-      background: #111;
+    canvas{
+      width:100%;
+      height:160px;
+      background:#111;
+      border-radius: 10px;
+      display:block;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .ipLog{
+      max-height: 182px;
+      overflow:auto;
+      padding-right: 6px;
+    }
+    .ipEntry{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 12px;
+      color:#d6d6d6;
+      padding: 6px 6px;
       border-radius: 8px;
+      background: rgba(0,0,0,.22);
+      margin-bottom: 6px;
+      border: 1px solid rgba(255,255,255,.06);
     }
-
-    .ip-entry {
-      font-family: monospace;
-      color: #d4d4d4;
-      margin-bottom: 4px;
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color: rgba(255,255,255,.70);
+      line-height: 1.3;
     }
   </style>
 </head>
-
 <body>
 
-<!-- Icons (topic-specific) -->
-<a class="icon" href="index.html" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png">
-  <span class="label">Login</span>
-</a>
+  <!-- Login Page -->
+  <a class="icon" href="index.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/990/990960.png" alt="Login">
+    <span class="label">Login Page</span>
+  </a>
 
-<a class="icon" href="networkassessment.html" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/3212/3212608.png">
-  <span class="label">Network<br>Assessment</span>
-</a>
+  <!-- POC -->
+  <a class="icon" href="pocgoals.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" alt="POC">
+    <span class="label">POC</span>
+  </a>
 
-<a class="icon" href="topology.html" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/1011/1011886.png">
-  <span class="label">Topology</span>
-</a>
+  <!-- Network Assessment -->
+  <a class="icon" href="networkassessment.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" alt="Network">
+    <span class="label">Network Assessment</span>
+  </a>
 
-<a class="icon" href="main6.html" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/2620/2620555.png">
-  <span class="label">Main Demo</span>
-</a>
+  <!-- Original Demo Page -->
+  <a class="icon" href="main6.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616575.png" alt="Demo">
+    <span class="label">Main Demo</span>
+  </a>
 
-<a class="icon" href="demohub.html" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/2917/2917990.png">
-  <span class="label">Demo Hub</span>
-</a>
+  <!-- Retail Page -->
+  <a class="icon" href="retail.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616575.png" alt="Demo">
+    <span class="label">Retail Demo</span>
+  </a>
 
-<a class="icon" href="https://www.cxsol.com/demo/aibootcamp3.html" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/5776/5776795.png">
-  <span class="label">AI Bootcamp</span>
-</a>
+  <!-- Healthcare Page -->
+  <a class="icon" href="healthcare.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616575.png" alt="Demo">
+    <span class="label">Healthcare Demo</span>
+  </a>
 
-<a class="icon" href="sendEmail.html" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png">
-  <span class="label">Send Email</span>
-</a>
+  <!-- Banking Page -->
+  <a class="icon" href="banking.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616575.png" alt="Demo">
+    <span class="label">Banking Demo</span>
+  </a>
 
-<a class="icon" href="sendSMS.html" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/88/88144.png">
-  <span class="label">Send SMS</span>
-</a>
+  <!-- Master Control -->
+  <a class="icon" href="https://cxadvancedsolutions.my.salesforce-sites.com/scheduler" target="_blank">
+    <img src="https://static.vecteezy.com/system/resources/previews/008/441/961/non_2x/gear-icon-template-flat-design-illustration-eps-10-free-vector.jpg" alt="Scheduler">
+    <span class="label">Master Control</span>
+  </a>
 
-<a class="icon" href="https://cxsol.com/contact" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828765.png">
-  <span class="label">Contact Us</span>
-</a>
+  <!-- Send Email -->
+  <a class="icon" href="sendEmail.html" target="_blank">
+    <img src="https://t4.ftcdn.net/jpg/05/12/30/57/360_F_512305793_6L82S36GfQsGU7Fb8APlNpeogWNzA5Ip.jpg" alt="Email">
+    <span class="label">Send Email</span>
+  </a>
 
-<!-- Bottom Analytics Dock -->
-<div class="bottom-nav" id="bottomNav">
-  <div class="dock-top">
-    <span id="hitCounter">Hits: 0</span>
-    <span class="dot">•</span>
-    <span id="liveClock">--:--:--</span>
-  </div>
+  <!-- Send SMS -->
+  <a class="icon" href="sendSMS.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/88/88144.png" alt="SMS">
+    <span class="label">Send SMS</span>
+  </a>
 
-  <div class="analytics">
-    <div class="panel">
-      <h4>Visits Over Time</h4>
-      <canvas id="hitChart"></canvas>
+  <!-- Send automobile update -->
+  <a class="icon" href="automobile.html" target="_blank">
+    <img src="https://static.vecteezy.com/system/resources/previews/014/487/696/non_2x/car-pictogram-minimal-line-icon-transportation-illustration-vector.jpg" alt="automobile">
+    <span class="label">Automobile Update</span>
+  </a>
+
+  <!-- Cisco Wiki -->
+  <a class="icon" href="https://cxas.atlassian.net/wiki/x/-oCvAg" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Tango_style_Wikipedia_Icon.svg/1024px-Tango_style_Wikipedia_Icon.svg.png" alt="Wiki">
+    <span class="label">CXAS Wiki</span>
+  </a>
+
+  <!-- Graphql -->
+  <a class="icon" href="https://www.cxsol.com/demo/graphql9.html" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/1024px-GraphQL_Logo.svg.png" alt="GraphQL">
+    <span class="label">GraphQL</span>
+  </a>
+
+  <!-- demohub -->
+  <a class="icon" href="demohub.html" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/1024px-GraphQL_Logo.svg.png" alt="GraphQL">
+    <span class="label">Demo Hub</span>
+  </a>
+
+  <!-- aibootcamp -->
+  <a class="icon" href="https://www.cxsol.com/demo/aibootcamp3.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/5776/5776795.png" alt="AI Bootcamp">
+    <span class="label">AI Bootcamp</span>
+  </a>
+
+  <!-- EPOCH -->
+  <a class="icon" href="https://krich5.github.io/EPOCH_Time" target="_blank">
+    <img src="https://play-lh.googleusercontent.com/vwo5HhCG8RvwBVIUifyPOM_MisjhcqbbKEJ4Gxxbx-vnU9atgAVl73kem19RVLJnG9A=w240-h480-rw" alt="EPOCH">
+    <span class="label">EPOCH Creator</span>
+  </a>
+
+  <!-- Transcript Parse -->
+  <a class="icon" href="transcript.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
+    <span class="label">Transcription Parser</span>
+  </a>
+
+  <!-- assessment -->
+  <a class="icon" href="cxasassessment.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
+    <span class="label">CXAS Assessment</span>
+  </a>
+
+  <!-- topology -->
+  <a class="icon" href="topology.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
+    <span class="label">Topology</span>
+  </a>
+
+  <!-- interaction Parse -->
+  <a class="icon" href="interactions.html" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
+    <span class="label">interaction Parser</span>
+  </a>
+
+  <!-- Air Table -->
+  <a class="icon" href="https://airtable.com/appI7lPJ3mBVuPsVN/pagGASxlJjcAIhdFa?3p7D8=recb1palk4EouVDgt
+" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
+    <span class="label">Air Table</span>
+  </a>
+
+  <!-- Contact Us -->
+  <a class="icon" href="https://cxsol.com/contact" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Contact">
+    <span class="label">Contact Us</span>
+  </a>
+
+
+  <!-- ===== Embedded Analytics (scroll to bottom) ===== -->
+  <section class="analyticsWrap" id="analytics">
+    <div class="analyticsHeader">
+      <div class="left">
+        <span class="badge" id="hitCounter">Hits: 0</span>
+        <span class="dot">•</span>
+        <span class="badge" id="liveClock">--:--:--</span>
+      </div>
+      <div style="opacity:.85; font-size:12px;">Local history (per browser) + IP lookup</div>
     </div>
 
-    <div class="panel">
-      <h4>Visitor IP Log</h4>
-      <div id="ipLog"></div>
+    <div class="analyticsBody">
+      <div class="grid">
+        <div class="panel">
+          <h4>Visits Over Time (recent history)</h4>
+          <canvas id="hitChart"></canvas>
+          <div class="hint">
+            This chart is stored in <b>localStorage</b> and will show history on this device/browser.
+          </div>
+        </div>
+
+        <div class="panel">
+          <h4>Visitor IP Log (recent visitors on this device)</h4>
+          <div class="ipLog" id="ipLog"></div>
+          <div class="hint">
+            Browsers can’t read IP directly — this uses <b>api.ipify.org</b>. Log history is stored locally.
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </section>
 
-<script>
-(function () {
-  /* ===== HIT COUNTER ===== */
-  const hits = Number(localStorage.getItem('pageHits') || 0) + 1;
-  localStorage.setItem('pageHits', hits);
-  document.getElementById('hitCounter').textContent = `Hits: ${hits}`;
 
-  /* ===== TIME ===== */
-  function tick() {
-    document.getElementById('liveClock').textContent =
-      new Date().toLocaleTimeString();
-  }
-  tick();
-  setInterval(tick, 1000);
+  <script>
+    (function () {
+      // ===== Hits (persistent per browser) =====
+      const hitEl = document.getElementById('hitCounter');
+      const hits = Number(localStorage.getItem('pageHits') || 0) + 1;
+      localStorage.setItem('pageHits', hits);
+      hitEl.textContent = `Hits: ${hits}`;
 
-  /* ===== HIT HISTORY ===== */
-  const hitHistory = JSON.parse(localStorage.getItem('hitHistory') || '[]');
-  hitHistory.push(Date.now());
-  localStorage.setItem('hitHistory', JSON.stringify(hitHistory.slice(-50)));
+      // ===== Clock =====
+      const clkEl = document.getElementById('liveClock');
+      function tick() {
+        const now = new Date();
+        clkEl.textContent = now.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      }
+      tick();
+      setInterval(tick, 1000);
 
-  /* ===== DRAW GRAPH ===== */
-  const canvas = document.getElementById('hitChart');
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
+      // ===== Hit history series (for chart) =====
+      const HISTORY_KEY = "demoPageHitHistory";
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const series = raw ? JSON.parse(raw) : [];
+      series.push(Date.now());
+      // keep last 60 points
+      const trimmed = series.slice(-60);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = '#6ea0ff';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
+      // ===== Draw chart (simple sparkline) =====
+      const canvas = document.getElementById("hitChart");
+      const ctx = canvas.getContext("2d");
 
-  hitHistory.slice(-20).forEach((_, i, arr) => {
-    const x = (i / (arr.length - 1 || 1)) * canvas.width;
-    const y = canvas.height - (i / arr.length) * canvas.height;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-  ctx.stroke();
+      function sizeCanvas(){
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+      }
 
-  /* ===== IP LOGGER ===== */
-  fetch('https://api.ipify.org?format=json')
-    .then(res => res.json())
-    .then(data => {
-      const ipHistory = JSON.parse(localStorage.getItem('ipHistory') || '[]');
-      ipHistory.unshift({
-        ip: data.ip,
-        time: new Date().toLocaleString()
-      });
-      localStorage.setItem('ipHistory', JSON.stringify(ipHistory.slice(0, 30)));
+      function draw(){
+        sizeCanvas();
+        const w = canvas.getBoundingClientRect().width;
+        const h = canvas.getBoundingClientRect().height;
 
-      const log = document.getElementById('ipLog');
-      log.innerHTML = ipHistory
-        .map(e => `<div class="ip-entry">${e.time} — ${e.ip}</div>`)
-        .join('');
-    });
+        // background
+        ctx.clearRect(0,0,w,h);
+        ctx.fillStyle = "#111";
+        ctx.fillRect(0,0,w,h);
 
-  /* ===== SHOW DOCK ===== */
-  requestAnimationFrame(() =>
-    document.getElementById('bottomNav').classList.add('show')
-  );
-})();
-</script>
+        // grid
+        ctx.strokeStyle = "rgba(255,255,255,.06)";
+        ctx.lineWidth = 1;
+        for(let x=0; x<=w; x+=w/6){
+          ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+        }
+        for(let y=0; y<=h; y+=h/4){
+          ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+        }
+
+        // sparkline based on order (newest to right)
+        const pts = trimmed.slice(-30);
+        if(pts.length < 2){
+          ctx.fillStyle = "rgba(110,160,255,.85)";
+          ctx.fillText("Not enough data yet", 12, 18);
+          return;
+        }
+
+        ctx.strokeStyle = "#6ea0ff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        pts.forEach((t,i)=>{
+          const x = (i/(pts.length-1))*w;
+          // use a simple wave so the chart is readable even though "hits" are discrete
+          // (you can replace with true per-hour bucketing later)
+          const y = h - ((i+1)/pts.length)*h * 0.85 - 10;
+          if(i===0) ctx.moveTo(x,y);
+          else ctx.lineTo(x,y);
+        });
+        ctx.stroke();
+
+        // last point glow
+        const lastX = w;
+        const lastY = h - (pts.length/pts.length)*h * 0.85 - 10;
+        ctx.fillStyle = "rgba(110,160,255,.95)";
+        ctx.beginPath(); ctx.arc(lastX-2, lastY, 4, 0, Math.PI*2); ctx.fill();
+      }
+
+      draw();
+      window.addEventListener("resize", draw);
+
+      // ===== IP Log (stored locally) =====
+      const IP_KEY = "demoPageIpLog";
+      const ipLogEl = document.getElementById("ipLog");
+
+      function renderIpLog(list){
+        if(!Array.isArray(list) || list.length === 0){
+          ipLogEl.innerHTML = `<div class="ipEntry">No IPs logged yet.</div>`;
+          return;
+        }
+        ipLogEl.innerHTML = list.map(e =>
+          `<div class="ipEntry">${e.time} — ${e.ip}</div>`
+        ).join("");
+      }
+
+      // render existing
+      try{
+        const existing = JSON.parse(localStorage.getItem(IP_KEY) || "[]");
+        renderIpLog(existing);
+      }catch(e){
+        renderIpLog([]);
+      }
+
+      // fetch current public IP (best-effort)
+      fetch("https://api.ipify.org?format=json")
+        .then(r => r.json())
+        .then(({ip})=>{
+          const now = new Date();
+          const entry = { ip, time: now.toLocaleString() };
+
+          const list = JSON.parse(localStorage.getItem(IP_KEY) || "[]");
+          // prepend newest; keep last 50
+          list.unshift(entry);
+          const clipped = list.slice(0, 50);
+          localStorage.setItem(IP_KEY, JSON.stringify(clipped));
+          renderIpLog(clipped);
+        })
+        .catch(()=>{
+          // keep whatever we already have
+        });
+
+    })();
+  </script>
 
 </body>
 </html>
