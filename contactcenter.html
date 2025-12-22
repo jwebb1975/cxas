@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Webex Contact Center Discovery Questionnaire</title>
+  <style>
+    :root{
+      --bg: #0b1220;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
+      --border: rgba(255,255,255,.14);
+      --accent: #6ae4ff;
+      --accent2: #a78bfa;
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --danger:#fb7185;
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 12px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(106,228,255,.18), transparent 60%),
+        radial-gradient(800px 500px at 80% 0%, rgba(167,139,250,.18), transparent 60%),
+        radial-gradient(900px 600px at 50% 100%, rgba(52,211,153,.10), transparent 60%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    header{
+      position: sticky;
+      top:0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(11,18,32,.92), rgba(11,18,32,.55));
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wrap{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 22px 18px 60px;
+    }
+
+    .topbar{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content: space-between;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      width:42px;height:42px;border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 10px 25px rgba(106,228,255,.18);
+    }
+    h1{
+      font-size: 16px;
+      margin:0;
+      letter-spacing: .2px;
+    }
+    .sub{
+      margin:2px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 600;
+      cursor:pointer;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,.15);
+    }
+    button:hover{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.22); }
+    button:active{ transform: translateY(1px); }
+    .primary{
+      border-color: rgba(106,228,255,.45);
+      background: linear-gradient(135deg, rgba(106,228,255,.18), rgba(167,139,250,.16));
+    }
+    .danger{ border-color: rgba(251,113,133,.45); }
+    .ghost{ background: transparent; box-shadow:none; }
+
+    .status{
+      margin-top: 12px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap:12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .pill{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      display:inline-flex;
+      gap:8px; align-items:center;
+    }
+    .dot{ width:8px; height:8px; border-radius:999px; background: var(--warn); }
+    .dot.ok{ background: var(--ok); }
+    .dot.bad{ background: var(--danger); }
+
+    main .hero{
+      margin-top: 22px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+    }
+    @media (max-width: 980px){
+      main .hero{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card .inner{ padding: 16px; }
+
+    .meta{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 700px){
+      .meta{ grid-template-columns: 1fr; }
+    }
+
+    .section{
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      box-shadow: 0 10px 26px rgba(0,0,0,.18);
+    }
+    .section h2{
+      font-size: 14px;
+      margin: 0 0 10px;
+      letter-spacing: .2px;
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .hint{ color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .field{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px;
+      border-radius: var(--radius2);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    label{
+      font-size: 12px;
+      color: rgba(255,255,255,.82);
+      font-weight: 650;
+    }
+    input, textarea, select{
+      width:100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(11,18,32,.35);
+      color: var(--text);
+      padding: 10px 10px;
+      outline: none;
+      transition: border-color .15s ease, background .15s ease;
+      font-size: 14px;
+    }
+    textarea{ min-height: 92px; resize: vertical; }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,.40); }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(106,228,255,.55);
+      background: rgba(11,18,32,.55);
+    }
+
+    .sidecard h3{
+      margin: 0 0 8px;
+      font-size: 13px;
+      letter-spacing: .2px;
+    }
+    .kpi{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .kpi .row{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap:10px;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .kpi .row b{ font-size: 13px; }
+    .kpi .row span{ font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,.74); }
+    .mini{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .codebox{
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,.75);
+      overflow:auto;
+      max-height: 220px;
+    }
+    .footer{
+      margin-top: 18px;
+      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      text-align:center;
+    }
+
+    .toast{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      min-width: 240px;
+      max-width: 420px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(15,23,42,.86);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
+      display:none;
+      z-index: 50;
+    }
+    .toast.show{ display:block; }
+    .toast .t{ font-weight: 700; font-size: 13px; margin: 0 0 4px; }
+    .toast .m{ font-size: 12px; color: rgba(255,255,255,.70); margin:0; }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Webex Contact Center Discovery Questionnaire</h1>
+          <p class="sub">Fill in the form. Submit sends JSON to your webhook. Autosaves locally.</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="ghost" id="btnExport">Export JSON</button>
+        <button class="danger" id="btnReset">Reset</button>
+        <button class="primary" id="btnSubmit">Submit to Webhook</button>
+      </div>
+    </div>
+
+    <div class="status">
+      <div class="pill"><span class="dot" id="autosaveDot"></span> <span id="autosaveText">Autosave: idle</span></div>
+      <div class="pill">Completion: <span id="completion">0%</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <div class="card">
+      <div class="inner">
+        <div class="meta">
+          <div class="field">
+            <label for="customerName">Customer Name</label>
+            <input id="customerName" name="customerName" placeholder="e.g., Acme Corp" />
+          </div>
+          <div class="field">
+            <label for="partnerName">Partner Name</label>
+            <input id="partnerName" name="partnerName" placeholder="e.g., CX Advanced Solutions" />
+          </div>
+          <div class="field">
+            <label for="marketVertical">Market Vertical</label>
+            <input id="marketVertical" name="marketVertical" placeholder="e.g., Healthcare, Retail, Finance" />
+          </div>
+          <div class="field">
+            <label for="deploymentType">Deployment Type</label>
+            <select id="deploymentType" name="deploymentType">
+              <option value="">Select…</option>
+              <option>New</option>
+              <option>Migration</option>
+              <option>Redesign</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- DOCUMENT & DEAL LINKS -->
+        <div class="section">
+          <h2>Document & Deal Links <span class="pill">General</span></h2>
+          <p class="hint">Paste URLs/IDs used for internal tracking and A2Q readiness.</p>
+          <div class="grid">
+            <div class="field"><label>Space URL</label><input name="spaceUrl" placeholder="https://..." /></div>
+            <div class="field"><label>Account SF URL</label><input name="accountSfUrl" placeholder="https://..." /></div>
+            <div class="field"><label>Opportunity URL</label><input name="opportunityUrl" placeholder="https://..." /></div>
+            <div class="field"><label>POC URL</label><input name="pocUrl" placeholder="https://..." /></div>
+            <div class="field"><label>LUCID URL</label><input name="lucidUrl" placeholder="https://..." /></div>
+            <div class="field"><label>SharePoint URL</label><input name="sharepointUrl" placeholder="https://..." /></div>
+            <div class="field"><label>Webex Control Hub Org ID</label><input name="controlHubOrgId" placeholder="Org ID or NA" /></div>
+            <div class="field"><label>Web Order ID (WxCC)</label><input name="webOrderId" placeholder="8–10 digits or NA" /></div>
+            <div class="field"><label>A2Q Submitted Date</label><input type="date" name="a2qSubmittedDate" /></div>
+            <div class="field"><label>Target Go-Live Date</label><input type="date" name="goLiveDate" /></div>
+          </div>
+        </div>
+
+        <!-- 1. BUSINESS & DEPLOYMENT -->
+        <div class="section">
+          <h2>1. Business & Deployment Overview <span class="pill">Discovery</span></h2>
+          <div class="grid">
+            <div class="field"><label>Business goals for WxCC</label><textarea name="businessGoals" placeholder="What are we trying to achieve?"></textarea></div>
+            <div class="field"><label>Key success criteria / KPIs</label><textarea name="kpis" placeholder="e.g., reduce ASA, improve CSAT, lower abandonment"></textarea></div>
+            <div class="field"><label>Existing contact center platform</label><input name="existingPlatform" placeholder="e.g., UCCX, Genesys, Five9, NA" /></div>
+            <div class="field"><label>Rollout approach</label>
+              <select name="rolloutApproach">
+                <option value="">Select…</option>
+                <option>Single cutover</option>
+                <option>Phased</option>
+                <option>Hybrid / Coexistence</option>
+              </select>
+            </div>
+            <div class="field"><label>Blackout periods / change freezes</label><input name="blackoutPeriods" placeholder="e.g., month-end, holidays, NA" /></div>
+            <div class="field"><label>Business units using WxCC</label><input name="businessUnits" placeholder="List departments / BUs" /></div>
+          </div>
+        </div>
+
+        <!-- 2. AGENTS & LICENSES -->
+        <div class="section">
+          <h2>2. Agent & License Overview <span class="pill">A2Q</span></h2>
+          <div class="grid">
+            <div class="field"><label>Total agents</label><input type="number" min="0" name="totalAgents" placeholder="e.g., 120" /></div>
+            <div class="field"><label>Total supervisors</label><input type="number" min="0" name="totalSupervisors" placeholder="e.g., 12" /></div>
+            <div class="field"><label>Standard licenses</label><input type="number" min="0" name="standardLicenses" placeholder="e.g., 80" /></div>
+            <div class="field"><label>Premium licenses</label><input type="number" min="0" name="premiumLicenses" placeholder="e.g., 40" /></div>
+            <div class="field"><label>Agent mix</label>
+              <select name="agentMix">
+                <option value="">Select…</option>
+                <option>All full-time</option>
+                <option>All part-time</option>
+                <option>Mixed</option>
+              </select>
+            </div>
+            <div class="field"><label>Expected growth (12–24 months)</label><input name="agentGrowth" placeholder="e.g., +20 agents, stable, TBD" /></div>
+          </div>
+        </div>
+
+        <!-- 3. GEO & TENANT -->
+        <div class="section">
+          <h2>3. Geographic & Tenant Information <span class="pill">A2Q</span></h2>
+          <div class="grid">
+            <div class="field"><label>WxCC tenant location (data center)</label><input name="tenantLocation" placeholder="e.g., US, EU, UK, ANZ (exact DC mapping)" /></div>
+            <div class="field"><label>Agent countries</label><input name="agentCountries" placeholder="e.g., United States; Canada" /></div>
+            <div class="field"><label>Caller countries</label><input name="callerCountries" placeholder="e.g., United States; Mexico" /></div>
+            <div class="field"><label>Regional Media required?</label>
+              <select name="regionalMedia">
+                <option value="">Select…</option>
+                <option>Yes</option>
+                <option>No</option>
+                <option>TBD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. CHANNELS -->
+        <div class="section">
+          <h2>4. Channels & Customer Engagement <span class="pill">Scope</span></h2>
+          <div class="grid">
+            <div class="field"><label>Voice</label><select name="channelVoice"><option value="">Select…</option><option>Yes</option><option>No</option></select></div>
+            <div class="field"><label>Chat</label><select name="channelChat"><option value="">Select…</option><option>Yes</option><option>No</option><option>Future phase</option></select></div>
+            <div class="field"><label>Email</label><select name="channelEmail"><option value="">Select…</option><option>Yes</option><option>No</option><option>Future phase</option></select></div>
+            <div class="field"><label>SMS</label><select name="channelSms"><option value="">Select…</option><option>Yes</option><option>No</option><option>Future phase</option></select></div>
+            <div class="field"><label>Social / WhatsApp</label><select name="channelSocial"><option value="">Select…</option><option>Yes</option><option>No</option><option>Future phase</option></select></div>
+            <div class="field"><label>Outbound campaigns</label>
+              <select name="outboundCampaigns">
+                <option value="">Select…</option>
+                <option>No</option>
+                <option>Yes - Progressive</option>
+                <option>Yes - Predictive</option>
+                <option>Yes - Preview</option>
+                <option>TBD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. TELEPHONY -->
+        <div class="section">
+          <h2>5. Telephony & Voice Integration <span class="pill">A2Q</span></h2>
+          <div class="grid">
+            <div class="field"><label>Telephony integration method</label>
+              <select name="telephonyMethod">
+                <option value="">Select…</option>
+                <option>Webex Calling (Cloud Connected PSTN / Calling Plan)</option>
+                <option>Local Gateway (LGW) to Webex Calling</option>
+                <option>PSTN via third-party / carrier (through LGW)</option>
+                <option>Other / Hybrid</option>
+              </select>
+            </div>
+            <div class="field"><label>Webex Calling already provisioned?</label><select name="wxcProvisioned"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Local Gateway required?</label><select name="lgwRequired"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>LGW deployment countries</label><input name="lgwCountries" placeholder="e.g., US; CA" /></div>
+            <div class="field"><label>LGW registration type</label><select name="lgwRegType"><option value="">Select…</option><option>Certificate</option><option>Registration</option><option>TBD</option></select></div>
+            <div class="field"><label>Number of telephony carriers</label><input type="number" min="0" name="carrierCount" placeholder="e.g., 2" /></div>
+            <div class="field"><label>Peak concurrent calls</label><input type="number" min="0" name="peakConcurrentCalls" placeholder="e.g., 150" /></div>
+            <div class="field"><label>Toll-free numbers (if any)</label><input name="tollFree" placeholder="List / count / NA" /></div>
+          </div>
+        </div>
+
+        <!-- 6. ENDPOINTS -->
+        <div class="section">
+          <h2>6. Agent Endpoint Model <span class="pill">A2Q</span></h2>
+          <div class="grid">
+            <div class="field"><label>WebRTC Agent Desktop</label><select name="endpointWebrtc"><option value="">Select…</option><option>Yes</option><option>No</option></select></div>
+            <div class="field"><label>Webex Calling endpoints (MPP/Webex App)</label><select name="endpointWxc"><option value="">Select…</option><option>Yes</option><option>No</option></select></div>
+            <div class="field"><label>PSTN / Mobile endpoints</label><select name="endpointPstn"><option value="">Select…</option><option>Yes</option><option>No</option></select></div>
+            <div class="field"><label>Microsoft Teams agents</label><select name="endpointTeams"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>VDI usage (WebRTC not supported)</label><select name="vdiUsage"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+          </div>
+        </div>
+
+        <!-- 7. IVR & AI -->
+        <div class="section">
+          <h2>7. IVR, AI & Call Treatment <span class="pill">Build</span></h2>
+          <div class="grid">
+            <div class="field"><label># Entry points (IVRs)</label><input type="number" min="0" name="entryPoints" placeholder="e.g., 5" /></div>
+            <div class="field"><label># Queues</label><input type="number" min="0" name="queues" placeholder="e.g., 12" /></div>
+            <div class="field"><label>Routing model</label><select name="routingModel"><option value="">Select…</option><option>Skill-based</option><option>Team-based</option><option>Direct-to-agent</option><option>Mixed</option></select></div>
+            <div class="field"><label>TTS provider</label><select name="ttsProvider"><option value="">Select…</option><option>Cisco TTS</option><option>Google TTS</option><option>Other</option><option>TBD</option></select></div>
+            <div class="field"><label>Virtual Agent required?</label><select name="virtualAgent"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Data dips (API/DB lookups)</label><textarea name="dataDips" placeholder="Describe what data is needed and from where (CRM/ERP/DB/API)."></textarea></div>
+            <div class="field"><label>Callback in queue</label><select name="callback"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+          </div>
+        </div>
+
+        <!-- 8. DESKTOP -->
+        <div class="section">
+          <h2>8. Agent & Supervisor Desktop <span class="pill">UX</span></h2>
+          <div class="grid">
+            <div class="field"><label>Desktop type</label><select name="desktopType"><option value="">Select…</option><option>Standard</option><option>Custom</option><option>TBD</option></select></div>
+            <div class="field"><label>Screen pops</label><select name="screenPops"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Custom widgets</label><select name="customWidgets"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Journey Data Services (JDS)</label><select name="jds"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Supervisor features needed</label><textarea name="supervisorFeatures" placeholder="e.g., monitoring, barge-in, coaching, QM needs"></textarea></div>
+          </div>
+        </div>
+
+        <!-- 9. REPORTING & RECORDING -->
+        <div class="section">
+          <h2>9. Reporting & Recording <span class="pill">Ops</span></h2>
+          <div class="grid">
+            <div class="field"><label>Stock reports sufficient?</label><select name="stockReports"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Custom reports required?</label><select name="customReports"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>External BI tools</label><input name="biTools" placeholder="e.g., Power BI, Tableau, None" /></div>
+            <div class="field"><label>Call recording required?</label><select name="callRecording"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Recording storage preference</label><select name="recordingStorage"><option value="">Select…</option><option>WxCC</option><option>WFO</option><option>External</option><option>TBD</option></select></div>
+            <div class="field"><label>Compliance requirements</label><input name="compliance" placeholder="e.g., PCI, HIPAA, GDPR, SOC2, NA" /></div>
+          </div>
+        </div>
+
+        <!-- 10. INTEGRATIONS -->
+        <div class="section">
+          <h2>10. Integrations <span class="pill">Tech</span></h2>
+          <div class="grid">
+            <div class="field"><label>CRM system</label><input name="crmSystem" placeholder="e.g., Salesforce, Dynamics, ServiceNow" /></div>
+            <div class="field"><label>CRM phase</label><select name="crmPhase"><option value="">Select…</option><option>Phase 1</option><option>Phase 2</option><option>TBD</option></select></div>
+            <div class="field"><label>External APIs required</label><textarea name="externalApis" placeholder="Describe APIs / endpoints / auth / error handling expectations."></textarea></div>
+            <div class="field"><label>Google Dialogflow required</label><select name="dialogflow"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Third-party / OEM integrations</label><textarea name="oemIntegrations" placeholder="List vendors (WFO, dialer, CRM plugins, SMS providers, etc.)."></textarea></div>
+          </div>
+        </div>
+
+        <!-- 11. NETWORK READINESS -->
+        <div class="section">
+          <h2>11. Network & Readiness <span class="pill">A2Q Risk</span></h2>
+          <p class="hint">These directly impact voice quality and A2Q validation readiness.</p>
+          <div class="grid">
+            <div class="field"><label>LAN QoS configured?</label><select name="qos"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Internet bandwidth per site</label><input name="bandwidth" placeholder="e.g., 200/200 Mbps; varies by site" /></div>
+            <div class="field"><label>Firewall make/model</label><input name="firewall" placeholder="e.g., Palo Alto PA-3220" /></div>
+            <div class="field"><label>One-way latency to Webex DC</label><input name="latency" placeholder="e.g., 35ms (target <100ms)" /></div>
+            <div class="field"><label>Jitter</label><input name="jitter" placeholder="e.g., 4ms (target <10ms)" /></div>
+            <div class="field"><label>Packet loss</label><input name="packetLoss" placeholder="e.g., 0.2% (target <0.5%)" /></div>
+          </div>
+        </div>
+
+        <!-- 12. SUPPORT -->
+        <div class="section">
+          <h2>12. Support & Operations <span class="pill">Day 2</span></h2>
+          <div class="grid">
+            <div class="field"><label>Day 2 support provider</label><select name="day2Support"><option value="">Select…</option><option>Partner</option><option>Cisco (Solution Support)</option><option>Customer</option><option>Mixed</option><option>TBD</option></select></div>
+            <div class="field"><label>Solution Support package included?</label><select name="solutionSupport"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+            <div class="field"><label>Training required</label><input name="training" placeholder="Admin / Supervisor / Agent" /></div>
+            <div class="field"><label>Hypercare needed?</label><select name="hypercare"><option value="">Select…</option><option>Yes</option><option>No</option><option>TBD</option></select></div>
+          </div>
+        </div>
+
+        <!-- 13. RISKS -->
+        <div class="section">
+          <h2>13. Risks, Assumptions & Dependencies <span class="pill">Tracking</span></h2>
+          <div class="grid">
+            <div class="field"><label>Known technical risks</label><textarea name="techRisks" placeholder="e.g., latency, carrier cutover timing, VDI constraints"></textarea></div>
+            <div class="field"><label>Known business risks</label><textarea name="bizRisks" placeholder="e.g., staffing, training availability, change mgmt"></textarea></div>
+            <div class="field"><label>Third-party dependencies</label><textarea name="dependencies" placeholder="e.g., carrier porting, CRM team, security approvals"></textarea></div>
+            <div class="field"><label>TBD items</label><textarea name="tbds" placeholder="List unknowns we must confirm"></textarea></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card sidecard">
+      <div class="inner">
+        <h3>Webhook Delivery</h3>
+        <p class="mini">
+          Submitting sends a <b>POST</b> request with JSON payload to your webhook.
+          Update the webhook URL in the script:
+        </p>
+        <div class="codebox" id="webhookSnippet"></div>
+
+        <div class="kpi">
+          <div class="row"><b>Payload includes</b><span>answers + metadata</span></div>
+          <div class="row"><b>Format</b><span>application/json</span></div>
+          <div class="row"><b>Extras</b><span>timestamp, completion%</span></div>
+        </div>
+
+        <p class="mini" style="margin-top:12px;">
+          Tip: If your webhook needs a secret, you can add an <span style="font-family:var(--mono)">Authorization</span>
+          header in the fetch call.
+        </p>
+
+        <div class="codebox" id="previewBox">Fill fields to preview JSON…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Built for WxCC discovery and A2Q-aligned data collection. Local autosave stays in this browser until you reset.
+  </div>
+</main>
+
+<div class="toast" id="toast">
+  <p class="t" id="toastTitle">Done</p>
+  <p class="m" id="toastMsg">Saved.</p>
+</div>
+
+<script>
+  /***********************
+   * CONFIG — SET THIS
+   ***********************/
+  const WEBHOOK_URL = "PASTE_YOUR_WEBHOOK_URL_HERE"; // <-- replace with your webhook
+
+  /***********************
+   * Helpers
+   ***********************/
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+  const STORAGE_KEY = "wxcc_questionnaire_v1";
+
+  const toast = (title, msg) => {
+    $("#toastTitle").textContent = title;
+    $("#toastMsg").textContent = msg;
+    $("#toast").classList.add("show");
+    setTimeout(() => $("#toast").classList.remove("show"), 2600);
+  };
+
+  const nowISO = () => new Date().toISOString();
+
+  function collectFormData() {
+    const data = {};
+    $$("input[name], textarea[name], select[name]").forEach(el => {
+      if (el.type === "checkbox") data[el.name] = !!el.checked;
+      else data[el.name] = el.value?.trim?.() ?? el.value;
+    });
+
+    // top meta fields without name= (kept separate)
+    data.customerName = $("#customerName").value.trim();
+    data.partnerName = $("#partnerName").value.trim();
+    data.marketVertical = $("#marketVertical").value.trim();
+    data.deploymentType = $("#deploymentType").value;
+
+    // completion
+    const { percent } = computeCompletion();
+    return {
+      schema: "wxcc.discovery.questionnaire.v1",
+      submittedAt: nowISO(),
+      completionPercent: percent,
+      answers: data
+    };
+  }
+
+  function computeCompletion() {
+    const fields = [
+      ...$$("input[name], textarea[name], select[name]"),
+      $("#customerName"), $("#partnerName"), $("#marketVertical"), $("#deploymentType")
+    ].filter(Boolean);
+
+    const filled = fields.filter(el => {
+      if (el.tagName === "SELECT") return (el.value || "").trim().length > 0;
+      return (el.value || "").trim().length > 0;
+    }).length;
+
+    const total = fields.length || 1;
+    const percent = Math.round((filled / total) * 100);
+    return { filled, total, percent };
+  }
+
+  function setCompletionUI() {
+    const { percent } = computeCompletion();
+    $("#completion").textContent = `${percent}%`;
+  }
+
+  function setAutosaveState(state) {
+    const dot = $("#autosaveDot");
+    const text = $("#autosaveText");
+    if (state === "saving") { dot.className = "dot"; text.textContent = "Autosave: saving…"; }
+    else if (state === "saved") { dot.className = "dot ok"; text.textContent = "Autosave: saved"; }
+    else if (state === "error") { dot.className = "dot bad"; text.textContent = "Autosave: error"; }
+    else { dot.className = "dot"; text.textContent = "Autosave: idle"; }
+  }
+
+  function saveLocal() {
+    try{
+      setAutosaveState("saving");
+      const payload = collectFormData();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      setAutosaveState("saved");
+      setCompletionUI();
+      updatePreview();
+    } catch(e){
+      console.error(e);
+      setAutosaveState("error");
+    }
+  }
+
+  function loadLocal() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    try{
+      const payload = JSON.parse(raw);
+      const a = payload.answers || {};
+
+      // meta
+      $("#customerName").value = a.customerName || "";
+      $("#partnerName").value = a.partnerName || "";
+      $("#marketVertical").value = a.marketVertical || "";
+      $("#deploymentType").value = a.deploymentType || "";
+
+      // named fields
+      $$("input[name], textarea[name], select[name]").forEach(el => {
+        if (a[el.name] !== undefined) el.value = a[el.name];
+      });
+
+      setAutosaveState("saved");
+      setCompletionUI();
+      updatePreview();
+      toast("Loaded", "Restored your last saved draft.");
+    } catch(e){
+      console.error(e);
+    }
+  }
+
+  function updatePreview() {
+    const payload = collectFormData();
+    $("#previewBox").textContent = JSON.stringify(payload, null, 2);
+  }
+
+  async function submitToWebhook() {
+    if (!WEBHOOK_URL || WEBHOOK_URL.includes("PASTE_YOUR_WEBHOOK_URL_HERE")) {
+      toast("Webhook URL missing", "Paste your webhook URL into WEBHOOK_URL in the script.");
+      return;
+    }
+
+    const payload = collectFormData();
+
+    try{
+      $("#btnSubmit").disabled = true;
+      $("#btnSubmit").textContent = "Submitting…";
+
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // "Authorization": "Bearer YOUR_TOKEN", // optional
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if(!res.ok){
+        const text = await res.text().catch(()=> "");
+        throw new Error(`Webhook responded ${res.status}: ${text}`);
+      }
+
+      toast("Submitted", "Your questionnaire was sent to the webhook.");
+    } catch(err){
+      console.error(err);
+      toast("Submit failed", err.message || "Could not submit to webhook.");
+    } finally{
+      $("#btnSubmit").disabled = false;
+      $("#btnSubmit").textContent = "Submit to Webhook";
+    }
+  }
+
+  function exportJSON() {
+    const payload = collectFormData();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = (payload.answers.customerName || "wxcc-questionnaire").replace(/[^a-z0-9-_]+/gi,"_");
+    a.href = url;
+    a.download = `${safeName}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast("Exported", "Downloaded JSON file.");
+  }
+
+  function resetAll() {
+    if(!confirm("Reset all fields and clear saved draft?")) return;
+    $$("input, textarea, select").forEach(el => {
+      if (el.type === "date" || el.type === "number" || el.type === "text") el.value = "";
+      if (el.tagName === "TEXTAREA") el.value = "";
+      if (el.tagName === "SELECT") el.value = "";
+    });
+    localStorage.removeItem(STORAGE_KEY);
+    setAutosaveState("idle");
+    setCompletionUI();
+    updatePreview();
+    toast("Reset", "Cleared form and local draft.");
+  }
+
+  // Wire events
+  const debouncedSave = (() => {
+    let t;
+    return () => { clearTimeout(t); t = setTimeout(saveLocal, 350); };
+  })();
+
+  document.addEventListener("input", (e) => {
+    if (e.target.matches("input, textarea, select")) debouncedSave();
+  });
+
+  $("#btnSubmit").addEventListener("click", submitToWebhook);
+  $("#btnExport").addEventListener("click", exportJSON);
+  $("#btnReset").addEventListener("click", resetAll);
+
+  // Show webhook snippet in UI
+  $("#webhookSnippet").textContent =
+`// In this file, set:
+const WEBHOOK_URL = "${WEBHOOK_URL}";
+
+// Submit sends:
+fetch(WEBHOOK_URL, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});`;
+
+  // Init
+  loadLocal();
+  setCompletionUI();
+  updatePreview();
+</script>
+</body>
+</html>
