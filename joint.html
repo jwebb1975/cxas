@@ -6,10 +6,6 @@
   <title>Webex Discovery Posters — Joint + Calling + WxCC + Network</title>
   <style>
     :root{
-      --bg:#0b1220;
-      --panel:#0f1b33;
-      --panel2:#0c162b;
-      --stroke:#22345f;
       --text:#e7eefc;
       --muted:#a9b8df;
       --accent:#62e6ff;
@@ -17,11 +13,14 @@
       --ok:#3df2a0;
       --warn:#ffd166;
       --bad:#ff5c7a;
+
       --shadow: 0 16px 40px rgba(0,0,0,.35);
       --radius: 14px;
+
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -56,7 +55,7 @@
       cursor:pointer; border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.06);
       color:var(--text); padding:10px 12px; border-radius:12px;
-      font-weight:700; font-size:12px;
+      font-weight:800; font-size:12px;
       transition: transform .08s ease, background .12s ease, border-color .12s ease;
       text-decoration:none; display:inline-flex; align-items:center; gap:8px;
     }
@@ -64,7 +63,6 @@
     button:active,.btn:active{transform: translateY(1px)}
     .btn.primary{background: linear-gradient(135deg, rgba(98,230,255,.22), rgba(138,125,255,.20)); border-color: rgba(98,230,255,.25)}
 
-    /* Main layout */
     .panel{
       margin-top:14px;
       border:1px solid rgba(255,255,255,.07);
@@ -86,23 +84,29 @@
     .tabs{display:flex; gap:8px; flex-wrap:wrap}
     .tab{
       padding:9px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04); font-size:12px; font-weight:800; color:var(--muted);
+      background: rgba(255,255,255,.04); font-size:12px; font-weight:900; color:var(--muted);
     }
     .tab.active{
       color:var(--text);
       border-color: rgba(98,230,255,.28);
       background: linear-gradient(135deg, rgba(98,230,255,.18), rgba(138,125,255,.16));
     }
+
     .statusRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
     .pill{
       padding:6px 10px; border-radius:999px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.04);
-      font-size:11px; color:var(--muted); font-weight:800;
+      font-size:11px; color:var(--muted); font-weight:900;
     }
     .pill.ok{border-color: rgba(61,242,160,.35); color:#bfffe4; background: rgba(61,242,160,.08)}
     .pill.warn{border-color: rgba(255,209,102,.35); color:#ffe9b5; background: rgba(255,209,102,.08)}
     .pill.bad{border-color: rgba(255,92,122,.35); color:#ffc0cb; background: rgba(255,92,122,.08)}
+    .pill.tagA2Q{border-color: rgba(98,230,255,.35); color:#cfefff; background: rgba(98,230,255,.08)}
+    .pill.tagSOW{border-color: rgba(61,242,160,.35); color:#bfffe4; background: rgba(61,242,160,.08)}
+    .pill.tagBoth{border-color: rgba(138,125,255,.40); color:#e7dcff; background: rgba(138,125,255,.10)}
+    .pill.tagCC{border-color: rgba(255,255,255,.10); color:#d4ddf7; background: rgba(255,255,255,.03)}
+
     .progressWrap{
       min-width:260px;
       border:1px solid rgba(255,255,255,.10);
@@ -118,10 +122,10 @@
       transition: width .2s ease;
     }
     .panel .bd{padding:14px}
-    .page{
-      display:none;
-    }
+
+    .page{display:none}
     .page.active{display:block}
+
     .grid2{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -134,6 +138,7 @@
       background: rgba(12,22,43,.65);
       border-radius:14px;
       padding:10px;
+      transition: opacity .12s ease;
     }
     .field label{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
@@ -141,7 +146,10 @@
       letter-spacing:.18px;
       margin-bottom:8px;
     }
-    .field label span.hint{font-weight:700; color:var(--muted)}
+    .field label .left{
+      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    }
+    .field label .hint{font-weight:800; color:var(--muted)}
     input, select, textarea{
       width:100%;
       border-radius:12px;
@@ -215,8 +223,8 @@
       z-index:9999;
     }
     .helpModal{
-      width:min(880px, 96vw);
-      max-height: min(78vh, 760px);
+      width:min(900px, 96vw);
+      max-height: min(80vh, 760px);
       overflow:auto;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.10);
@@ -264,6 +272,7 @@
       font-size:12px;
     }
     .closeX:hover{background: rgba(255,255,255,.10)}
+
     .foot{
       margin-top:14px;
       padding:12px 14px;
@@ -274,16 +283,46 @@
       font-size:11px;
       line-height:1.4;
     }
+
+    /* Filter bar */
+    .filterBar{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      border:1px solid rgba(255,255,255,.07);
+      background: rgba(12,22,43,.45);
+      border-radius:14px;
+      padding:10px;
+      margin-bottom:12px;
+    }
+    .toggle{
+      display:flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      font-size:11px;
+      font-weight:900;
+      color: var(--muted);
+      cursor:pointer;
+      user-select:none;
+    }
+    .toggle input{accent-color: var(--accent); cursor:pointer}
+    .toggle.on{
+      color: var(--text);
+      border-color: rgba(98,230,255,.24);
+      background: rgba(98,230,255,.10);
+    }
+    .legend{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-left:auto}
   </style>
 </head>
+
 <body>
 <div class="wrap">
   <div class="topbar">
     <div class="brand">
       <div class="logo" aria-hidden="true"></div>
       <div>
-        <h1>Discovery Posters — Joint + Webex Calling + Webex Contact Center + Network</h1>
-        <p>Joint info reduces duplicates · Percent complete · MockAPI save/search/load · A2Q quick-fill</p>
+        <h1>Discovery Posters — Joint + Calling + Contact Center + Network</h1>
+        <p>Joint info avoids re-entry · Completion % · Contact Center fields are tagged for SOW and/or A2Q</p>
       </div>
     </div>
     <div class="actions">
@@ -300,13 +339,14 @@
         <button class="tab active" data-page="joint">Joint (Shared)</button>
         <button class="tab" data-page="calling">Calling</button>
         <button class="tab" data-page="contact">Contact Center</button>
-        <button class="tab" data-page="network">Network Assessment</button>
+        <button class="tab" data-page="network">Network Environment</button>
         <button class="tab" data-page="a2q">A2Q + Storage</button>
       </div>
 
       <div class="statusRow">
         <span class="pill warn" id="savePill">Unsaved</span>
         <span class="pill" id="a2qPill">A2Q Ready: Partial</span>
+
         <div style="display:flex; flex-direction:column; gap:6px;">
           <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
             <span class="pill" id="pctPill">Complete: 0%</span>
@@ -322,31 +362,79 @@
     <div class="bd">
       <!-- JOINT PAGE -->
       <div class="page active" id="page-joint">
+        <div class="filterBar">
+          <span class="pill">Shared / Joint fields (used across Calling, WxCC, Network, A2Q, SOW)</span>
+          <div class="legend">
+            <span class="pill tagA2Q">A2Q</span>
+            <span class="pill tagSOW">SOW</span>
+            <span class="pill tagBoth">A2Q+SOW</span>
+          </div>
+        </div>
+
         <div class="grid2">
-          <div class="field">
-            <label>Customer Name <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Customer Name <span class="hint">shared</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.customerName" placeholder="e.g., Acme Motors" />
           </div>
-          <div class="field">
-            <label>Customer Identifier (customerKey) <span class="hint">recommended</span> <button class="helpBtn" data-help="meta">?</button></label>
+
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Customer Identifier (customerKey) <span class="hint">recommended</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.customerKey" placeholder="SFDC AccountId / OpportunityId / internal key" />
           </div>
 
-          <div class="field">
-            <label>Market Vertical <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Market Vertical <span class="hint">shared</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.marketVertical" placeholder="Automotive / Healthcare / Gov..." />
           </div>
-          <div class="field">
-            <label>Migration Type <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Migration Type <span class="hint">shared</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.migrationType" placeholder="Migration from CUCM + UCCX / Avaya / Genesys..." />
           </div>
 
-          <div class="field">
-            <label>Partner Name <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
-            <input id="meta.partnerName" placeholder="Your partner name" />
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Partner Name <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
+            <input id="meta.partnerName" placeholder="Partner name" />
           </div>
-          <div class="field">
-            <label>Deal Type <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Deal Type <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <select id="meta.dealType">
               <option value="">Select…</option>
               <option>New Deal</option>
@@ -355,8 +443,14 @@
             </select>
           </div>
 
-          <div class="field">
-            <label>Onboarding Type <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Onboarding Type <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <select id="meta.onboardingType">
               <option value="">Select…</option>
               <option>Partner-Led Onboarding (Paid Deal)</option>
@@ -364,54 +458,128 @@
               <option>Other</option>
             </select>
           </div>
-          <div class="field">
-            <label>Tenant Location (DC) <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Tenant Location (DC) <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.tenantLocation" placeholder="e.g., US West (per Cisco mapping)" />
           </div>
 
-          <div class="field">
-            <label>Kick-off Date <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Kick-off Date <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.kickoffDate" type="date" />
           </div>
-          <div class="field">
-            <label>Go-Live Date <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Go-Live Date <span class="hint">A2Q/SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.goliveDate" type="date" />
           </div>
 
-          <div class="field">
-            <label>Control Hub Org ID <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Control Hub Org ID <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.controlHubOrgId" placeholder="Org ID or NA" />
           </div>
-          <div class="field">
-            <label>Web Order ID <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Web Order ID <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <input id="meta.webOrderId" placeholder="8–10 digits or NA" />
           </div>
 
-          <div class="field">
-            <label>Timeline Summary <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Timeline Summary <span class="hint">shared</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
             <textarea id="meta.timeline" placeholder="Phase 1 within 90 days; phased cutover by region; port windows..."></textarea>
           </div>
-          <div class="field">
-            <label>Links / Notes / Risks <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
-            <textarea id="meta.notes" placeholder="Lucid link, SFDC link, constraints, dependencies, risks..."></textarea>
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">General Notes / Risks <span class="hint">shared</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="meta">?</button>
+              </span>
+            </label>
+            <textarea id="meta.notes" placeholder="Constraints, dependencies, risks, assumptions…"></textarea>
           </div>
         </div>
       </div>
 
       <!-- CALLING PAGE -->
       <div class="page" id="page-calling">
+        <div class="filterBar">
+          <span class="pill">Webex Calling information collection</span>
+          <div class="legend">
+            <span class="pill tagA2Q">A2Q</span>
+            <span class="pill tagSOW">SOW</span>
+            <span class="pill tagBoth">A2Q+SOW</span>
+          </div>
+        </div>
+
         <div class="grid2">
-          <div class="field">
-            <label>Users in Scope <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Users in Scope <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <input id="wxc.users" type="number" min="0" placeholder="e.g., 850" />
           </div>
-          <div class="field">
-            <label>Locations / Sites <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Locations / Sites <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <input id="wxc.locations" type="number" min="0" placeholder="e.g., 14" />
           </div>
 
-          <div class="field">
-            <label>Deployment Model <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Deployment Model <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <select id="wxc.deploymentModel">
               <option value="">Select…</option>
               <option>Cloud (Webex Calling)</option>
@@ -419,8 +587,15 @@
               <option>Local Gateway (LGW) / CUBE</option>
             </select>
           </div>
-          <div class="field">
-            <label>PSTN Connectivity <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">PSTN Connectivity <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <select id="wxc.pstn">
               <option value="">Select…</option>
               <option>Cisco Calling Plan (CCP)</option>
@@ -430,35 +605,80 @@
             </select>
           </div>
 
-          <div class="field">
-            <label>Local Gateway / SBC Model <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
-            <input id="wxc.lgwModel" placeholder="vCUBE (C8000v) / ISR4K CUBE / Audiocodes..." />
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Local Gateway / SBC Model <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
+            <input id="wxc.lgwModel" placeholder="vCUBE (C8000v) / ISR4K / Audiocodes..." />
           </div>
-          <div class="field">
-            <label>LGW HA / Redundancy <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">LGW HA / Redundancy <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <input id="wxc.lgwHa" placeholder="HA pair, geo-redundant, dual ISPs..." />
           </div>
 
-          <div class="field">
-            <label>DIDs / Numbers in Scope <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">DIDs / Numbers in Scope <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <input id="wxc.didCount" type="number" min="0" placeholder="e.g., 1200" />
           </div>
-          <div class="field">
-            <label>Porting Plan <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Porting Plan <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <input id="wxc.portingPlan" placeholder="Staged by region; weekend ports; forwarding strategy..." />
           </div>
 
-          <div class="field">
-            <label>Endpoints <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Endpoints <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <input id="wxc.endpoints" placeholder="MPP phones, Webex App, ATAs, Rooms..." />
           </div>
-          <div class="field">
-            <label>Calling Features <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Calling Features <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <input id="wxc.aaHg" placeholder="Auto Attendants, Call Queues, Hunt Groups, Schedules..." />
           </div>
 
-          <div class="field">
-            <label>E911 <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">E911 <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
             <select id="wxc.e911">
               <option value="">Select…</option>
               <option>RedSky Horizon</option>
@@ -467,18 +687,53 @@
               <option>TBD</option>
             </select>
           </div>
-          <div class="field">
-            <label>Calling Notes <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
-            <textarea id="wxc.notes"></textarea>
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Calling Notes <span class="hint">calling</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxc">?</button>
+              </span>
+            </label>
+            <textarea id="wxc.notes" placeholder="Constraints, known issues, dependencies..."></textarea>
           </div>
         </div>
       </div>
 
       <!-- CONTACT CENTER PAGE -->
       <div class="page" id="page-contact">
-        <div class="grid2">
-          <div class="field">
-            <label>Deployment Type <span class="hint">wxcc</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+        <div class="filterBar">
+          <label class="toggle" id="toggleA2QOnly">
+            <input type="checkbox" id="filter.a2qOnly" />
+            Show A2Q-only fields
+          </label>
+          <label class="toggle" id="toggleSOWOnly">
+            <input type="checkbox" id="filter.sowOnly" />
+            Show SOW-only fields
+          </label>
+          <label class="toggle" id="toggleBothOnly">
+            <input type="checkbox" id="filter.bothOnly" />
+            Show fields used in A2Q+SOW
+          </label>
+
+          <div class="legend">
+            <span class="pill tagA2Q">A2Q</span>
+            <span class="pill tagSOW">SOW</span>
+            <span class="pill tagBoth">A2Q+SOW</span>
+          </div>
+        </div>
+
+        <!-- NOTE: each WxCC field is tagged: data-tags="a2q", "sow", or "a2q sow" -->
+        <div class="grid2" id="wxccFieldGrid">
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Deployment Type <span class="hint">WxCC</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <select id="wxcc.deploymentType">
               <option value="">Select…</option>
               <option>New</option>
@@ -486,26 +741,59 @@
               <option>Redesign</option>
             </select>
           </div>
-          <div class="field">
-            <label>Existing Contact Center <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Existing Contact Center <span class="hint">A2Q/SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.existingPlatform" placeholder="UCCX / Five9 / Genesys / Avaya / NICE..." />
           </div>
 
-          <div class="field">
-            <label>Standard Licenses <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Standard Licenses <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.licensesStandard" type="number" min="0" placeholder="e.g., 120" />
           </div>
-          <div class="field">
-            <label>Premium Licenses <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Premium Licenses <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.licensesPremium" type="number" min="0" placeholder="e.g., 80" />
           </div>
 
-          <div class="field">
-            <label>Channels <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Channels <span class="hint">A2Q/SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.channels" placeholder="Voice, Chat, Email, SMS, WhatsApp..." />
           </div>
-          <div class="field">
-            <label>Regional Media Required? <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Regional Media Required? <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <select id="wxcc.regionalMedia">
               <option value="">Select…</option>
               <option>Yes</option>
@@ -514,39 +802,91 @@
             </select>
           </div>
 
-          <div class="field">
-            <label>Agent Endpoints <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Agent Endpoints <span class="hint">A2Q/SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.agentEndpoints" placeholder="WebRTC / Webex Calling endpoints / PSTN / Teams..." />
           </div>
-          <div class="field">
-            <label>Agent Countries <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+
+          <div class="field" data-tags="a2q">
+            <label>
+              <span class="left">Agent Countries <span class="hint">A2Q</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagA2Q">A2Q</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.agentCountries" placeholder="US, Canada, UK..." />
           </div>
 
-          <div class="field">
-            <label>Queues / Teams / Entry Points <span class="hint">wxcc</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Queues / Teams / Entry Points <span class="hint">SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.queues" placeholder="12 queues, 6 teams, 8 entry points..." />
           </div>
-          <div class="field">
-            <label>Routing Model <span class="hint">wxcc</span> <button class="helpBtn" data-help="wxcc">?</button></label>
-            <input id="wxcc.routing" placeholder="Skill-based w/ overflow; priority, etc." />
+
+          <div class="field" data-tags="sow">
+            <label>
+              <span class="left">Routing Model <span class="hint">SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagSOW">SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
+            <input id="wxcc.routing" placeholder="Skill-based, priority, overflow, etc." />
           </div>
 
-          <div class="field">
-            <label>IVR / AI <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">IVR / AI <span class="hint">A2Q/SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.ivrAi" placeholder="TTS, VVA, data dips, AI Assistant, surveys..." />
           </div>
-          <div class="field">
-            <label>Recording / Reporting <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
-            <input id="wxcc.recordingReporting" placeholder="Retention, custom reports, dashboards..." />
+
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Recording / Reporting <span class="hint">A2Q/SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
+            <input id="wxcc.recordingReporting" placeholder="Retention, custom reports, QA, dashboards..." />
           </div>
 
-          <div class="field">
-            <label>Integrations <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Integrations <span class="hint">A2Q/SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <textarea id="wxcc.integrations" placeholder="CRM connector, APIs, SSO, data sources..."></textarea>
           </div>
-          <div class="field">
-            <label>Day 2 Support Model <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+
+          <div class="field" data-tags="a2q sow">
+            <label>
+              <span class="left">Day 2 Support Model <span class="hint">A2Q/SOW</span></span>
+              <span class="row" style="gap:6px;">
+                <span class="pill tagBoth">A2Q+SOW</span>
+                <button class="helpBtn" data-help="wxcc">?</button>
+              </span>
+            </label>
             <input id="wxcc.day2Support" placeholder="Partner Day 2 / Cisco support / Customer IT..." />
           </div>
         </div>
@@ -554,24 +894,58 @@
 
       <!-- NETWORK PAGE -->
       <div class="page" id="page-network">
+        <div class="filterBar">
+          <span class="pill">Network Environment / Readiness Assessment</span>
+          <div class="legend">
+            <span class="pill tagSOW">SOW</span>
+            <span class="pill tagA2Q">A2Q risk inputs</span>
+          </div>
+        </div>
+
         <div class="split">
           <div>
             <div class="grid2">
-              <div class="field">
-                <label>Sites Count <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+              <div class="field" data-tags="sow">
+                <label>
+                  <span class="left">Sites Count <span class="hint">network</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagSOW">SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <input id="network.sites" type="number" min="0" placeholder="e.g., 14" />
               </div>
-              <div class="field">
-                <label>Primary ISP <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+
+              <div class="field" data-tags="sow">
+                <label>
+                  <span class="left">Primary ISP <span class="hint">network</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagSOW">SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <input id="network.primaryIsp" placeholder="Spectrum / AT&T / Lumen..." />
               </div>
 
-              <div class="field">
-                <label>Bandwidth <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+              <div class="field" data-tags="sow">
+                <label>
+                  <span class="left">Bandwidth <span class="hint">network</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagSOW">SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <input id="network.bandwidth" placeholder="1Gbps DC, 200Mbps branches..." />
               </div>
-              <div class="field">
-                <label>WAN Type <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+
+              <div class="field" data-tags="sow">
+                <label>
+                  <span class="left">WAN Type <span class="hint">network</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagSOW">SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <select id="network.wanType">
                   <option value="">Select…</option>
                   <option>Direct Internet + VPN</option>
@@ -581,17 +955,36 @@
                 </select>
               </div>
 
-              <div class="field">
-                <label>Firewall Make/Model <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+              <div class="field" data-tags="sow">
+                <label>
+                  <span class="left">Firewall Make/Model <span class="hint">network</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagSOW">SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <input id="network.firewall" placeholder="Palo Alto / Fortinet / ASA / Check Point..." />
               </div>
-              <div class="field">
-                <label>Public IP Block <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+
+              <div class="field" data-tags="sow">
+                <label>
+                  <span class="left">Public IP Block <span class="hint">network</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagSOW">SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <input id="network.publicIp" placeholder="/29 / /28 / unknown" />
               </div>
 
-              <div class="field">
-                <label>QoS for Voice <span class="hint">A2Q risk</span> <button class="helpBtn" data-help="network">?</button></label>
+              <div class="field" data-tags="a2q">
+                <label>
+                  <span class="left">QoS for Voice <span class="hint">A2Q risk</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagA2Q">A2Q</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <select id="network.qos">
                   <option value="">Select…</option>
                   <option>Yes (End-to-End)</option>
@@ -600,26 +993,58 @@
                   <option>TBD</option>
                 </select>
               </div>
-              <div class="field">
-                <label>Latency/Jitter/PL <span class="hint">A2Q risk</span> <button class="helpBtn" data-help="network">?</button></label>
+
+              <div class="field" data-tags="a2q">
+                <label>
+                  <span class="left">Latency/Jitter/PL <span class="hint">A2Q risk</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagA2Q">A2Q</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <input id="network.metrics" placeholder="RTT 40ms, jitter <10ms, PL <0.5%" />
               </div>
 
-              <div class="field">
-                <label>LGW/CUBE Footprint <span class="hint">network/calling</span> <button class="helpBtn" data-help="network">?</button></label>
+              <div class="field" data-tags="sow">
+                <label>
+                  <span class="left">LGW/CUBE Footprint <span class="hint">network/calling</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagSOW">SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
                 <input id="network.lgwCubes" placeholder="2x vCUBE HA pair in DC..." />
               </div>
-              <div class="field">
-                <label>DC Interconnect <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
-                <input id="network.dcInterconnect" placeholder="Primary+DR w/ 10G private link..." />
+
+              <div class="field" data-tags="sow">
+                <label>
+                  <span class="left">DC Interconnect <span class="hint">network</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagSOW">SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
+                <input id="network.dcInterconnect" placeholder="Primary+DR w/ private link..." />
+              </div>
+
+              <div class="field" data-tags="sow a2q">
+                <label>
+                  <span class="left">Network Notes / Constraints <span class="hint">risk</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill tagBoth">A2Q+SOW</span>
+                    <button class="helpBtn" data-help="network">?</button>
+                  </span>
+                </label>
+                <textarea id="network.notes" placeholder="NAT, TLS inspection, proxies, split tunnel, firewall rules..."></textarea>
               </div>
 
               <div class="field">
-                <label>Network Notes / Constraints <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
-                <textarea id="network.notes" placeholder="NAT, TLS inspection, proxies, split tunnel, firewall rules..."></textarea>
-              </div>
-              <div class="field">
-                <label>Diagram Updates Live <span class="hint">auto-map</span></label>
+                <label>
+                  <span class="left">Diagram Updates Live <span class="hint">auto-map</span></span>
+                  <span class="row" style="gap:6px;">
+                    <span class="pill ok">Live</span>
+                  </span>
+                </label>
                 <div class="row">
                   <span class="pill ok">Form → diagram labels</span>
                   <span class="pill warn">Conceptual topology</span>
@@ -719,18 +1144,31 @@
 
       <!-- A2Q + STORAGE PAGE -->
       <div class="page" id="page-a2q">
+        <div class="filterBar">
+          <span class="pill">Save/Search/Load via MockAPI now; Salesforce later</span>
+          <div class="legend">
+            <span class="pill tagA2Q">A2Q Required tracking</span>
+          </div>
+        </div>
+
         <div class="grid2">
           <div class="field">
-            <label>MockAPI Base URL <span class="hint">required for save/search/load</span> <button class="helpBtn" data-help="webhook">?</button></label>
+            <label>
+              <span class="left">MockAPI Base URL <span class="hint">required</span></span>
+              <span class="row" style="gap:6px;">
+                <button class="helpBtn" data-help="webhook">?</button>
+              </span>
+            </label>
             <input id="storage.mockapiBaseUrl" placeholder="https://your-org.mockapi.io/discoveryRecords" />
           </div>
+
           <div class="field">
-            <label>Salesforce Save URL (later) <span class="hint">optional</span></label>
+            <label><span class="left">Salesforce Save URL (later) <span class="hint">optional</span></span></label>
             <input id="storage.salesforceSaveUrl" placeholder="https://.../services/apexrest/webexDiscovery" />
           </div>
 
           <div class="field">
-            <label>Search / Load <span class="hint">by Customer Name, customerKey, or record id</span></label>
+            <label><span class="left">Search / Load <span class="hint">customer name, customerKey, or record id</span></span></label>
             <div class="row">
               <input id="search.term" placeholder="Acme Motors or 001xx000003..." style="flex:1" />
               <button class="btn" id="btnSearch">Search</button>
@@ -742,32 +1180,36 @@
           </div>
 
           <div class="field">
-            <label>Remote Save <span class="hint">MockAPI now</span></label>
+            <label><span class="left">Remote Save <span class="hint">MockAPI</span></span></label>
             <div class="row">
               <button class="btn primary" id="btnSaveRemote">Save to MockAPI</button>
               <button class="btn" id="btnCopyA2Q">Copy A2Q JSON</button>
             </div>
             <div class="row" style="margin-top:8px;">
-              <span class="pill" id="remoteHint">Tip: first save creates an id; next saves update it.</span>
+              <span class="pill">First save creates an id; next saves update it.</span>
             </div>
           </div>
 
           <div class="field" style="grid-column:1/-1;">
-            <label>A2Q Quick-Fill <span class="hint">Jump + Copy from source</span></label>
+            <label><span class="left">A2Q Quick-Fill <span class="hint">Jump + Copy</span></span></label>
             <div class="a2qGrid" id="a2qGrid"></div>
           </div>
 
           <div class="field" style="grid-column:1/-1;">
-            <label>Webhook Preview Payload <span class="hint">what you will store/send</span></label>
+            <label><span class="left">Payload Preview <span class="hint">stored in MockAPI</span></span></label>
             <textarea id="payload.preview" class="mono" readonly></textarea>
           </div>
         </div>
-      </div>
 
-      <div class="foot">
-        <b>Salesforce note:</b> saving directly to Salesforce from a browser requires secure auth (OAuth/Connected App or Apex REST with session). This UI is wired for MockAPI now and includes a placeholder endpoint for Salesforce later.
+        <div class="foot">
+          <b>Salesforce note:</b> saving directly to Salesforce from browser requires secure auth (OAuth/Connected App or Apex REST w/ session). This UI persists to MockAPI now and keeps a Salesforce endpoint placeholder for later.
+        </div>
       </div>
     </div>
+  </div>
+
+  <div class="foot">
+    <b>Contact Center tagging:</b> Each WxCC field shows whether it’s used for <b>SOW</b>, <b>A2Q</b>, or both. Use the toggles in the Contact Center tab to quickly focus on one audience.
   </div>
 </div>
 
@@ -787,12 +1229,12 @@
 
 <script>
 /* =========================
-   SHARED MODEL (joint reduces duplicates)
+   SHARED MODEL
    ========================= */
 const MODEL = {
   meta: {
-    recordId: "",            // MockAPI record id
-    customerKey: "",         // stable identifier (AccountId/OpportunityId)
+    recordId: "",
+    customerKey: "",
     customerName: "",
     marketVertical: "",
     partnerName: "",
@@ -853,9 +1295,17 @@ const MODEL = {
   storage: {
     mockapiBaseUrl: "",
     salesforceSaveUrl: ""
+  },
+  filters: {
+    a2qOnly: false,
+    sowOnly: false,
+    bothOnly: false
   }
 };
 
+/* =========================
+   A2Q MAP (required-ish set)
+   ========================= */
 const A2Q_MAP = [
   { id:"QID2",  label:"Customer Name", path:"meta.customerName", required:true },
   { id:"QID1",  label:"Partner Name", path:"meta.partnerName", required:true },
@@ -876,18 +1326,19 @@ const A2Q_MAP = [
 ];
 
 /* =========================
-   HELP (examples)
+   HELP CONTENT
    ========================= */
 const HELP_EXAMPLES = {
   meta: {
     title:"Joint (Shared) Examples",
-    subtitle:"Use joint info to avoid duplicate entry across Calling/WxCC/Network.",
+    subtitle:"These values reduce duplicates across Calling, WxCC, Network, A2Q, and SOW.",
     sections:[
       {h:"Customer + IDs", p:
 `Customer Name: Acme Motors Group
 customerKey: 006xx00000ABCDEF (OpportunityId) or 001xx00000AAAAAA (AccountId)
-Market Vertical: Automotive`},
-      {h:"A2Q basics", p:
+Market Vertical: Automotive
+Migration Type: CUCM + UCCX migration`},
+      {h:"A2Q essentials", p:
 `Partner Name: CX Advanced Solutions
 Deal Type: New Deal
 Onboarding Type: Partner-Led Onboarding (Paid Deal)
@@ -896,9 +1347,8 @@ Kick-off: 2026-01-06
 Go-live: 2026-03-20
 Control Hub Org ID: 9a1b2c3d4e
 Web Order ID: 12345678`},
-      {h:"Timeline + Notes", p:
-`Migration Type: CUCM + UCCX migration
-Timeline: Phase 1 within 90 days; phased by region; weekend port windows.
+      {h:"Timeline + Risks", p:
+`Timeline: Phase 1 within 90 days; phased by region; weekend port windows.
 Notes: Carrier porting is critical path; TLS inspection must bypass Webex media; QoS rollout needed.`}
     ]
   },
@@ -909,36 +1359,35 @@ Notes: Carrier porting is critical path; TLS inspection must bypass Webex media;
       {h:"Scale + PSTN", p:
 `Users: 850
 Locations: 14
-Deployment: Hybrid (WxC + On-Prem)
+Deployment: Cloud (Webex Calling)
 PSTN: Local Gateway to Carrier`},
-      {h:"LGW + Numbering", p:
-`LGW Model: 2x vCUBE (C8000v) in DC
+      {h:"LGW + Endpoints", p:
+`LGW Model: 2x vCUBE (C8000v)
 HA: Active/Standby + dual ISPs
-DIDs: 1200
-Porting: staged by region, weekend ports`},
+Endpoints: MPP 8861 + Webex App + ATAs`},
     ]
   },
   wxcc: {
     title:"Contact Center Examples",
-    subtitle:"Common A2Q-oriented WxCC fields.",
+    subtitle:"Fields are tagged as SOW, A2Q, or both.",
     sections:[
-      {h:"Licensing + Channels", p:
-`Deployment: Migration
-Existing CC: UCCX
+      {h:"Licenses + Channels", p:
+`Existing CC: UCCX
 Standard: 120
 Premium: 80
 Channels: Voice, Chat, Email, SMS
 Regional Media: Yes`},
-      {h:"Ops + AI", p:
+      {h:"Ops + Integrations", p:
 `Agent endpoints: WebRTC + Webex Calling
 Countries: US, Canada
-IVR/AI: Cisco TTS + Google VVA, CRM data dips via REST
+IVR/AI: Cisco TTS + VVA, CRM data dips via REST
+Recording/Reporting: retention 2 years, custom dashboards
 Day 2: Partner Day 2, Cisco escalation`},
     ]
   },
   network: {
-    title:"Network Assessment Examples",
-    subtitle:"Values that help validate media readiness (A2Q risks).",
+    title:"Network Environment Examples",
+    subtitle:"Values used for readiness (media, QoS, security).",
     sections:[
       {h:"WAN + ISP", p:
 `Sites: 14
@@ -954,7 +1403,7 @@ Metrics: RTT 35–55ms; jitter <10ms; PL <0.5%`},
   },
   webhook: {
     title:"Storage / MockAPI Examples",
-    subtitle:"Save now to MockAPI, later replace with Salesforce middleware/Apex.",
+    subtitle:"Save now to MockAPI; wire Salesforce later via middleware/Apex REST.",
     sections:[
       {h:"MockAPI Base URL", p:`https://your-org.mockapi.io/discoveryRecords`},
       {h:"Search", p:`Search by customerName ("Acme") or customerKey (OpportunityId/AccountId) or record id.`},
@@ -1004,6 +1453,7 @@ function buildA2QDraft(){
   }
   return draft;
 }
+
 function buildWebexSpaceMessageStub(){
   const name = MODEL.meta.customerName || "Customer";
   const go = MODEL.meta.goliveDate || "TBD";
@@ -1019,19 +1469,14 @@ function buildWebexSpaceMessageStub(){
 - WAN: **${MODEL.network.wanType || "TBD"}** / ISP: **${MODEL.network.primaryIsp || "TBD"}**`
   };
 }
+
 function serializePayload(){
   const now = new Date().toISOString();
   return {
     eventType: "discovery.updated",
     timestamp: now,
-    identifiers: {
-      recordId: MODEL.meta.recordId || "",
-      customerKey: MODEL.meta.customerKey || ""
-    },
-    customer: {
-      name: MODEL.meta.customerName || "TBD",
-      marketVertical: MODEL.meta.marketVertical || "TBD"
-    },
+    identifiers: { recordId: MODEL.meta.recordId || "", customerKey: MODEL.meta.customerKey || "" },
+    customer: { name: MODEL.meta.customerName || "TBD", marketVertical: MODEL.meta.marketVertical || "TBD" },
     project: {
       partnerName: MODEL.meta.partnerName || "TBD",
       dealType: MODEL.meta.dealType || "TBD",
@@ -1054,7 +1499,7 @@ function serializePayload(){
 }
 
 /* =========================
-   COMPLETION / STATUS
+   STATUS / COMPLETION
    ========================= */
 const savePill = document.getElementById("savePill");
 const a2qPill = document.getElementById("a2qPill");
@@ -1072,9 +1517,8 @@ function getA2QValue(item){
 }
 
 function computeCompletion(){
-  // Count ALL visible form inputs in the poster pages (not preview textarea)
   const els = Array.from(document.querySelectorAll("input,select,textarea"))
-    .filter(el => el.id && !el.readOnly && !el.disabled && !el.id.startsWith("payload.") && !el.id.startsWith("search."));
+    .filter(el => el.id && !el.readOnly && !el.disabled && !el.id.startsWith("payload.") && !el.id.startsWith("search.") && !el.id.startsWith("filter."));
   if(els.length === 0) return {pct:0, filled:0, total:0};
 
   let filled = 0;
@@ -1144,6 +1588,44 @@ function updateLiveDiagram(){
 }
 
 /* =========================
+   CONTACT CENTER FILTERING (A2Q vs SOW tags)
+   ========================= */
+function applyWxccFilters(){
+  const a2qOnly = MODEL.filters.a2qOnly;
+  const sowOnly = MODEL.filters.sowOnly;
+  const bothOnly = MODEL.filters.bothOnly;
+
+  const grid = document.getElementById("wxccFieldGrid");
+  if(!grid) return;
+
+  // Update toggle pill styling
+  document.getElementById("toggleA2QOnly").classList.toggle("on", a2qOnly);
+  document.getElementById("toggleSOWOnly").classList.toggle("on", sowOnly);
+  document.getElementById("toggleBothOnly").classList.toggle("on", bothOnly);
+
+  const fields = Array.from(grid.querySelectorAll(".field"));
+  fields.forEach(f=>{
+    const tags = (f.getAttribute("data-tags") || "").split(/\s+/).filter(Boolean);
+    const isA2Q = tags.includes("a2q");
+    const isSOW = tags.includes("sow");
+    const isBoth = isA2Q && isSOW;
+
+    let show = true;
+
+    // If no filters selected -> show all
+    const anyFilter = a2qOnly || sowOnly || bothOnly;
+    if(anyFilter){
+      show = false;
+      if(a2qOnly && isA2Q && !isSOW) show = true;
+      if(sowOnly && isSOW && !isA2Q) show = true;
+      if(bothOnly && isBoth) show = true;
+    }
+
+    f.style.display = show ? "" : "none";
+  });
+}
+
+/* =========================
    A2Q GRID
    ========================= */
 function refreshA2Q(){
@@ -1179,7 +1661,6 @@ function refreshA2Q(){
       const path = btn.getAttribute("data-jump");
       const target = document.getElementById(path);
       if(target){
-        // Route to page
         const page = path.startsWith("meta.") ? "joint"
                    : path.startsWith("wxc.") ? "calling"
                    : path.startsWith("wxcc.") ? "contact"
@@ -1217,13 +1698,16 @@ function refreshPreview(){
 }
 
 /* =========================
-   TABBED PAGES
+   TABS
    ========================= */
 function setPage(pageKey){
   document.querySelectorAll(".tab").forEach(t=> t.classList.toggle("active", t.dataset.page === pageKey));
   document.querySelectorAll(".page").forEach(p=> p.classList.remove("active"));
   const pageEl = document.getElementById(`page-${pageKey}`);
   if(pageEl) pageEl.classList.add("active");
+
+  // re-apply contact filters when entering contact tab
+  if(pageKey === "contact") applyWxccFilters();
 }
 
 document.getElementById("tabs").addEventListener("click", (e)=>{
@@ -1248,6 +1732,32 @@ function bindInputs(){
       markDirty();
     });
   });
+
+  // filters
+  document.getElementById("filter.a2qOnly")?.addEventListener("change", (e)=>{
+    MODEL.filters.a2qOnly = e.target.checked;
+    if(e.target.checked){ MODEL.filters.sowOnly = false; MODEL.filters.bothOnly = false; }
+    syncFilterCheckboxes();
+    applyWxccFilters();
+  });
+  document.getElementById("filter.sowOnly")?.addEventListener("change", (e)=>{
+    MODEL.filters.sowOnly = e.target.checked;
+    if(e.target.checked){ MODEL.filters.a2qOnly = false; MODEL.filters.bothOnly = false; }
+    syncFilterCheckboxes();
+    applyWxccFilters();
+  });
+  document.getElementById("filter.bothOnly")?.addEventListener("change", (e)=>{
+    MODEL.filters.bothOnly = e.target.checked;
+    if(e.target.checked){ MODEL.filters.a2qOnly = false; MODEL.filters.sowOnly = false; }
+    syncFilterCheckboxes();
+    applyWxccFilters();
+  });
+}
+
+function syncFilterCheckboxes(){
+  document.getElementById("filter.a2qOnly").checked = !!MODEL.filters.a2qOnly;
+  document.getElementById("filter.sowOnly").checked = !!MODEL.filters.sowOnly;
+  document.getElementById("filter.bothOnly").checked = !!MODEL.filters.bothOnly;
 }
 
 /* =========================
@@ -1314,7 +1824,7 @@ async function mockapiSearch(){
           break;
         }
       }
-    }catch(e){ /* ignore */ }
+    }catch(e){}
   }
 
   let items = candidates;
@@ -1374,7 +1884,6 @@ async function mockapiLoadById(id){
     if(item && item.payload){
       const p = item.payload;
 
-      // hydrate
       MODEL.meta.recordId = item.id || "";
       MODEL.meta.customerKey = item.customerKey || "";
       MODEL.meta.customerName = p.customer?.name || "";
@@ -1399,7 +1908,7 @@ async function mockapiLoadById(id){
       // write to UI
       document.querySelectorAll("input,select,textarea").forEach(el=>{
         if(!el.id) return;
-        if(el.id.startsWith("payload.") || el.id.startsWith("search.")) return;
+        if(el.id.startsWith("payload.") || el.id.startsWith("search.") || el.id.startsWith("filter.")) return;
         el.value = deepGet(MODEL, el.id) || "";
       });
 
@@ -1410,6 +1919,7 @@ async function mockapiLoadById(id){
       updateA2QStatus();
       updateCompletionUI();
       updateRecordPill();
+      applyWxccFilters();
       alert(`Loaded record id: ${MODEL.meta.recordId}`);
       return;
     }
@@ -1420,14 +1930,14 @@ async function mockapiLoadById(id){
 }
 
 /* =========================
-   LOCAL SAVE/LOAD + EXPORT
+   LOCAL SAVE/LOAD + EXPORT + BUTTONS
    ========================= */
 document.getElementById("btnSaveLocal").addEventListener("click", ()=>{
-  localStorage.setItem("webexDiscoveryPosterTabbed", JSON.stringify(MODEL));
+  localStorage.setItem("webexDiscoveryPosterTagged", JSON.stringify(MODEL));
   markSaved();
 });
 document.getElementById("btnLoadLocal").addEventListener("click", ()=>{
-  const raw = localStorage.getItem("webexDiscoveryPosterTabbed");
+  const raw = localStorage.getItem("webexDiscoveryPosterTagged");
   if(!raw) return;
   try{
     const obj = JSON.parse(raw);
@@ -1435,10 +1945,12 @@ document.getElementById("btnLoadLocal").addEventListener("click", ()=>{
 
     document.querySelectorAll("input,select,textarea").forEach(el=>{
       if(!el.id) return;
-      if(el.id.startsWith("payload.") || el.id.startsWith("search.")) return;
+      if(el.id.startsWith("payload.") || el.id.startsWith("search.") || el.id.startsWith("filter.")) return;
       el.value = deepGet(MODEL, el.id) || "";
     });
 
+    syncFilterCheckboxes();
+    applyWxccFilters();
     markSaved();
     refreshA2Q();
     updateLiveDiagram();
@@ -1450,15 +1962,13 @@ document.getElementById("btnLoadLocal").addEventListener("click", ()=>{
     alert("Local load failed: invalid data.");
   }
 });
+
 document.getElementById("btnExport").addEventListener("click", async ()=>{
   const text = JSON.stringify(serializePayload(), null, 2);
   await navigator.clipboard.writeText(text);
   alert("Full JSON copied to clipboard.");
 });
 
-/* =========================
-   A2Q + Storage actions
-   ========================= */
 document.getElementById("btnSaveRemote").addEventListener("click", mockapiCreateOrUpdate);
 document.getElementById("btnSearch").addEventListener("click", mockapiSearch);
 document.getElementById("btnLoadSelected").addEventListener("click", ()=>{
@@ -1513,6 +2023,8 @@ document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeHelp(); })
    BOOT
    ========================= */
 bindInputs();
+syncFilterCheckboxes();
+applyWxccFilters();
 refreshA2Q();
 refreshPreview();
 updateLiveDiagram();
