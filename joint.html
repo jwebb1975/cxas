@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Webex Discovery Posters (WxC + WxCC + Network Topology)</title>
+  <title>Webex Discovery Posters — Joint + Calling + WxCC + Network</title>
   <style>
     :root{
       --bg:#0b1220;
@@ -20,7 +20,7 @@
       --shadow: 0 16px 40px rgba(0,0,0,.35);
       --radius: 14px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -56,23 +56,17 @@
       cursor:pointer; border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.06);
       color:var(--text); padding:10px 12px; border-radius:12px;
-      font-weight:600; font-size:12px;
+      font-weight:700; font-size:12px;
       transition: transform .08s ease, background .12s ease, border-color .12s ease;
       text-decoration:none; display:inline-flex; align-items:center; gap:8px;
     }
     button:hover,.btn:hover{background: rgba(255,255,255,.09); border-color:rgba(255,255,255,.18)}
     button:active,.btn:active{transform: translateY(1px)}
     .btn.primary{background: linear-gradient(135deg, rgba(98,230,255,.22), rgba(138,125,255,.20)); border-color: rgba(98,230,255,.25)}
-    .grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1.25fr .75fr;
-      gap:14px;
-    }
-    @media (max-width: 1100px){
-      .grid{grid-template-columns:1fr}
-    }
+
+    /* Main layout */
     .panel{
+      margin-top:14px;
       border:1px solid rgba(255,255,255,.07);
       background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
       border-radius:var(--radius);
@@ -80,31 +74,61 @@
       overflow:hidden;
     }
     .panel .hd{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
       padding:12px 14px;
       background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
     }
-    .panel .hd h2{margin:0; font-size:13px; letter-spacing:.2px}
-    .panel .bd{padding:14px}
     .tabs{display:flex; gap:8px; flex-wrap:wrap}
     .tab{
       padding:9px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04); font-size:12px; font-weight:700; color:var(--muted);
+      background: rgba(255,255,255,.04); font-size:12px; font-weight:800; color:var(--muted);
     }
     .tab.active{
       color:var(--text);
       border-color: rgba(98,230,255,.28);
       background: linear-gradient(135deg, rgba(98,230,255,.18), rgba(138,125,255,.16));
     }
-    .form{
+    .statusRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .pill{
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      font-size:11px; color:var(--muted); font-weight:800;
+    }
+    .pill.ok{border-color: rgba(61,242,160,.35); color:#bfffe4; background: rgba(61,242,160,.08)}
+    .pill.warn{border-color: rgba(255,209,102,.35); color:#ffe9b5; background: rgba(255,209,102,.08)}
+    .pill.bad{border-color: rgba(255,92,122,.35); color:#ffc0cb; background: rgba(255,92,122,.08)}
+    .progressWrap{
+      min-width:260px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(12,22,43,.55);
+      border-radius:999px;
+      overflow:hidden;
+      height:12px;
+    }
+    .progressBar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(98,230,255,.9), rgba(138,125,255,.85), rgba(61,242,160,.75));
+      transition: width .2s ease;
+    }
+    .panel .bd{padding:14px}
+    .page{
+      display:none;
+    }
+    .page.active{display:block}
+    .grid2{
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap:10px 12px;
+      gap:12px;
     }
-    @media (max-width: 900px){
-      .form{grid-template-columns:1fr}
-    }
+    @media (max-width: 980px){ .grid2{grid-template-columns:1fr} }
+
     .field{
       border:1px solid rgba(255,255,255,.07);
       background: rgba(12,22,43,.65);
@@ -112,13 +136,12 @@
       padding:10px;
     }
     .field label{
-      display:flex; justify-content:space-between; gap:10px;
-      font-size:11px; font-weight:800; color:#cfe0ff;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      font-size:11px; font-weight:900; color:#cfe0ff;
       letter-spacing:.18px;
       margin-bottom:8px;
-      align-items:center;
     }
-    .field label span.hint{font-weight:600; color:var(--muted)}
+    .field label span.hint{font-weight:700; color:var(--muted)}
     input, select, textarea{
       width:100%;
       border-radius:12px;
@@ -129,19 +152,17 @@
       outline:none;
       font-size:12px;
     }
-    textarea{min-height:84px; resize:vertical}
+    textarea{min-height:92px; resize:vertical}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .pill{
-      padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      font-size:11px; color:var(--muted); font-weight:700;
+    .mono{font-family:var(--mono)}
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
     }
-    .pill.ok{border-color: rgba(61,242,160,.35); color:#bfffe4; background: rgba(61,242,160,.08)}
-    .pill.warn{border-color: rgba(255,209,102,.35); color:#ffe9b5; background: rgba(255,209,102,.08)}
-    .pill.bad{border-color: rgba(255,92,122,.35); color:#ffc0cb; background: rgba(255,92,122,.08)}
-    .split{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
     @media (max-width: 1100px){ .split{grid-template-columns:1fr} }
+
     .svgWrap{
       border:1px solid rgba(255,255,255,.07);
       border-radius:var(--radius);
@@ -152,6 +173,7 @@
       overflow:hidden;
     }
     .svgWrap svg{width:100%; height:auto; display:block}
+
     .a2qGrid{display:grid; grid-template-columns:1fr; gap:10px}
     .a2qItem{
       border:1px solid rgba(255,255,255,.07);
@@ -171,29 +193,16 @@
     }
     .miniBtns{display:flex; gap:8px; flex-wrap:wrap}
     .miniBtns button{padding:8px 10px; font-size:11px}
-    .foot{
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:var(--radius);
-      border:1px solid rgba(255,255,255,.06);
-      background: rgba(255,255,255,.03);
-      color:var(--muted);
-      font-size:11px;
-      line-height:1.4;
-    }
-    .mono{font-family:var(--mono)}
 
-    /* Help UI */
+    /* Help */
     .helpBtn{
       display:inline-flex; align-items:center; justify-content:center;
       width:20px; height:20px; border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       color: var(--text);
-      font-weight:900;
-      font-size:12px;
-      cursor:pointer;
-      padding:0;
+      font-weight:900; font-size:12px;
+      cursor:pointer; padding:0;
     }
     .helpBtn:hover{background: rgba(255,255,255,.10); border-color: rgba(98,230,255,.25)}
     .helpModalBackdrop{
@@ -251,10 +260,20 @@
       color: var(--text);
       padding:8px 10px;
       border-radius:12px;
-      font-weight:800;
+      font-weight:900;
       font-size:12px;
     }
     .closeX:hover{background: rgba(255,255,255,.10)}
+    .foot{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.4;
+    }
   </style>
 </head>
 <body>
@@ -263,637 +282,492 @@
     <div class="brand">
       <div class="logo" aria-hidden="true"></div>
       <div>
-        <h1>Webex Discovery Posters — WxC + WxCC + Network Topology</h1>
-        <p>Single shared model · A2Q Quick-Fill · Webhook JSON export</p>
+        <h1>Discovery Posters — Joint + Webex Calling + Webex Contact Center + Network</h1>
+        <p>Joint info reduces duplicates · Percent complete · MockAPI save/search/load · A2Q quick-fill</p>
       </div>
     </div>
     <div class="actions">
-      <button class="btn" id="btnSave">Save (Local)</button>
-      <button class="btn" id="btnLoad">Load (Local)</button>
-      <button class="btn primary" id="btnExport">Export JSON</button>
-      <button class="btn primary" id="btnWebhook">Send Webhook</button>
       <button class="btn" id="btnHelp">Help / Examples</button>
+      <button class="btn" id="btnSaveLocal">Save (Local)</button>
+      <button class="btn" id="btnLoadLocal">Load (Local)</button>
+      <button class="btn primary" id="btnExport">Copy Full JSON</button>
     </div>
   </div>
 
-  <div class="grid">
-    <!-- LEFT: Posters -->
-    <div class="panel">
-      <div class="hd">
-        <div class="tabs" id="tabs">
-          <button class="tab active" data-tab="meta">Shared Project</button>
-          <button class="tab" data-tab="wxc">Webex Calling</button>
-          <button class="tab" data-tab="wxcc">Webex Contact Center</button>
-          <button class="tab" data-tab="network">Network Topology</button>
+  <div class="panel">
+    <div class="hd">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-page="joint">Joint (Shared)</button>
+        <button class="tab" data-page="calling">Calling</button>
+        <button class="tab" data-page="contact">Contact Center</button>
+        <button class="tab" data-page="network">Network Assessment</button>
+        <button class="tab" data-page="a2q">A2Q + Storage</button>
+      </div>
+
+      <div class="statusRow">
+        <span class="pill warn" id="savePill">Unsaved</span>
+        <span class="pill" id="a2qPill">A2Q Ready: Partial</span>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+            <span class="pill" id="pctPill">Complete: 0%</span>
+            <span class="pill" id="recordPill">Record: New</span>
+          </div>
+          <div class="progressWrap" aria-label="Completion progress">
+            <div class="progressBar" id="progressBar"></div>
+          </div>
         </div>
-        <div class="row">
-          <span class="pill" id="statusPill">Not Saved</span>
-          <span class="pill ok" id="readyPill">A2Q Ready: Partial</span>
+      </div>
+    </div>
+
+    <div class="bd">
+      <!-- JOINT PAGE -->
+      <div class="page active" id="page-joint">
+        <div class="grid2">
+          <div class="field">
+            <label>Customer Name <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.customerName" placeholder="e.g., Acme Motors" />
+          </div>
+          <div class="field">
+            <label>Customer Identifier (customerKey) <span class="hint">recommended</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.customerKey" placeholder="SFDC AccountId / OpportunityId / internal key" />
+          </div>
+
+          <div class="field">
+            <label>Market Vertical <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.marketVertical" placeholder="Automotive / Healthcare / Gov..." />
+          </div>
+          <div class="field">
+            <label>Migration Type <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.migrationType" placeholder="Migration from CUCM + UCCX / Avaya / Genesys..." />
+          </div>
+
+          <div class="field">
+            <label>Partner Name <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.partnerName" placeholder="Your partner name" />
+          </div>
+          <div class="field">
+            <label>Deal Type <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <select id="meta.dealType">
+              <option value="">Select…</option>
+              <option>New Deal</option>
+              <option>Order Modification</option>
+              <option>P2P Transfer</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Onboarding Type <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <select id="meta.onboardingType">
+              <option value="">Select…</option>
+              <option>Partner-Led Onboarding (Paid Deal)</option>
+              <option>Cisco-Led Onboarding</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Tenant Location (DC) <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.tenantLocation" placeholder="e.g., US West (per Cisco mapping)" />
+          </div>
+
+          <div class="field">
+            <label>Kick-off Date <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.kickoffDate" type="date" />
+          </div>
+          <div class="field">
+            <label>Go-Live Date <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.goliveDate" type="date" />
+          </div>
+
+          <div class="field">
+            <label>Control Hub Org ID <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.controlHubOrgId" placeholder="Org ID or NA" />
+          </div>
+          <div class="field">
+            <label>Web Order ID <span class="hint">A2Q</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <input id="meta.webOrderId" placeholder="8–10 digits or NA" />
+          </div>
+
+          <div class="field">
+            <label>Timeline Summary <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <textarea id="meta.timeline" placeholder="Phase 1 within 90 days; phased cutover by region; port windows..."></textarea>
+          </div>
+          <div class="field">
+            <label>Links / Notes / Risks <span class="hint">shared</span> <button class="helpBtn" data-help="meta">?</button></label>
+            <textarea id="meta.notes" placeholder="Lucid link, SFDC link, constraints, dependencies, risks..."></textarea>
+          </div>
         </div>
       </div>
 
-      <div class="bd">
-        <!-- Shared Project -->
-        <div id="tab-meta">
-          <div class="form">
-            <div class="field" data-path="meta.customerName">
-              <label>
-                Customer Name <span class="hint">Shared</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.customerName" placeholder="e.g., Acme Motors" />
-            </div>
-            <div class="field" data-path="meta.marketVertical">
-              <label>
-                Market Vertical <span class="hint">Shared</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.marketVertical" placeholder="e.g., Automotive / Healthcare / Gov" />
-            </div>
+      <!-- CALLING PAGE -->
+      <div class="page" id="page-calling">
+        <div class="grid2">
+          <div class="field">
+            <label>Users in Scope <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <input id="wxc.users" type="number" min="0" placeholder="e.g., 850" />
+          </div>
+          <div class="field">
+            <label>Locations / Sites <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <input id="wxc.locations" type="number" min="0" placeholder="e.g., 14" />
+          </div>
 
-            <div class="field" data-path="meta.partnerName">
-              <label>
-                Partner Name <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.partnerName" placeholder="e.g., CX Advanced Solutions" />
-            </div>
-            <div class="field" data-path="meta.dealType">
-              <label>
-                Deal Type <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <select id="meta.dealType">
-                <option value="">Select…</option>
-                <option>New Deal</option>
-                <option>Order Modification</option>
-                <option>P2P Transfer</option>
-              </select>
-            </div>
+          <div class="field">
+            <label>Deployment Model <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <select id="wxc.deploymentModel">
+              <option value="">Select…</option>
+              <option>Cloud (Webex Calling)</option>
+              <option>Hybrid (WxC + On-Prem)</option>
+              <option>Local Gateway (LGW) / CUBE</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>PSTN Connectivity <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <select id="wxc.pstn">
+              <option value="">Select…</option>
+              <option>Cisco Calling Plan (CCP)</option>
+              <option>Local Gateway to Carrier</option>
+              <option>Cloud Connected PSTN (CCP Partner)</option>
+              <option>Mix</option>
+            </select>
+          </div>
 
-            <div class="field" data-path="meta.onboardingType">
-              <label>
-                Onboarding Type <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <select id="meta.onboardingType">
-                <option value="">Select…</option>
-                <option>Partner-Led Onboarding (Paid Deal)</option>
-                <option>Cisco-Led Onboarding</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="field" data-path="meta.migrationType">
-              <label>
-                Migration Type <span class="hint">Shared</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.migrationType" placeholder="e.g., Greenfield / Migration from Avaya / CUCM / Genesys" />
-            </div>
+          <div class="field">
+            <label>Local Gateway / SBC Model <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <input id="wxc.lgwModel" placeholder="vCUBE (C8000v) / ISR4K CUBE / Audiocodes..." />
+          </div>
+          <div class="field">
+            <label>LGW HA / Redundancy <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <input id="wxc.lgwHa" placeholder="HA pair, geo-redundant, dual ISPs..." />
+          </div>
 
-            <div class="field" data-path="meta.timeline">
-              <label>
-                Timeline Summary <span class="hint">Shared</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.timeline" placeholder="e.g., Phase 1 in 60-90 days, phased cutover by region" />
-            </div>
-            <div class="field" data-path="meta.goliveDate">
-              <label>
-                Expected Go-Live Date <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.goliveDate" type="date" />
-            </div>
+          <div class="field">
+            <label>DIDs / Numbers in Scope <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <input id="wxc.didCount" type="number" min="0" placeholder="e.g., 1200" />
+          </div>
+          <div class="field">
+            <label>Porting Plan <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <input id="wxc.portingPlan" placeholder="Staged by region; weekend ports; forwarding strategy..." />
+          </div>
 
-            <div class="field" data-path="meta.kickoffDate">
-              <label>
-                Expected SM Kick-off Date <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.kickoffDate" type="date" />
-            </div>
-            <div class="field" data-path="meta.tenantLocation">
-              <label>
-                WxCC Tenant Location (Data Center) <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.tenantLocation" placeholder="e.g., US West (per Cisco mapping)" />
-            </div>
+          <div class="field">
+            <label>Endpoints <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <input id="wxc.endpoints" placeholder="MPP phones, Webex App, ATAs, Rooms..." />
+          </div>
+          <div class="field">
+            <label>Calling Features <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <input id="wxc.aaHg" placeholder="Auto Attendants, Call Queues, Hunt Groups, Schedules..." />
+          </div>
 
-            <div class="field" data-path="meta.controlHubOrgId">
-              <label>
-                Control Hub Org ID <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.controlHubOrgId" placeholder="Enter Org ID or NA" />
-            </div>
-            <div class="field" data-path="meta.webOrderId">
-              <label>
-                WxCC Web Order ID <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <input id="meta.webOrderId" placeholder="8–10 digits or NA" />
-            </div>
-
-            <div class="field" data-path="meta.links">
-              <label>
-                Links / References <span class="hint">Shared</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <textarea id="meta.links" placeholder="One Note, SF Account/Opportunity, Lucid, SharePoint..."></textarea>
-            </div>
-            <div class="field" data-path="meta.notes">
-              <label>
-                General Notes / Risks <span class="hint">Shared</span>
-                <button class="helpBtn" data-help="meta" title="Example values">?</button>
-              </label>
-              <textarea id="meta.notes" placeholder="Key constraints, dependencies, risks, assumptions…"></textarea>
-            </div>
+          <div class="field">
+            <label>E911 <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <select id="wxc.e911">
+              <option value="">Select…</option>
+              <option>RedSky Horizon</option>
+              <option>Native E911 (as applicable)</option>
+              <option>Not Required</option>
+              <option>TBD</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Calling Notes <span class="hint">calling</span> <button class="helpBtn" data-help="wxc">?</button></label>
+            <textarea id="wxc.notes"></textarea>
           </div>
         </div>
+      </div>
 
-        <!-- Webex Calling -->
-        <div id="tab-wxc" style="display:none;">
-          <div class="form">
-            <div class="field" data-path="wxc.users">
-              <label>
-                Total Users in Scope <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <input id="wxc.users" type="number" min="0" placeholder="e.g., 850" />
-            </div>
-            <div class="field" data-path="wxc.locations">
-              <label>
-                Locations / Sites <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <input id="wxc.locations" type="number" min="0" placeholder="e.g., 14" />
-            </div>
+      <!-- CONTACT CENTER PAGE -->
+      <div class="page" id="page-contact">
+        <div class="grid2">
+          <div class="field">
+            <label>Deployment Type <span class="hint">wxcc</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <select id="wxcc.deploymentType">
+              <option value="">Select…</option>
+              <option>New</option>
+              <option>Migration</option>
+              <option>Redesign</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Existing Contact Center <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.existingPlatform" placeholder="UCCX / Five9 / Genesys / Avaya / NICE..." />
+          </div>
 
-            <div class="field" data-path="wxc.deploymentModel">
-              <label>
-                Calling Deployment Model <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <select id="wxc.deploymentModel">
-                <option value="">Select…</option>
-                <option>Cloud (Webex Calling)</option>
-                <option>Hybrid (WxC + On-Prem)</option>
-                <option>Local Gateway (LGW) / CUBE</option>
-              </select>
-            </div>
-            <div class="field" data-path="wxc.pstn">
-              <label>
-                PSTN Connectivity <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <select id="wxc.pstn">
-                <option value="">Select…</option>
-                <option>Cisco Calling Plan (CCP)</option>
-                <option>Local Gateway to Carrier</option>
-                <option>Cloud Connected PSTN (CCP Partner)</option>
-                <option>Mix</option>
-              </select>
-            </div>
+          <div class="field">
+            <label>Standard Licenses <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.licensesStandard" type="number" min="0" placeholder="e.g., 120" />
+          </div>
+          <div class="field">
+            <label>Premium Licenses <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.licensesPremium" type="number" min="0" placeholder="e.g., 80" />
+          </div>
 
-            <div class="field" data-path="wxc.lgwModel">
-              <label>
-                LGW / SBC Model <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <input id="wxc.lgwModel" placeholder="e.g., vCUBE (C8000v) / ISR4K CUBE" />
-            </div>
-            <div class="field" data-path="wxc.lgwHa">
-              <label>
-                LGW HA / Redundancy <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <input id="wxc.lgwHa" placeholder="e.g., HA pair in DC, dual ISPs" />
-            </div>
+          <div class="field">
+            <label>Channels <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.channels" placeholder="Voice, Chat, Email, SMS, WhatsApp..." />
+          </div>
+          <div class="field">
+            <label>Regional Media Required? <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <select id="wxcc.regionalMedia">
+              <option value="">Select…</option>
+              <option>Yes</option>
+              <option>No</option>
+              <option>TBD</option>
+            </select>
+          </div>
 
-            <div class="field" data-path="wxc.didCount">
-              <label>
-                DIDs / Numbers in Scope <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <input id="wxc.didCount" type="number" min="0" placeholder="e.g., 1200" />
-            </div>
-            <div class="field" data-path="wxc.portingPlan">
-              <label>
-                Number Porting Plan <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <input id="wxc.portingPlan" placeholder="e.g., staged by region; weekend ports" />
-            </div>
+          <div class="field">
+            <label>Agent Endpoints <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.agentEndpoints" placeholder="WebRTC / Webex Calling endpoints / PSTN / Teams..." />
+          </div>
+          <div class="field">
+            <label>Agent Countries <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.agentCountries" placeholder="US, Canada, UK..." />
+          </div>
 
-            <div class="field" data-path="wxc.endpoints">
-              <label>
-                Endpoints <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <input id="wxc.endpoints" placeholder="e.g., MPP phones, Webex App, ATAs, Room devices" />
-            </div>
-            <div class="field" data-path="wxc.aaHg">
-              <label>
-                Routing Features <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <input id="wxc.aaHg" placeholder="Auto Attendants, Call Queues, Hunt Groups, Schedules…" />
-            </div>
+          <div class="field">
+            <label>Queues / Teams / Entry Points <span class="hint">wxcc</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.queues" placeholder="12 queues, 6 teams, 8 entry points..." />
+          </div>
+          <div class="field">
+            <label>Routing Model <span class="hint">wxcc</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.routing" placeholder="Skill-based w/ overflow; priority, etc." />
+          </div>
 
-            <div class="field" data-path="wxc.e911">
-              <label>
-                E911 / RedSky <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <select id="wxc.e911">
-                <option value="">Select…</option>
-                <option>RedSky Horizon</option>
-                <option>Native E911 (as applicable)</option>
-                <option>Not Required</option>
-                <option>TBD</option>
-              </select>
-            </div>
-            <div class="field" data-path="wxc.notes">
-              <label>
-                WxC Notes / Constraints <span class="hint">WxC</span>
-                <button class="helpBtn" data-help="wxc" title="Example values">?</button>
-              </label>
-              <textarea id="wxc.notes"></textarea>
-            </div>
+          <div class="field">
+            <label>IVR / AI <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.ivrAi" placeholder="TTS, VVA, data dips, AI Assistant, surveys..." />
+          </div>
+          <div class="field">
+            <label>Recording / Reporting <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.recordingReporting" placeholder="Retention, custom reports, dashboards..." />
+          </div>
+
+          <div class="field">
+            <label>Integrations <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <textarea id="wxcc.integrations" placeholder="CRM connector, APIs, SSO, data sources..."></textarea>
+          </div>
+          <div class="field">
+            <label>Day 2 Support Model <span class="hint">A2Q</span> <button class="helpBtn" data-help="wxcc">?</button></label>
+            <input id="wxcc.day2Support" placeholder="Partner Day 2 / Cisco support / Customer IT..." />
           </div>
         </div>
+      </div>
 
-        <!-- Webex Contact Center -->
-        <div id="tab-wxcc" style="display:none;">
-          <div class="form">
-            <div class="field" data-path="wxcc.deploymentType">
-              <label>
-                Deployment Type <span class="hint">WxCC/A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <select id="wxcc.deploymentType">
-                <option value="">Select…</option>
-                <option>New</option>
-                <option>Migration</option>
-                <option>Redesign</option>
-              </select>
-            </div>
-            <div class="field" data-path="wxcc.existingPlatform">
-              <label>
-                Existing Contact Center <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.existingPlatform" placeholder="e.g., UCCX / Five9 / Genesys / Avaya / NICE" />
-            </div>
+      <!-- NETWORK PAGE -->
+      <div class="page" id="page-network">
+        <div class="split">
+          <div>
+            <div class="grid2">
+              <div class="field">
+                <label>Sites Count <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+                <input id="network.sites" type="number" min="0" placeholder="e.g., 14" />
+              </div>
+              <div class="field">
+                <label>Primary ISP <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+                <input id="network.primaryIsp" placeholder="Spectrum / AT&T / Lumen..." />
+              </div>
 
-            <div class="field" data-path="wxcc.licensesStandard">
-              <label>
-                Standard Licenses <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.licensesStandard" type="number" min="0" placeholder="e.g., 120" />
-            </div>
-            <div class="field" data-path="wxcc.licensesPremium">
-              <label>
-                Premium Licenses <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.licensesPremium" type="number" min="0" placeholder="e.g., 80" />
-            </div>
+              <div class="field">
+                <label>Bandwidth <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+                <input id="network.bandwidth" placeholder="1Gbps DC, 200Mbps branches..." />
+              </div>
+              <div class="field">
+                <label>WAN Type <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+                <select id="network.wanType">
+                  <option value="">Select…</option>
+                  <option>Direct Internet + VPN</option>
+                  <option>SD-WAN</option>
+                  <option>MPLS</option>
+                  <option>Mix</option>
+                </select>
+              </div>
 
-            <div class="field" data-path="wxcc.channels">
-              <label>
-                Channels (Voice/Digital) <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.channels" placeholder="e.g., Voice, Chat, Email, SMS, WhatsApp" />
-            </div>
-            <div class="field" data-path="wxcc.regionalMedia">
-              <label>
-                Regional Media Required? <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <select id="wxcc.regionalMedia">
-                <option value="">Select…</option>
-                <option>Yes</option>
-                <option>No</option>
-                <option>TBD</option>
-              </select>
-            </div>
+              <div class="field">
+                <label>Firewall Make/Model <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+                <input id="network.firewall" placeholder="Palo Alto / Fortinet / ASA / Check Point..." />
+              </div>
+              <div class="field">
+                <label>Public IP Block <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+                <input id="network.publicIp" placeholder="/29 / /28 / unknown" />
+              </div>
 
-            <div class="field" data-path="wxcc.agentEndpoints">
-              <label>
-                Agent Endpoints <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.agentEndpoints" placeholder="WebRTC, Webex Calling endpoints, PSTN, Teams, etc." />
-            </div>
-            <div class="field" data-path="wxcc.agentCountries">
-              <label>
-                Agent/Supervisor Countries <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.agentCountries" placeholder="e.g., US, Canada, UK" />
-            </div>
+              <div class="field">
+                <label>QoS for Voice <span class="hint">A2Q risk</span> <button class="helpBtn" data-help="network">?</button></label>
+                <select id="network.qos">
+                  <option value="">Select…</option>
+                  <option>Yes (End-to-End)</option>
+                  <option>Partial (Some sites)</option>
+                  <option>No</option>
+                  <option>TBD</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Latency/Jitter/PL <span class="hint">A2Q risk</span> <button class="helpBtn" data-help="network">?</button></label>
+                <input id="network.metrics" placeholder="RTT 40ms, jitter <10ms, PL <0.5%" />
+              </div>
 
-            <div class="field" data-path="wxcc.queues">
-              <label>
-                Queues / Teams / Entry Points <span class="hint">WxCC</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.queues" placeholder="e.g., 12 queues, 6 teams, 8 entry points" />
-            </div>
-            <div class="field" data-path="wxcc.routing">
-              <label>
-                Routing Model <span class="hint">WxCC</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.routing" placeholder="Skill-based, Team-based, Direct agent, overflow rules" />
-            </div>
+              <div class="field">
+                <label>LGW/CUBE Footprint <span class="hint">network/calling</span> <button class="helpBtn" data-help="network">?</button></label>
+                <input id="network.lgwCubes" placeholder="2x vCUBE HA pair in DC..." />
+              </div>
+              <div class="field">
+                <label>DC Interconnect <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+                <input id="network.dcInterconnect" placeholder="Primary+DR w/ 10G private link..." />
+              </div>
 
-            <div class="field" data-path="wxcc.ivrAi">
-              <label>
-                IVR / AI <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.ivrAi" placeholder="Cisco TTS; Google VVA; data dips; surveys" />
-            </div>
-            <div class="field" data-path="wxcc.recordingReporting">
-              <label>
-                Recording / Reporting <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.recordingReporting" placeholder="Retention 2 years; 4 custom reports; QA review" />
-            </div>
-
-            <div class="field" data-path="wxcc.integrations">
-              <label>
-                Integrations (CRM/OEM/APIs) <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <textarea id="wxcc.integrations" placeholder="SFDC connector; REST API data dips; SSO"></textarea>
-            </div>
-            <div class="field" data-path="wxcc.day2Support">
-              <label>
-                Day 2 Support Model <span class="hint">A2Q</span>
-                <button class="helpBtn" data-help="wxcc" title="Example values">?</button>
-              </label>
-              <input id="wxcc.day2Support" placeholder="Partner Day 2; Cisco Support; Customer IT escalation" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Network Topology -->
-        <div id="tab-network" style="display:none;">
-          <div class="split">
-            <div>
-              <div class="form">
-                <div class="field" data-path="network.sites">
-                  <label>
-                    Sites Count <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <input id="network.sites" type="number" min="0" placeholder="e.g., 14" />
-                </div>
-                <div class="field" data-path="network.primaryIsp">
-                  <label>
-                    Primary ISP <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <input id="network.primaryIsp" placeholder="e.g., Spectrum / AT&T / Lumen" />
-                </div>
-
-                <div class="field" data-path="network.bandwidth">
-                  <label>
-                    Internet Bandwidth (typical) <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <input id="network.bandwidth" placeholder="e.g., 1Gbps DC, 200Mbps branches" />
-                </div>
-                <div class="field" data-path="network.wanType">
-                  <label>
-                    WAN Type <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <select id="network.wanType">
-                    <option value="">Select…</option>
-                    <option>Direct Internet + VPN</option>
-                    <option>SD-WAN</option>
-                    <option>MPLS</option>
-                    <option>Mix</option>
-                  </select>
-                </div>
-
-                <div class="field" data-path="network.firewall">
-                  <label>
-                    Firewall (Make/Model) <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <input id="network.firewall" placeholder="e.g., Palo Alto PA-3220 / Fortinet 200F" />
-                </div>
-                <div class="field" data-path="network.publicIp">
-                  <label>
-                    Public IP Block <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <input id="network.publicIp" placeholder="e.g., /29, /28, or unknown" />
-                </div>
-
-                <div class="field" data-path="network.qos">
-                  <label>
-                    QoS for Voice? <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <select id="network.qos">
-                    <option value="">Select…</option>
-                    <option>Yes (End-to-End)</option>
-                    <option>Partial (Some sites)</option>
-                    <option>No</option>
-                    <option>TBD</option>
-                  </select>
-                </div>
-                <div class="field" data-path="network.metrics">
-                  <label>
-                    Latency/Jitter/PL (Known) <span class="hint">A2Q Risk</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <input id="network.metrics" placeholder="e.g., RTT 40ms, jitter <10ms, PL <0.5%" />
-                </div>
-
-                <div class="field" data-path="network.lgwCubes">
-                  <label>
-                    Local Gateways / CUBEs <span class="hint">Network/WxC</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <input id="network.lgwCubes" placeholder="e.g., 2x vCUBE in DC, HA pair" />
-                </div>
-                <div class="field" data-path="network.dcInterconnect">
-                  <label>
-                    Data Centers / Interconnect <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <input id="network.dcInterconnect" placeholder="e.g., 2 DCs with 10G private link" />
-                </div>
-
-                <div class="field" data-path="network.notes">
-                  <label>
-                    Network Notes / Risks <span class="hint">Network</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <textarea id="network.notes" placeholder="NAT constraints, TLS inspection, proxy, split tunnel, etc."></textarea>
-                </div>
-                <div class="field">
-                  <label>
-                    Topology Auto-Map <span class="hint">Live updating</span>
-                    <button class="helpBtn" data-help="network" title="Example values">?</button>
-                  </label>
-                  <div class="row">
-                    <span class="pill ok">Edits update the diagram labels</span>
-                    <span class="pill warn">Great for workshops + exec review</span>
-                  </div>
+              <div class="field">
+                <label>Network Notes / Constraints <span class="hint">network</span> <button class="helpBtn" data-help="network">?</button></label>
+                <textarea id="network.notes" placeholder="NAT, TLS inspection, proxies, split tunnel, firewall rules..."></textarea>
+              </div>
+              <div class="field">
+                <label>Diagram Updates Live <span class="hint">auto-map</span></label>
+                <div class="row">
+                  <span class="pill ok">Form → diagram labels</span>
+                  <span class="pill warn">Conceptual topology</span>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div class="svgWrap" aria-label="Live Topology Map">
-              <svg viewBox="0 0 860 520" role="img">
-                <defs>
-                  <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stop-color="rgba(98,230,255,.35)"/>
-                    <stop offset="1" stop-color="rgba(138,125,255,.28)"/>
-                  </linearGradient>
-                  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="4" result="blur"/>
-                    <feMerge>
-                      <feMergeNode in="blur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
+          <div class="svgWrap" aria-label="Live Topology Map">
+            <svg viewBox="0 0 860 520" role="img">
+              <defs>
+                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="rgba(98,230,255,.35)"/>
+                  <stop offset="1" stop-color="rgba(138,125,255,.28)"/>
+                </linearGradient>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="4" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
 
-                <g opacity="0.20">
-                  <path d="M0 60H860M0 120H860M0 180H860M0 240H860M0 300H860M0 360H860M0 420H860M0 480H860" stroke="rgba(255,255,255,.10)"/>
-                  <path d="M80 0V520M160 0V520M240 0V520M320 0V520M400 0V520M480 0V520M560 0V520M640 0V520M720 0V520M800 0V520" stroke="rgba(255,255,255,.08)"/>
+              <g opacity="0.20">
+                <path d="M0 60H860M0 120H860M0 180H860M0 240H860M0 300H860M0 360H860M0 420H860M0 480H860" stroke="rgba(255,255,255,.10)"/>
+                <path d="M80 0V520M160 0V520M240 0V520M320 0V520M400 0V520M480 0V520M560 0V520M640 0V520M720 0V520M800 0V520" stroke="rgba(255,255,255,.08)"/>
+              </g>
+
+              <g filter="url(#glow)">
+                <rect x="560" y="40" rx="18" ry="18" width="270" height="160" fill="rgba(255,255,255,.04)" stroke="rgba(98,230,255,.25)"/>
+                <text x="695" y="72" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Webex Cloud</text>
+                <text x="695" y="98" text-anchor="middle" fill="#a9b8df" font-size="12">Calling + Contact Center</text>
+
+                <rect x="585" y="118" rx="14" ry="14" width="110" height="64" fill="url(#g1)" opacity=".55" stroke="rgba(255,255,255,.16)"/>
+                <text x="640" y="150" text-anchor="middle" fill="#081022" font-size="12" font-weight="900">Webex Calling</text>
+                <text id="svg_wxc_pstn" x="640" y="170" text-anchor="middle" fill="#081022" font-size="10" font-weight="800">PSTN: TBD</text>
+
+                <rect x="710" y="118" rx="14" ry="14" width="110" height="64" fill="url(#g1)" opacity=".55" stroke="rgba(255,255,255,.16)"/>
+                <text x="765" y="150" text-anchor="middle" fill="#081022" font-size="12" font-weight="900">Webex Contact Center</text>
+                <text id="svg_wxcc_chan" x="765" y="170" text-anchor="middle" fill="#081022" font-size="10" font-weight="800">Channels: TBD</text>
+              </g>
+
+              <g>
+                <rect x="60" y="40" rx="18" ry="18" width="420" height="160" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)"/>
+                <text x="270" y="72" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Customer Core / Data Center</text>
+                <text id="svg_dc" x="270" y="98" text-anchor="middle" fill="#a9b8df" font-size="12">Interconnect: TBD</text>
+
+                <rect x="88" y="118" rx="14" ry="14" width="120" height="64" fill="rgba(98,230,255,.12)" stroke="rgba(98,230,255,.25)"/>
+                <text x="148" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">WAN Edge</text>
+                <text id="svg_wan" x="148" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">Type: TBD</text>
+
+                <rect x="224" y="118" rx="14" ry="14" width="120" height="64" fill="rgba(138,125,255,.12)" stroke="rgba(138,125,255,.25)"/>
+                <text x="284" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Firewall</text>
+                <text id="svg_fw" x="284" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
+
+                <rect x="360" y="118" rx="14" ry="14" width="100" height="64" fill="rgba(61,242,160,.10)" stroke="rgba(61,242,160,.25)"/>
+                <text x="410" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">LGW / CUBE</text>
+                <text id="svg_lgw" x="410" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
+              </g>
+
+              <g>
+                <rect x="60" y="240" rx="18" ry="18" width="420" height="240" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.08)"/>
+                <text x="270" y="272" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Sites / Branches</text>
+                <text id="svg_sites" x="270" y="298" text-anchor="middle" fill="#a9b8df" font-size="12">Sites: TBD · Bandwidth: TBD</text>
+
+                <g opacity=".95">
+                  <rect x="92" y="318" rx="14" ry="14" width="120" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+                  <text x="152" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Site A</text>
+                  <text id="svg_qos" x="152" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">QoS: TBD</text>
+
+                  <rect x="232" y="318" rx="14" ry="14" width="120" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+                  <text x="292" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Site B</text>
+                  <text id="svg_metrics" x="292" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">Metrics: TBD</text>
+
+                  <rect x="372" y="318" rx="14" ry="14" width="88" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+                  <text x="416" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">ISP</text>
+                  <text id="svg_isp" x="416" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
                 </g>
+              </g>
 
-                <g filter="url(#glow)">
-                  <rect x="560" y="40" rx="18" ry="18" width="270" height="160" fill="rgba(255,255,255,.04)" stroke="rgba(98,230,255,.25)"/>
-                  <text x="695" y="72" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Webex Cloud</text>
-                  <text x="695" y="98" text-anchor="middle" fill="#a9b8df" font-size="12">Calling + Contact Center</text>
+              <g stroke="rgba(98,230,255,.35)" stroke-width="3" fill="none">
+                <path d="M208 150 C 330 150, 470 120, 560 120" />
+                <path d="M284 182 C 340 240, 430 260, 560 140" />
+              </g>
+              <g stroke="rgba(138,125,255,.30)" stroke-width="3" fill="none">
+                <path d="M148 182 C 180 240, 210 290, 240 318" />
+                <path d="M148 182 C 250 260, 360 290, 372 318" />
+              </g>
 
-                  <rect x="585" y="118" rx="14" ry="14" width="110" height="64" fill="url(#g1)" opacity=".55" stroke="rgba(255,255,255,.16)"/>
-                  <text x="640" y="150" text-anchor="middle" fill="#081022" font-size="12" font-weight="900">Webex Calling</text>
-                  <text id="svg_wxc_pstn" x="640" y="170" text-anchor="middle" fill="#081022" font-size="10" font-weight="800">PSTN: TBD</text>
-
-                  <rect x="710" y="118" rx="14" ry="14" width="110" height="64" fill="url(#g1)" opacity=".55" stroke="rgba(255,255,255,.16)"/>
-                  <text x="765" y="150" text-anchor="middle" fill="#081022" font-size="12" font-weight="900">Webex Contact Center</text>
-                  <text id="svg_wxcc_chan" x="765" y="170" text-anchor="middle" fill="#081022" font-size="10" font-weight="800">Channels: TBD</text>
-                </g>
-
-                <g>
-                  <rect x="60" y="40" rx="18" ry="18" width="420" height="160" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)"/>
-                  <text x="270" y="72" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Customer Core / Data Center</text>
-                  <text id="svg_dc" x="270" y="98" text-anchor="middle" fill="#a9b8df" font-size="12">Interconnect: TBD</text>
-
-                  <rect x="88" y="118" rx="14" ry="14" width="120" height="64" fill="rgba(98,230,255,.12)" stroke="rgba(98,230,255,.25)"/>
-                  <text x="148" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">WAN Edge</text>
-                  <text id="svg_wan" x="148" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">Type: TBD</text>
-
-                  <rect x="224" y="118" rx="14" ry="14" width="120" height="64" fill="rgba(138,125,255,.12)" stroke="rgba(138,125,255,.25)"/>
-                  <text x="284" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Firewall</text>
-                  <text id="svg_fw" x="284" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
-
-                  <rect x="360" y="118" rx="14" ry="14" width="100" height="64" fill="rgba(61,242,160,.10)" stroke="rgba(61,242,160,.25)"/>
-                  <text x="410" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">LGW / CUBE</text>
-                  <text id="svg_lgw" x="410" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
-                </g>
-
-                <g>
-                  <rect x="60" y="240" rx="18" ry="18" width="420" height="240" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.08)"/>
-                  <text x="270" y="272" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Sites / Branches</text>
-                  <text id="svg_sites" x="270" y="298" text-anchor="middle" fill="#a9b8df" font-size="12">Sites: TBD · Bandwidth: TBD</text>
-
-                  <g opacity=".95">
-                    <rect x="92" y="318" rx="14" ry="14" width="120" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
-                    <text x="152" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Site A</text>
-                    <text id="svg_qos" x="152" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">QoS: TBD</text>
-
-                    <rect x="232" y="318" rx="14" ry="14" width="120" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
-                    <text x="292" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Site B</text>
-                    <text id="svg_metrics" x="292" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">Metrics: TBD</text>
-
-                    <rect x="372" y="318" rx="14" ry="14" width="88" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
-                    <text x="416" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">ISP</text>
-                    <text id="svg_isp" x="416" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
-                  </g>
-                </g>
-
-                <g stroke="rgba(98,230,255,.35)" stroke-width="3" fill="none">
-                  <path d="M208 150 C 330 150, 470 120, 560 120" />
-                  <path d="M284 182 C 340 240, 430 260, 560 140" />
-                </g>
-                <g stroke="rgba(138,125,255,.30)" stroke-width="3" fill="none">
-                  <path d="M148 182 C 180 240, 210 290, 240 318" />
-                  <path d="M148 182 C 250 260, 360 290, 372 318" />
-                </g>
-
-                <text x="520" y="230" fill="rgba(255,255,255,.65)" font-size="11" font-weight="700">Internet / WAN</text>
-                <text x="520" y="250" fill="rgba(255,255,255,.55)" font-size="10">Traffic paths shown (conceptual)</text>
-              </svg>
-            </div>
+              <text x="520" y="230" fill="rgba(255,255,255,.65)" font-size="11" font-weight="700">Internet / WAN</text>
+              <text x="520" y="250" fill="rgba(255,255,255,.55)" font-size="10">Traffic paths shown (conceptual)</text>
+            </svg>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- RIGHT: A2Q Quick Fill + Webhook -->
-    <div class="panel">
-      <div class="hd">
-        <h2>A2Q Quick-Fill + Webhook</h2>
-        <div class="miniBtns">
-          <button id="btnA2QRefresh">Refresh</button>
-          <button id="btnCopyAllA2Q">Copy A2Q JSON</button>
-          <button class="btn" id="btnHelp2">Help</button>
+      <!-- A2Q + STORAGE PAGE -->
+      <div class="page" id="page-a2q">
+        <div class="grid2">
+          <div class="field">
+            <label>MockAPI Base URL <span class="hint">required for save/search/load</span> <button class="helpBtn" data-help="webhook">?</button></label>
+            <input id="storage.mockapiBaseUrl" placeholder="https://your-org.mockapi.io/discoveryRecords" />
+          </div>
+          <div class="field">
+            <label>Salesforce Save URL (later) <span class="hint">optional</span></label>
+            <input id="storage.salesforceSaveUrl" placeholder="https://.../services/apexrest/webexDiscovery" />
+          </div>
+
+          <div class="field">
+            <label>Search / Load <span class="hint">by Customer Name, customerKey, or record id</span></label>
+            <div class="row">
+              <input id="search.term" placeholder="Acme Motors or 001xx000003..." style="flex:1" />
+              <button class="btn" id="btnSearch">Search</button>
+            </div>
+            <div class="row" style="margin-top:8px;">
+              <select id="search.results" style="flex:1"></select>
+              <button class="btn" id="btnLoadSelected">Load</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Remote Save <span class="hint">MockAPI now</span></label>
+            <div class="row">
+              <button class="btn primary" id="btnSaveRemote">Save to MockAPI</button>
+              <button class="btn" id="btnCopyA2Q">Copy A2Q JSON</button>
+            </div>
+            <div class="row" style="margin-top:8px;">
+              <span class="pill" id="remoteHint">Tip: first save creates an id; next saves update it.</span>
+            </div>
+          </div>
+
+          <div class="field" style="grid-column:1/-1;">
+            <label>A2Q Quick-Fill <span class="hint">Jump + Copy from source</span></label>
+            <div class="a2qGrid" id="a2qGrid"></div>
+          </div>
+
+          <div class="field" style="grid-column:1/-1;">
+            <label>Webhook Preview Payload <span class="hint">what you will store/send</span></label>
+            <textarea id="payload.preview" class="mono" readonly></textarea>
+          </div>
         </div>
       </div>
-      <div class="bd">
-        <div class="field">
-          <label>
-            Webhook Endpoint <span class="hint">MockAPI now / Salesforce later</span>
-            <button class="helpBtn" data-help="webhook" title="Example values">?</button>
-          </label>
-          <input id="webhook.url" placeholder="https://example.mockapi.io/discovery/events" />
-        </div>
-        <div class="field">
-          <label>
-            Webhook Auth Header (optional) <span class="hint">e.g., Authorization: Bearer …</span>
-            <button class="helpBtn" data-help="webhook" title="Example values">?</button>
-          </label>
-          <input id="webhook.auth" placeholder="Authorization: Bearer <token>" />
-        </div>
-        <div class="field">
-          <label>
-            Webhook Preview Payload <span class="hint">What will be POSTed</span>
-            <button class="helpBtn" data-help="webhook" title="Example values">?</button>
-          </label>
-          <textarea id="webhook.preview" class="mono" readonly></textarea>
-        </div>
 
-        <div class="a2qGrid" id="a2qGrid"></div>
-
-        <div class="foot">
-          <div><b>How A2Q selectable fields work:</b></div>
-          <div>Each A2Q field is populated from the posters’ shared model and includes:</div>
-          <div>• <span class="mono">Jump</span> (scrolls to source) · • <span class="mono">Copy</span></div>
-        </div>
+      <div class="foot">
+        <b>Salesforce note:</b> saving directly to Salesforce from a browser requires secure auth (OAuth/Connected App or Apex REST with session). This UI is wired for MockAPI now and includes a placeholder endpoint for Salesforce later.
       </div>
     </div>
-  </div>
-
-  <div class="foot">
-    <b>Iframe note (Salesforce):</b> single self-contained HTML page (no external assets). Host anywhere and embed via iframe.
   </div>
 </div>
 
@@ -902,7 +776,7 @@
   <div class="helpModal">
     <div class="mh">
       <div>
-        <h3 id="helpTitle">Examples for this section</h3>
+        <h3 id="helpTitle">Examples</h3>
         <p id="helpSubtitle">Use these as sample values. Replace with customer-specific information.</p>
       </div>
       <button class="closeX" id="helpClose">Close</button>
@@ -913,204 +787,177 @@
 
 <script>
 /* =========================
-   MODEL + A2Q MAP
+   SHARED MODEL (joint reduces duplicates)
    ========================= */
 const MODEL = {
   meta: {
-    customerName: "", marketVertical: "", partnerName: "", dealType: "", onboardingType: "",
-    migrationType: "", timeline: "", kickoffDate: "", goliveDate: "", tenantLocation: "",
-    controlHubOrgId: "", webOrderId: "", links: "", notes: ""
+    recordId: "",            // MockAPI record id
+    customerKey: "",         // stable identifier (AccountId/OpportunityId)
+    customerName: "",
+    marketVertical: "",
+    partnerName: "",
+    dealType: "",
+    onboardingType: "",
+    migrationType: "",
+    timeline: "",
+    kickoffDate: "",
+    goliveDate: "",
+    tenantLocation: "",
+    controlHubOrgId: "",
+    webOrderId: "",
+    notes: ""
   },
   wxc: {
-    users: "", locations: "", deploymentModel: "", pstn: "", lgwModel: "", lgwHa: "",
-    didCount: "", portingPlan: "", endpoints: "", aaHg: "", e911: "", notes: ""
+    users: "",
+    locations: "",
+    deploymentModel: "",
+    pstn: "",
+    lgwModel: "",
+    lgwHa: "",
+    didCount: "",
+    portingPlan: "",
+    endpoints: "",
+    aaHg: "",
+    e911: "",
+    notes: ""
   },
   wxcc: {
-    deploymentType: "", existingPlatform: "", licensesStandard: "", licensesPremium: "",
-    channels: "", regionalMedia: "", agentEndpoints: "", agentCountries: "", queues: "",
-    routing: "", ivrAi: "", recordingReporting: "", integrations: "", day2Support: ""
+    deploymentType: "",
+    existingPlatform: "",
+    licensesStandard: "",
+    licensesPremium: "",
+    channels: "",
+    regionalMedia: "",
+    agentEndpoints: "",
+    agentCountries: "",
+    queues: "",
+    routing: "",
+    ivrAi: "",
+    recordingReporting: "",
+    integrations: "",
+    day2Support: ""
   },
   network: {
-    sites: "", primaryIsp: "", bandwidth: "", wanType: "", firewall: "", publicIp: "",
-    qos: "", metrics: "", lgwCubes: "", dcInterconnect: "", notes: ""
+    sites: "",
+    primaryIsp: "",
+    bandwidth: "",
+    wanType: "",
+    firewall: "",
+    publicIp: "",
+    qos: "",
+    metrics: "",
+    lgwCubes: "",
+    dcInterconnect: "",
+    notes: ""
   },
-  webhook: { url: "", auth: "" }
+  storage: {
+    mockapiBaseUrl: "",
+    salesforceSaveUrl: ""
+  }
 };
 
 const A2Q_MAP = [
-  { id:"Q125", label:"Deal Type", path:"meta.dealType", required:true },
+  { id:"QID2",  label:"Customer Name", path:"meta.customerName", required:true },
+  { id:"QID1",  label:"Partner Name", path:"meta.partnerName", required:true },
+  { id:"Q125",  label:"Deal Type", path:"meta.dealType", required:true },
   { id:"QID16", label:"Onboarding Type", path:"meta.onboardingType", required:true },
-  { id:"QID1", label:"Partner Name", path:"meta.partnerName", required:true },
-  { id:"QID2", label:"Customer Name", path:"meta.customerName", required:true },
-  { id:"QID4", label:"Market Vertical", path:"meta.marketVertical", required:false },
-  { id:"QID3", label:"Business Requirements (Timeline)", path:"meta.timeline", required:false },
-  { id:"QID5", label:"Existing Contact Center", path:"wxcc.existingPlatform", required:true },
-  { id:"QID7", label:"Control Hub Org ID", path:"meta.controlHubOrgId", required:true },
-  { id:"QID14", label:"Web Order ID", path:"meta.webOrderId", required:true },
-  { id:"QID44", label:"Agent Seats (Std/Prem/Total)", path:"wxcc", required:true, derive:"agentSeats" },
-  { id:"QID80", label:"Expected SM Kick-off Date", path:"meta.kickoffDate", required:true },
-  { id:"QID82", label:"Expected Go-live Date", path:"meta.goliveDate", required:true },
   { id:"QID26", label:"Tenant Location (DC)", path:"meta.tenantLocation", required:true },
+  { id:"QID80", label:"Kick-off Date", path:"meta.kickoffDate", required:true },
+  { id:"QID82", label:"Go-Live Date", path:"meta.goliveDate", required:true },
+  { id:"QID7",  label:"Control Hub Org ID", path:"meta.controlHubOrgId", required:true },
+  { id:"QID14", label:"Web Order ID", path:"meta.webOrderId", required:true },
+
+  { id:"QID5",  label:"Existing Contact Center", path:"wxcc.existingPlatform", required:true },
   { id:"QID27", label:"Channels", path:"wxcc.channels", required:true },
-  { id:"QID145", label:"Regional Media Required", path:"wxcc.regionalMedia", required:false },
-  { id:"QID110", label:"Agent Endpoint Types", path:"wxcc.agentEndpoints", required:true },
-  { id:"QID109", label:"Agent/Supervisor Countries", path:"wxcc.agentCountries", required:true },
-  { id:"QID136", label:"TTS / IVR Approach", path:"wxcc.ivrAi", required:false },
-  { id:"QID87", label:"Reporting Preferences", path:"wxcc.recordingReporting", required:false },
-  { id:"QID95", label:"Recording Preferences", path:"wxcc.recordingReporting", required:false },
-  { id:"QID118", label:"Day 2 Support", path:"wxcc.day2Support", required:true }
+  { id:"QID44", label:"Agent Seats (Std/Prem/Total)", path:"wxcc", required:true, derive:"agentSeats" },
+  { id:"QID110",label:"Agent Endpoints", path:"wxcc.agentEndpoints", required:true },
+  { id:"QID109",label:"Agent Countries", path:"wxcc.agentCountries", required:true },
+  { id:"QID118",label:"Day 2 Support", path:"wxcc.day2Support", required:true }
 ];
 
 /* =========================
-   HELP CONTENT (examples)
+   HELP (examples)
    ========================= */
 const HELP_EXAMPLES = {
   meta: {
-    title: "Shared Project (Examples)",
-    subtitle: "These are realistic examples for a cloud transition project.",
-    sections: [
-      {
-        h: "Customer + Deal",
-        p:
+    title:"Joint (Shared) Examples",
+    subtitle:"Use joint info to avoid duplicate entry across Calling/WxCC/Network.",
+    sections:[
+      {h:"Customer + IDs", p:
 `Customer Name: Acme Motors Group
-Market Vertical: Automotive (Multi-site dealership)
-Partner Name: CX Advanced Solutions
+customerKey: 006xx00000ABCDEF (OpportunityId) or 001xx00000AAAAAA (AccountId)
+Market Vertical: Automotive`},
+      {h:"A2Q basics", p:
+`Partner Name: CX Advanced Solutions
 Deal Type: New Deal
-Onboarding Type: Partner-Led Onboarding (Paid Deal)`
-      },
-      {
-        h: "Dates + Tenant",
-        p:
-`Expected SM Kick-off Date: 2026-01-06
-Expected Go-Live Date: 2026-03-20
-WxCC Tenant Location: US West (per Cisco regional mapping)
+Onboarding Type: Partner-Led Onboarding (Paid Deal)
+Tenant Location: US West
+Kick-off: 2026-01-06
+Go-live: 2026-03-20
 Control Hub Org ID: 9a1b2c3d4e
-WxCC Web Order ID: 12345678`
-      },
-      {
-        h: "Scope + Notes",
-        p:
-`Migration Type: Migration from UCCX + CUCM
-Timeline Summary: Phase 1 within 90 days; phased cutover by region; carrier port windows on weekends.
-Links/References: Salesforce Opportunity URL; Lucid topology map; DID inventory spreadsheet.
-Notes/Risks: Carrier porting is critical path; TLS inspection must be bypassed for Webex media; QoS rollout needed at 4 sites.`
-      }
+Web Order ID: 12345678`},
+      {h:"Timeline + Notes", p:
+`Migration Type: CUCM + UCCX migration
+Timeline: Phase 1 within 90 days; phased by region; weekend port windows.
+Notes: Carrier porting is critical path; TLS inspection must bypass Webex media; QoS rollout needed.`}
     ]
   },
   wxc: {
-    title: "Webex Calling (Examples)",
-    subtitle: "Examples for a typical multi-site Calling deployment.",
-    sections: [
-      {
-        h: "Scale + Model",
-        p:
-`Total Users: 850
-Locations/Sites: 14
-Deployment Model: Hybrid (WxC + On-Prem)
-PSTN Connectivity: Local Gateway to Carrier`
-      },
-      {
-        h: "LGW + Numbering",
-        p:
-`LGW/SBC Model: 2x vCUBE (C8000v) in primary DC
-LGW HA/Redundancy: Active/Standby, dual ISPs
-DIDs/Numbers: 1200
-Porting Plan: Staged by region; weekend ports; call forwarding during transition`
-      },
-      {
-        h: "Endpoints + Features",
-        p:
-`Endpoints: Webex App + MPP phones (8841/8861) + ATAs for fax/door phones
-Routing Features: Auto Attendants, Call Queues, Hunt Groups, Schedules
-E911: RedSky Horizon`
-      }
+    title:"Calling Examples",
+    subtitle:"Typical multi-site Webex Calling discovery values.",
+    sections:[
+      {h:"Scale + PSTN", p:
+`Users: 850
+Locations: 14
+Deployment: Hybrid (WxC + On-Prem)
+PSTN: Local Gateway to Carrier`},
+      {h:"LGW + Numbering", p:
+`LGW Model: 2x vCUBE (C8000v) in DC
+HA: Active/Standby + dual ISPs
+DIDs: 1200
+Porting: staged by region, weekend ports`},
     ]
   },
   wxcc: {
-    title: "Webex Contact Center (Examples)",
-    subtitle: "Examples aligned to common A2Q fields.",
-    sections: [
-      {
-        h: "Licensing + Channels",
-        p:
-`Deployment Type: Migration
-Existing Contact Center: UCCX
-Standard Licenses: 120
-Premium Licenses: 80
+    title:"Contact Center Examples",
+    subtitle:"Common A2Q-oriented WxCC fields.",
+    sections:[
+      {h:"Licensing + Channels", p:
+`Deployment: Migration
+Existing CC: UCCX
+Standard: 120
+Premium: 80
 Channels: Voice, Chat, Email, SMS
-Regional Media Required: Yes`
-      },
-      {
-        h: "Agents + Routing",
-        p:
-`Agent Endpoints: WebRTC for remote agents; Webex Calling for HQ agents
-Agent/Supervisor Countries: US, Canada
-Queues/Teams/Entry Points: 12 queues, 6 teams, 8 entry points
-Routing Model: Skill-based with overflow to shared services`
-      },
-      {
-        h: "IVR/AI + Reporting + Support",
-        p:
-`IVR/AI: Cisco TTS; Google Dialogflow VVA for intent; CRM data dips via REST
-Recording/Reporting: Recording retention 2 years; 4 custom Analyzer reports
-Integrations: SFDC connector + REST API; SSO (SAML)
-Day 2 Support: Partner provides Day 2; Cisco TAC escalation as needed`
-      }
+Regional Media: Yes`},
+      {h:"Ops + AI", p:
+`Agent endpoints: WebRTC + Webex Calling
+Countries: US, Canada
+IVR/AI: Cisco TTS + Google VVA, CRM data dips via REST
+Day 2: Partner Day 2, Cisco escalation`},
     ]
   },
   network: {
-    title: "Network Topology (Examples)",
-    subtitle: "Examples that help validate media readiness and reduce A2Q risk.",
-    sections: [
-      {
-        h: "WAN + ISP + Bandwidth",
-        p:
-`Sites Count: 14
-Primary ISP: Lumen (DC), Spectrum (branches)
-Internet Bandwidth: 1Gbps DC, 200Mbps typical branches
-WAN Type: SD-WAN`
-      },
-      {
-        h: "Security + Public IP + QoS",
-        p:
+    title:"Network Assessment Examples",
+    subtitle:"Values that help validate media readiness (A2Q risks).",
+    sections:[
+      {h:"WAN + ISP", p:
+`Sites: 14
+WAN: SD-WAN
+ISP: Lumen (DC), Spectrum (branches)
+Bandwidth: 1Gbps DC, 200Mbps branches`},
+      {h:"Security + Metrics", p:
 `Firewall: Palo Alto PA-3220
-Public IP Block: /29 at DC (NAT for egress), static IPs for SIP if required
-QoS for Voice: Partial (Some sites) — planned rollout to remaining sites`
-      },
-      {
-        h: "Performance + Gateways + Interconnect",
-        p:
-`Latency/Jitter/PL: RTT 35–55ms; jitter < 10ms; packet loss < 0.5%
-Local Gateways/CUBEs: 2x vCUBE HA pair in DC
-Data Centers/Interconnect: Primary + DR with 10G private link`
-      }
+Public IP: /29
+QoS: Partial
+Metrics: RTT 35–55ms; jitter <10ms; PL <0.5%`},
     ]
   },
   webhook: {
-    title: "Webhook (Examples)",
-    subtitle: "MockAPI now, Salesforce later — header format supported.",
-    sections: [
-      {
-        h: "MockAPI Endpoint",
-        p:
-`Webhook URL:
-https://your-org.mockapi.io/discovery/events`
-      },
-      {
-        h: "Auth Header Options",
-        p:
-`Option 1 (full header line):
-Authorization: Bearer eyJhbGciOi...
-
-Option 2 (Bearer string):
-Bearer eyJhbGciOi...`
-      },
-      {
-        h: "What gets sent",
-        p:
-`eventType: discovery.updated
-payload includes: customer, project, webexCalling, webexContactCenter, network, a2qDraft, webexSpaceMessage`
-      }
+    title:"Storage / MockAPI Examples",
+    subtitle:"Save now to MockAPI, later replace with Salesforce middleware/Apex.",
+    sections:[
+      {h:"MockAPI Base URL", p:`https://your-org.mockapi.io/discoveryRecords`},
+      {h:"Search", p:`Search by customerName ("Acme") or customerKey (OpportunityId/AccountId) or record id.`},
     ]
   }
 };
@@ -1142,7 +989,7 @@ function escapeHtml(s){
 }
 
 /* =========================
-   A2Q + PAYLOAD
+   PAYLOAD + A2Q
    ========================= */
 function buildA2QDraft(){
   const draft = {};
@@ -1177,7 +1024,14 @@ function serializePayload(){
   return {
     eventType: "discovery.updated",
     timestamp: now,
-    customer: { name: MODEL.meta.customerName || "TBD", marketVertical: MODEL.meta.marketVertical || "TBD" },
+    identifiers: {
+      recordId: MODEL.meta.recordId || "",
+      customerKey: MODEL.meta.customerKey || ""
+    },
+    customer: {
+      name: MODEL.meta.customerName || "TBD",
+      marketVertical: MODEL.meta.marketVertical || "TBD"
+    },
     project: {
       partnerName: MODEL.meta.partnerName || "TBD",
       dealType: MODEL.meta.dealType || "TBD",
@@ -1189,7 +1043,6 @@ function serializePayload(){
       tenantLocation: MODEL.meta.tenantLocation || "",
       controlHubOrgId: MODEL.meta.controlHubOrgId || "",
       webOrderId: MODEL.meta.webOrderId || "",
-      links: MODEL.meta.links || "",
       notes: MODEL.meta.notes || ""
     },
     webexCalling: MODEL.wxc,
@@ -1201,10 +1054,13 @@ function serializePayload(){
 }
 
 /* =========================
-   UI WIRING
+   COMPLETION / STATUS
    ========================= */
-const statusPill = document.getElementById('statusPill');
-const readyPill = document.getElementById('readyPill');
+const savePill = document.getElementById("savePill");
+const a2qPill = document.getElementById("a2qPill");
+const pctPill = document.getElementById("pctPill");
+const recordPill = document.getElementById("recordPill");
+const progressBar = document.getElementById("progressBar");
 
 function getA2QValue(item){
   if(item.derive === "agentSeats"){
@@ -1215,64 +1071,93 @@ function getA2QValue(item){
   return v && String(v).trim().length ? v : "";
 }
 
-function updateLiveDiagram(){
-  const byId = (x)=>document.getElementById(x);
-  byId('svg_wxc_pstn').textContent = `PSTN: ${trimTo(MODEL.wxc.pstn || "TBD",18)}`;
-  byId('svg_wxcc_chan').textContent = `Channels: ${trimTo(MODEL.wxcc.channels || "TBD",18)}`;
-  byId('svg_dc').textContent = `Interconnect: ${trimTo(MODEL.network.dcInterconnect || "TBD",26)}`;
-  byId('svg_wan').textContent = `Type: ${trimTo(MODEL.network.wanType || "TBD",18)}`;
-  byId('svg_fw').textContent = trimTo(MODEL.network.firewall || "TBD",20);
-  byId('svg_lgw').textContent = trimTo(MODEL.network.lgwCubes || "TBD",18);
-  byId('svg_sites').textContent = `Sites: ${MODEL.network.sites || "TBD"} · Bandwidth: ${trimTo(MODEL.network.bandwidth || "TBD",20)}`;
-  byId('svg_qos').textContent = `QoS: ${trimTo(MODEL.network.qos || "TBD",14)}`;
-  byId('svg_metrics').textContent = `Metrics: ${trimTo(MODEL.network.metrics || "TBD",16)}`;
-  byId('svg_isp').textContent = trimTo(MODEL.network.primaryIsp || "TBD",12);
+function computeCompletion(){
+  // Count ALL visible form inputs in the poster pages (not preview textarea)
+  const els = Array.from(document.querySelectorAll("input,select,textarea"))
+    .filter(el => el.id && !el.readOnly && !el.disabled && !el.id.startsWith("payload.") && !el.id.startsWith("search."));
+  if(els.length === 0) return {pct:0, filled:0, total:0};
 
+  let filled = 0;
+  for(const el of els){
+    const v = (el.value || "").toString().trim();
+    if(v.length) filled++;
+  }
+  const pct = Math.round((filled / els.length) * 100);
+  return {pct, filled, total: els.length};
+}
+
+function updateRecordPill(){
+  if(MODEL.meta.recordId){
+    recordPill.textContent = `Record: ${MODEL.meta.recordId}`;
+    recordPill.className = "pill ok";
+  }else{
+    recordPill.textContent = "Record: New";
+    recordPill.className = "pill warn";
+  }
+}
+
+function updateA2QStatus(){
   const missing = A2Q_MAP.filter(x=>x.required && !getA2QValue(x)).length;
-  readyPill.textContent = missing === 0 ? "A2Q Ready: Yes" : `A2Q Ready: Missing ${missing}`;
-  readyPill.className = "pill " + (missing===0 ? "ok" : (missing<4 ? "warn":"bad"));
+  a2qPill.textContent = missing === 0 ? "A2Q Ready: Yes" : `A2Q Ready: Missing ${missing}`;
+  a2qPill.className = "pill " + (missing===0 ? "ok" : (missing<4 ? "warn":"bad"));
 }
 
-function refreshWebhookPreview(){
-  document.getElementById('webhook.preview').value = JSON.stringify(serializePayload(), null, 2);
+function updateCompletionUI(){
+  const c = computeCompletion();
+  pctPill.textContent = `Complete: ${c.pct}%`;
+  progressBar.style.width = `${c.pct}%`;
 }
+
 function markDirty(){
-  statusPill.textContent = "Unsaved Changes";
-  statusPill.className = "pill warn";
+  savePill.textContent = "Unsaved";
+  savePill.className = "pill warn";
   updateLiveDiagram();
-  refreshWebhookPreview();
   refreshA2Q();
+  refreshPreview();
+  updateA2QStatus();
+  updateCompletionUI();
+  updateRecordPill();
 }
 function markSaved(){
-  statusPill.textContent = "Saved";
-  statusPill.className = "pill ok";
+  savePill.textContent = "Saved";
+  savePill.className = "pill ok";
+  refreshPreview();
+  updateCompletionUI();
+  updateRecordPill();
 }
 
-function setTab(tab){
-  document.querySelectorAll('.tab').forEach(b=> b.classList.toggle('active', b.dataset.tab === tab));
-  document.getElementById('tab-meta').style.display = tab==='meta' ? '' : 'none';
-  document.getElementById('tab-wxc').style.display = tab==='wxc' ? '' : 'none';
-  document.getElementById('tab-wxcc').style.display = tab==='wxcc' ? '' : 'none';
-  document.getElementById('tab-network').style.display = tab==='network' ? '' : 'none';
+/* =========================
+   LIVE TOPOLOGY LABELS
+   ========================= */
+function updateLiveDiagram(){
+  const byId = (x)=>document.getElementById(x);
+  byId("svg_wxc_pstn").textContent = `PSTN: ${trimTo(MODEL.wxc.pstn || "TBD", 18)}`;
+  byId("svg_wxcc_chan").textContent = `Channels: ${trimTo(MODEL.wxcc.channels || "TBD", 18)}`;
+  byId("svg_dc").textContent = `Interconnect: ${trimTo(MODEL.network.dcInterconnect || "TBD", 26)}`;
+  byId("svg_wan").textContent = `Type: ${trimTo(MODEL.network.wanType || "TBD", 18)}`;
+  byId("svg_fw").textContent = trimTo(MODEL.network.firewall || "TBD", 20);
+  byId("svg_lgw").textContent = trimTo(MODEL.network.lgwCubes || "TBD", 18);
+  byId("svg_sites").textContent = `Sites: ${MODEL.network.sites || "TBD"} · Bandwidth: ${trimTo(MODEL.network.bandwidth || "TBD", 20)}`;
+  byId("svg_qos").textContent = `QoS: ${trimTo(MODEL.network.qos || "TBD", 14)}`;
+  byId("svg_metrics").textContent = `Metrics: ${trimTo(MODEL.network.metrics || "TBD", 16)}`;
+  byId("svg_isp").textContent = trimTo(MODEL.network.primaryIsp || "TBD", 12);
 }
 
-document.getElementById('tabs').addEventListener('click', (e)=>{
-  const btn = e.target.closest('.tab');
-  if(!btn) return;
-  setTab(btn.dataset.tab);
-});
-
+/* =========================
+   A2Q GRID
+   ========================= */
 function refreshA2Q(){
-  const grid = document.getElementById('a2qGrid');
+  const grid = document.getElementById("a2qGrid");
   grid.innerHTML = "";
+
   for(const item of A2Q_MAP){
     const ok = item.required ? !!getA2QValue(item) : true;
     const value = item.derive==="agentSeats"
       ? JSON.stringify({standard:MODEL.wxcc.licensesStandard||"", premium:MODEL.wxcc.licensesPremium||"", total:safeAdd(MODEL.wxcc.licensesStandard, MODEL.wxcc.licensesPremium)}, null, 2)
       : (deepGet(MODEL, item.path) || "");
 
-    const div = document.createElement('div');
-    div.className = 'a2qItem';
+    const div = document.createElement("div");
+    div.className = "a2qItem";
     div.innerHTML = `
       <div class="t">
         <div>
@@ -1289,182 +1174,351 @@ function refreshA2Q(){
     grid.appendChild(div);
   }
 
-  grid.querySelectorAll('button[data-jump]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      const path = b.getAttribute('data-jump');
-      const target = document.querySelector(`[data-path="${path}"]`) || document.getElementById(path);
+  grid.querySelectorAll("button[data-jump]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const path = btn.getAttribute("data-jump");
+      const target = document.getElementById(path);
       if(target){
-        const tab = path.startsWith("meta.") ? "meta" :
-                    path.startsWith("wxc.") ? "wxc" :
-                    path.startsWith("wxcc.") ? "wxcc" :
-                    path.startsWith("network.") ? "network" : "meta";
-        setTab(tab);
+        // Route to page
+        const page = path.startsWith("meta.") ? "joint"
+                   : path.startsWith("wxc.") ? "calling"
+                   : path.startsWith("wxcc.") ? "contact"
+                   : path.startsWith("network.") ? "network"
+                   : "joint";
+        setPage(page);
         setTimeout(()=>{
           target.scrollIntoView({behavior:"smooth", block:"center"});
           target.style.outline = "2px solid rgba(98,230,255,.45)";
           setTimeout(()=> target.style.outline="none", 900);
-        }, 50);
+        }, 60);
       }
     });
   });
 
-  grid.querySelectorAll('button[data-copy]').forEach(b=>{
-    b.addEventListener('click', async ()=>{
-      const id = b.getAttribute('data-copy');
+  grid.querySelectorAll("button[data-copy]").forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      const id = btn.getAttribute("data-copy");
       const item = A2Q_MAP.find(x=>x.id===id);
       const v = item.derive==="agentSeats"
         ? JSON.stringify({standard:MODEL.wxcc.licensesStandard||"", premium:MODEL.wxcc.licensesPremium||"", total:safeAdd(MODEL.wxcc.licensesStandard, MODEL.wxcc.licensesPremium)})
         : (deepGet(MODEL, item.path) || "");
       await navigator.clipboard.writeText(v || "");
-      b.textContent = "Copied";
-      setTimeout(()=>b.textContent="Copy", 850);
+      btn.textContent = "Copied";
+      setTimeout(()=>btn.textContent="Copy", 850);
     });
   });
-
-  updateLiveDiagram();
 }
 
+/* =========================
+   PREVIEW
+   ========================= */
+function refreshPreview(){
+  document.getElementById("payload.preview").value = JSON.stringify(serializePayload(), null, 2);
+}
+
+/* =========================
+   TABBED PAGES
+   ========================= */
+function setPage(pageKey){
+  document.querySelectorAll(".tab").forEach(t=> t.classList.toggle("active", t.dataset.page === pageKey));
+  document.querySelectorAll(".page").forEach(p=> p.classList.remove("active"));
+  const pageEl = document.getElementById(`page-${pageKey}`);
+  if(pageEl) pageEl.classList.add("active");
+}
+
+document.getElementById("tabs").addEventListener("click", (e)=>{
+  const tab = e.target.closest(".tab");
+  if(!tab) return;
+  setPage(tab.dataset.page);
+});
+
+/* =========================
+   INPUT BINDING
+   ========================= */
 function bindInputs(){
-  document.querySelectorAll('input,select,textarea').forEach(el=>{
-    const id = el.id;
-    if(!id) return;
-    const existing = deepGet(MODEL, id);
+  document.querySelectorAll("input,select,textarea").forEach(el=>{
+    if(!el.id) return;
+    if(el.id.startsWith("payload.") || el.id.startsWith("search.")) return;
+
+    const existing = deepGet(MODEL, el.id);
     if(existing !== undefined && existing !== null && existing !== "") el.value = existing;
-    el.addEventListener('input', ()=>{
-      deepSet(MODEL, id, el.value);
+
+    el.addEventListener("input", ()=>{
+      deepSet(MODEL, el.id, el.value);
       markDirty();
     });
   });
 }
 
 /* =========================
-   HELP MODAL LOGIC
+   MOCKAPI SAVE / SEARCH / LOAD
    ========================= */
-const helpBackdrop = document.getElementById('helpBackdrop');
-const helpClose = document.getElementById('helpClose');
-const helpTitle = document.getElementById('helpTitle');
-const helpSubtitle = document.getElementById('helpSubtitle');
-const helpBody = document.getElementById('helpBody');
+async function mockapiCreateOrUpdate(){
+  const base = (MODEL.storage.mockapiBaseUrl || "").trim();
+  if(!base){ alert("Enter MockAPI Base URL first."); return; }
 
-function openHelp(sectionKey){
-  const data = HELP_EXAMPLES[sectionKey] || HELP_EXAMPLES.meta;
-  helpTitle.textContent = data.title || "Examples";
-  helpSubtitle.textContent = data.subtitle || "Example values.";
-  helpBody.innerHTML = "";
+  const payload = serializePayload();
+  const record = {
+    customerName: MODEL.meta.customerName || "TBD",
+    customerKey: MODEL.meta.customerKey || "",
+    updatedAt: new Date().toISOString(),
+    payload
+  };
 
-  (data.sections || []).forEach(s=>{
-    const div = document.createElement('div');
-    div.className = "helpSection";
-    div.innerHTML = `<h4>${escapeHtml(s.h || "")}</h4><pre>${escapeHtml(s.p || "")}</pre>`;
-    helpBody.appendChild(div);
-  });
+  let url = base;
+  let method = "POST";
+  if(MODEL.meta.recordId){
+    url = `${base}/${encodeURIComponent(MODEL.meta.recordId)}`;
+    method = "PUT";
+  }
 
-  helpBackdrop.style.display = "flex";
+  try{
+    const res = await fetch(url, { method, headers:{ "Content-Type":"application/json" }, body: JSON.stringify(record) });
+    if(!res.ok){
+      const t = await res.text();
+      alert(`MockAPI save failed: ${res.status} ${res.statusText}\n${t}`);
+      return;
+    }
+    const saved = await res.json();
+    MODEL.meta.recordId = saved.id || MODEL.meta.recordId || "";
+    markSaved();
+    alert(`Saved to MockAPI (${method==="POST" ? "created" : "updated"}). RecordId: ${MODEL.meta.recordId}`);
+  }catch(e){
+    alert("MockAPI save error: " + e.message);
+  }
 }
 
-function closeHelp(){
-  helpBackdrop.style.display = "none";
+async function mockapiSearch(){
+  const base = (MODEL.storage.mockapiBaseUrl || "").trim();
+  const term = (document.getElementById("search.term").value || "").trim();
+  if(!base){ alert("Enter MockAPI Base URL first."); return; }
+  if(!term){ alert("Enter a search term (customer name, customerKey, or record id)."); return; }
+
+  const resultsSelect = document.getElementById("search.results");
+  resultsSelect.innerHTML = "";
+
+  const candidates = [];
+  const tryUrls = [
+    `${base}?search=${encodeURIComponent(term)}`,
+    `${base}?customerName=${encodeURIComponent(term)}`,
+    `${base}?customerKey=${encodeURIComponent(term)}`
+  ];
+
+  for(const u of tryUrls){
+    try{
+      const r = await fetch(u);
+      if(r.ok){
+        const arr = await r.json();
+        if(Array.isArray(arr) && arr.length){
+          candidates.push(...arr);
+          break;
+        }
+      }
+    }catch(e){ /* ignore */ }
+  }
+
+  let items = candidates;
+  if(!items.length){
+    try{
+      const r = await fetch(base);
+      if(!r.ok){
+        const t = await r.text();
+        alert(`MockAPI search failed: ${r.status} ${r.statusText}\n${t}`);
+        return;
+      }
+      const arr = await r.json();
+      const tt = term.toLowerCase();
+      items = (Array.isArray(arr) ? arr : []).filter(x=>{
+        const cn = (x.customerName || "").toLowerCase();
+        const ck = (x.customerKey || "").toLowerCase();
+        return cn.includes(tt) || ck.includes(tt) || (x.id && String(x.id) === term);
+      });
+    }catch(e){
+      alert("MockAPI search error: " + e.message);
+      return;
+    }
+  }
+
+  if(!items.length){
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "No matches found";
+    resultsSelect.appendChild(opt);
+    return;
+  }
+
+  for(const item of items){
+    const opt = document.createElement("option");
+    opt.value = item.id;
+    const cn = item.customerName || "(no customerName)";
+    const ck = item.customerKey ? ` · key:${item.customerKey}` : "";
+    const ts = item.updatedAt ? ` · updated:${item.updatedAt}` : "";
+    opt.textContent = `id:${item.id} · ${cn}${ck}${ts}`;
+    resultsSelect.appendChild(opt);
+  }
 }
 
-document.getElementById('btnHelp').addEventListener('click', ()=> openHelp(currentTabKey()));
-document.getElementById('btnHelp2').addEventListener('click', ()=> openHelp("webhook"));
+async function mockapiLoadById(id){
+  const base = (MODEL.storage.mockapiBaseUrl || "").trim();
+  if(!base){ alert("Enter MockAPI Base URL first."); return; }
+  if(!id){ alert("Select a record to load."); return; }
 
-document.querySelectorAll('.helpBtn').forEach(btn=>{
-  btn.addEventListener('click', (e)=>{
-    e.preventDefault();
-    e.stopPropagation();
-    const key = btn.getAttribute('data-help') || currentTabKey();
-    openHelp(key);
-  });
-});
-helpClose.addEventListener('click', closeHelp);
-helpBackdrop.addEventListener('click', (e)=>{ if(e.target === helpBackdrop) closeHelp(); });
-document.addEventListener('keydown', (e)=>{ if(e.key === "Escape") closeHelp(); });
+  try{
+    const r = await fetch(`${base}/${encodeURIComponent(id)}`);
+    if(!r.ok){
+      const t = await r.text();
+      alert(`MockAPI load failed: ${r.status} ${r.statusText}\n${t}`);
+      return;
+    }
+    const item = await r.json();
+    if(item && item.payload){
+      const p = item.payload;
 
-function currentTabKey(){
-  const active = document.querySelector('.tab.active');
-  const tab = active ? active.dataset.tab : "meta";
-  if(tab === "meta") return "meta";
-  if(tab === "wxc") return "wxc";
-  if(tab === "wxcc") return "wxcc";
-  if(tab === "network") return "network";
-  return "meta";
+      // hydrate
+      MODEL.meta.recordId = item.id || "";
+      MODEL.meta.customerKey = item.customerKey || "";
+      MODEL.meta.customerName = p.customer?.name || "";
+      MODEL.meta.marketVertical = p.customer?.marketVertical || "";
+
+      MODEL.meta.partnerName = p.project?.partnerName || "";
+      MODEL.meta.dealType = p.project?.dealType || "";
+      MODEL.meta.onboardingType = p.project?.onboardingType || "";
+      MODEL.meta.migrationType = p.project?.migrationType || "";
+      MODEL.meta.timeline = p.project?.timeline || "";
+      MODEL.meta.kickoffDate = p.project?.kickoffDate || "";
+      MODEL.meta.goliveDate = p.project?.goliveDate || "";
+      MODEL.meta.tenantLocation = p.project?.tenantLocation || "";
+      MODEL.meta.controlHubOrgId = p.project?.controlHubOrgId || "";
+      MODEL.meta.webOrderId = p.project?.webOrderId || "";
+      MODEL.meta.notes = p.project?.notes || "";
+
+      MODEL.wxc = p.webexCalling || MODEL.wxc;
+      MODEL.wxcc = p.webexContactCenter || MODEL.wxcc;
+      MODEL.network = p.network || MODEL.network;
+
+      // write to UI
+      document.querySelectorAll("input,select,textarea").forEach(el=>{
+        if(!el.id) return;
+        if(el.id.startsWith("payload.") || el.id.startsWith("search.")) return;
+        el.value = deepGet(MODEL, el.id) || "";
+      });
+
+      markSaved();
+      refreshA2Q();
+      updateLiveDiagram();
+      refreshPreview();
+      updateA2QStatus();
+      updateCompletionUI();
+      updateRecordPill();
+      alert(`Loaded record id: ${MODEL.meta.recordId}`);
+      return;
+    }
+    alert("Loaded record did not contain a payload.");
+  }catch(e){
+    alert("MockAPI load error: " + e.message);
+  }
 }
 
 /* =========================
-   SAVE/LOAD/EXPORT/WEBHOOK
+   LOCAL SAVE/LOAD + EXPORT
    ========================= */
-document.getElementById('btnSave').addEventListener('click', ()=>{
-  localStorage.setItem('webexDiscoveryPoster', JSON.stringify(MODEL));
+document.getElementById("btnSaveLocal").addEventListener("click", ()=>{
+  localStorage.setItem("webexDiscoveryPosterTabbed", JSON.stringify(MODEL));
   markSaved();
-  refreshWebhookPreview();
 });
-document.getElementById('btnLoad').addEventListener('click', ()=>{
-  const raw = localStorage.getItem('webexDiscoveryPoster');
+document.getElementById("btnLoadLocal").addEventListener("click", ()=>{
+  const raw = localStorage.getItem("webexDiscoveryPosterTabbed");
   if(!raw) return;
   try{
     const obj = JSON.parse(raw);
     Object.assign(MODEL, obj);
-    document.querySelectorAll('input,select,textarea').forEach(el=>{
+
+    document.querySelectorAll("input,select,textarea").forEach(el=>{
       if(!el.id) return;
+      if(el.id.startsWith("payload.") || el.id.startsWith("search.")) return;
       el.value = deepGet(MODEL, el.id) || "";
     });
+
     markSaved();
-    refreshWebhookPreview();
     refreshA2Q();
+    updateLiveDiagram();
+    refreshPreview();
+    updateA2QStatus();
+    updateCompletionUI();
+    updateRecordPill();
   }catch(e){
-    alert("Load failed: invalid data.");
+    alert("Local load failed: invalid data.");
   }
 });
-
-document.getElementById('btnExport').addEventListener('click', async ()=>{
+document.getElementById("btnExport").addEventListener("click", async ()=>{
   const text = JSON.stringify(serializePayload(), null, 2);
   await navigator.clipboard.writeText(text);
-  alert("JSON copied to clipboard.");
+  alert("Full JSON copied to clipboard.");
 });
 
-document.getElementById('btnWebhook').addEventListener('click', async ()=>{
-  const url = MODEL.webhook.url || document.getElementById('webhook.url').value;
-  const auth = MODEL.webhook.auth || document.getElementById('webhook.auth').value;
-  if(!url){ alert("Enter a webhook URL first."); return; }
-
-  const headers = { "Content-Type":"application/json" };
-  if(auth && auth.includes(":")){
-    const [k, ...rest] = auth.split(":");
-    headers[k.trim()] = rest.join(":").trim();
-  } else if(auth && auth.toLowerCase().startsWith("bearer ")){
-    headers["Authorization"] = auth;
-  }
-
-  const payload = serializePayload();
-  refreshWebhookPreview();
-
-  try{
-    const res = await fetch(url, { method:"POST", headers, body: JSON.stringify(payload) });
-    if(!res.ok){
-      const t = await res.text();
-      alert(`Webhook failed: ${res.status} ${res.statusText}\n${t}`);
-      return;
-    }
-    alert("Webhook sent successfully.");
-  }catch(e){
-    alert("Webhook error: " + e.message);
-  }
+/* =========================
+   A2Q + Storage actions
+   ========================= */
+document.getElementById("btnSaveRemote").addEventListener("click", mockapiCreateOrUpdate);
+document.getElementById("btnSearch").addEventListener("click", mockapiSearch);
+document.getElementById("btnLoadSelected").addEventListener("click", ()=>{
+  const id = document.getElementById("search.results").value;
+  mockapiLoadById(id);
 });
-
-document.getElementById('btnA2QRefresh').addEventListener('click', refreshA2Q);
-document.getElementById('btnCopyAllA2Q').addEventListener('click', async ()=>{
+document.getElementById("btnCopyA2Q").addEventListener("click", async ()=>{
   await navigator.clipboard.writeText(JSON.stringify(buildA2QDraft(), null, 2));
   alert("A2Q JSON copied.");
 });
 
 /* =========================
+   HELP MODAL
+   ========================= */
+const helpBackdrop = document.getElementById("helpBackdrop");
+const helpClose = document.getElementById("helpClose");
+const helpTitle = document.getElementById("helpTitle");
+const helpSubtitle = document.getElementById("helpSubtitle");
+const helpBody = document.getElementById("helpBody");
+
+function openHelp(key){
+  const data = HELP_EXAMPLES[key] || HELP_EXAMPLES.meta;
+  helpTitle.textContent = data.title || "Examples";
+  helpSubtitle.textContent = data.subtitle || "Examples.";
+  helpBody.innerHTML = "";
+  (data.sections || []).forEach(s=>{
+    const div = document.createElement("div");
+    div.className = "helpSection";
+    div.innerHTML = `<h4>${escapeHtml(s.h||"")}</h4><pre>${escapeHtml(s.p||"")}</pre>`;
+    helpBody.appendChild(div);
+  });
+  helpBackdrop.style.display = "flex";
+}
+function closeHelp(){ helpBackdrop.style.display="none"; }
+
+document.getElementById("btnHelp").addEventListener("click", ()=>{
+  const active = document.querySelector(".tab.active")?.dataset.page || "joint";
+  const key = active==="joint" ? "meta" : active==="calling" ? "wxc" : active==="contact" ? "wxcc" : active==="network" ? "network" : "webhook";
+  openHelp(key);
+});
+document.querySelectorAll(".helpBtn").forEach(btn=>{
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    openHelp(btn.getAttribute("data-help") || "meta");
+  });
+});
+helpClose.addEventListener("click", closeHelp);
+helpBackdrop.addEventListener("click", (e)=>{ if(e.target===helpBackdrop) closeHelp(); });
+document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeHelp(); });
+
+/* =========================
    BOOT
    ========================= */
 bindInputs();
-refreshWebhookPreview();
 refreshA2Q();
+refreshPreview();
 updateLiveDiagram();
+updateA2QStatus();
+updateCompletionUI();
+updateRecordPill();
 markDirty();
 </script>
 </body>
