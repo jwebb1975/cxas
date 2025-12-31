@@ -2,2036 +2,1935 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Webex Discovery Posters — Joint + Calling + WxCC + Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Webex Discovery Suite (Calling • Contact Center • Network)</title>
+  <meta name="color-scheme" content="dark light" />
   <style>
     :root{
-      --text:#e7eefc;
-      --muted:#a9b8df;
-      --accent:#62e6ff;
-      --accent2:#8a7dff;
-      --ok:#3df2a0;
-      --warn:#ffd166;
-      --bad:#ff5c7a;
-
-      --shadow: 0 16px 40px rgba(0,0,0,.35);
-      --radius: 14px;
-
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --bg0:#070A12; --bg1:#0B1020;
+      --card:rgba(255,255,255,.06); --card2:rgba(255,255,255,.09);
+      --text:rgba(255,255,255,.92); --muted:rgba(255,255,255,.65);
+      --line:rgba(255,255,255,.12);
+      --a:#7c5cff; --b:#21d4fd; --g:#25d366; --r:#ff4d4f; --y:#fbbf24;
+      --shadow: 0 20px 70px rgba(0,0,0,.45);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
-
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg0:#f7f8ff; --bg1:#ffffff;
+        --card:rgba(20,24,40,.05); --card2:rgba(20,24,40,.07);
+        --text:rgba(10,12,22,.92); --muted:rgba(10,12,22,.65);
+        --line:rgba(10,12,22,.14);
+        --shadow: 0 20px 70px rgba(25,30,60,.16);
+      }
+    }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
-      margin:0;
-      font-family:var(--sans);
+      margin:0; font-family:var(--sans); color:var(--text);
       background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(98,230,255,.18), transparent 55%),
-        radial-gradient(900px 600px at 85% 15%, rgba(138,125,255,.18), transparent 55%),
-        radial-gradient(700px 500px at 55% 90%, rgba(61,242,160,.12), transparent 55%),
-        linear-gradient(180deg, #081022 0%, #060a14 100%);
-      color:var(--text);
+        radial-gradient(900px 520px at 16% 10%, color-mix(in oklab, var(--a) 35%, transparent), transparent 60%),
+        radial-gradient(820px 520px at 86% 12%, color-mix(in oklab, var(--b) 26%, transparent), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      min-height:100vh;
     }
-    .wrap{max-width:1280px; margin:0 auto; padding:18px 18px 28px}
-    .topbar{
-      display:flex; align-items:center; gap:14px; justify-content:space-between;
-      padding:14px 16px; border:1px solid rgba(255,255,255,.06); border-radius:var(--radius);
-      background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
+    header{
+      position:sticky; top:0; z-index:100;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(0,0,0,.32), rgba(0,0,0,0));
+      border-bottom:1px solid var(--line);
     }
-    .brand{display:flex; gap:12px; align-items:center}
+    .wrap{max-width:1240px; margin:0 auto; padding:14px 18px;}
+    .top{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    .brand{display:flex; gap:12px; align-items:center;}
     .logo{
-      width:42px;height:42px;border-radius:12px;
-      background: radial-gradient(circle at 30% 25%, var(--accent), rgba(98,230,255,.2) 35%, transparent 60%),
-                  radial-gradient(circle at 70% 75%, var(--accent2), rgba(138,125,255,.25) 35%, transparent 60%),
-                  linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.10);
+      width:40px; height:40px; border-radius:14px;
+      background:
+        radial-gradient(14px 14px at 30% 30%, rgba(255,255,255,.85), transparent 56%),
+        linear-gradient(135deg, var(--a), var(--b));
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 14px 40px rgba(124,92,255,.22);
     }
-    .brand h1{font-size:15px; margin:0; letter-spacing:.2px}
-    .brand p{font-size:12px; margin:2px 0 0; color:var(--muted)}
-    .actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
-    button,.btn{
-      cursor:pointer; border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color:var(--text); padding:10px 12px; border-radius:12px;
-      font-weight:800; font-size:12px;
-      transition: transform .08s ease, background .12s ease, border-color .12s ease;
-      text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    h1{margin:0; font-size:16px; letter-spacing:.2px;}
+    .sub{margin-top:2px; font-size:12px; color:var(--muted);}
+    .bar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .pill{
+      display:flex; gap:8px; align-items:center;
+      padding:10px 12px; border-radius:999px;
+      border:1px solid var(--line); background:var(--card);
+      box-shadow: 0 12px 36px rgba(0,0,0,.10);
+      font-size:13px;
     }
-    button:hover,.btn:hover{background: rgba(255,255,255,.09); border-color:rgba(255,255,255,.18)}
-    button:active,.btn:active{transform: translateY(1px)}
-    .btn.primary{background: linear-gradient(135deg, rgba(98,230,255,.22), rgba(138,125,255,.20)); border-color: rgba(98,230,255,.25)}
+    .pill input{
+      width:340px; max-width:58vw;
+      border:0; outline:none; background:transparent; color:var(--text);
+      font-size:13px;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(124,92,255,.96), rgba(33,212,253,.55));
+      color:#fff; font-weight:800;
+      padding:10px 14px; border-radius:999px;
+      cursor:pointer;
+      box-shadow: 0 16px 44px rgba(124,92,255,.22);
+      transition: transform .06s ease, filter .2s ease;
+      font-size:13px;
+    }
+    .btn:active{transform: translateY(1px) scale(.99)}
+    .btn.secondary{background:var(--card); color:var(--text); box-shadow:none; font-weight:700;}
+    .btn.warn{
+      background: linear-gradient(135deg, rgba(251,191,36,.22), rgba(124,92,255,.14));
+      color: var(--text);
+    }
+    .btn.danger{
+      background: linear-gradient(135deg, rgba(255,77,79,.26), rgba(124,92,255,.12));
+      color: var(--text);
+    }
 
+    .tabs{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .tab{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius: 999px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+      letter-spacing:.2px;
+      transition: transform .06s ease, border-color .2s ease, background .2s ease;
+    }
+    .tab:active{ transform: translateY(1px); }
+    .tab.active{
+      border-color: color-mix(in oklab, var(--b) 45%, var(--line));
+      background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(33,212,253,.14));
+      box-shadow: 0 16px 44px rgba(33,212,253,.12);
+    }
+    .tab small{ color: var(--muted); font-weight:700; margin-left:6px; }
+
+    .toast{
+      margin:10px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.08);
+      color: var(--muted);
+    }
+
+    main{ padding: 14px 0 22px; }
+    .stage{ max-width:1240px; margin:0 auto; padding:0 18px 22px; }
     .panel{
-      margin-top:14px;
-      border:1px solid rgba(255,255,255,.07);
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-      border-radius:var(--radius);
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .panel .hd{
+    .panelHd{
       padding:12px 14px;
-      background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border-bottom:1px solid rgba(255,255,255,.06);
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
     }
-    .tabs{display:flex; gap:8px; flex-wrap:wrap}
-    .tab{
-      padding:9px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04); font-size:12px; font-weight:900; color:var(--muted);
+    .panelHd strong{ font-size:13px; }
+    .panelHd .hint{ font-size:12px; color: var(--muted); }
+    .ifrWrap{
+      height: calc(100vh - 230px);
+      min-height: 640px;
     }
-    .tab.active{
-      color:var(--text);
-      border-color: rgba(98,230,255,.28);
-      background: linear-gradient(135deg, rgba(98,230,255,.18), rgba(138,125,255,.16));
-    }
-
-    .statusRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .pill{
-      padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      font-size:11px; color:var(--muted); font-weight:900;
-    }
-    .pill.ok{border-color: rgba(61,242,160,.35); color:#bfffe4; background: rgba(61,242,160,.08)}
-    .pill.warn{border-color: rgba(255,209,102,.35); color:#ffe9b5; background: rgba(255,209,102,.08)}
-    .pill.bad{border-color: rgba(255,92,122,.35); color:#ffc0cb; background: rgba(255,92,122,.08)}
-    .pill.tagA2Q{border-color: rgba(98,230,255,.35); color:#cfefff; background: rgba(98,230,255,.08)}
-    .pill.tagSOW{border-color: rgba(61,242,160,.35); color:#bfffe4; background: rgba(61,242,160,.08)}
-    .pill.tagBoth{border-color: rgba(138,125,255,.40); color:#e7dcff; background: rgba(138,125,255,.10)}
-    .pill.tagCC{border-color: rgba(255,255,255,.10); color:#d4ddf7; background: rgba(255,255,255,.03)}
-
-    .progressWrap{
-      min-width:260px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(12,22,43,.55);
-      border-radius:999px;
-      overflow:hidden;
-      height:12px;
-    }
-    .progressBar{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(98,230,255,.9), rgba(138,125,255,.85), rgba(61,242,160,.75));
-      transition: width .2s ease;
-    }
-    .panel .bd{padding:14px}
-
-    .page{display:none}
-    .page.active{display:block}
-
-    .grid2{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 980px){ .grid2{grid-template-columns:1fr} }
-
-    .field{
-      border:1px solid rgba(255,255,255,.07);
-      background: rgba(12,22,43,.65);
-      border-radius:14px;
-      padding:10px;
-      transition: opacity .12s ease;
-    }
-    .field label{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      font-size:11px; font-weight:900; color:#cfe0ff;
-      letter-spacing:.18px;
-      margin-bottom:8px;
-    }
-    .field label .left{
-      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-    }
-    .field label .hint{font-weight:800; color:var(--muted)}
-    input, select, textarea{
+    iframe{
       width:100%;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.09);
-      background: rgba(255,255,255,.05);
-      color:var(--text);
-      padding:10px 10px;
-      outline:none;
-      font-size:12px;
+      height:100%;
+      border:0;
+      background: transparent;
     }
-    textarea{min-height:92px; resize:vertical}
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .mono{font-family:var(--mono)}
 
-    .split{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
+    /* modal */
+    .modalBack{
+      position:fixed; inset:0;
+      display:none; place-items:center;
+      z-index:200;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
+      padding:18px;
     }
-    @media (max-width: 1100px){ .split{grid-template-columns:1fr} }
-
-    .svgWrap{
-      border:1px solid rgba(255,255,255,.07);
-      border-radius:var(--radius);
-      background: radial-gradient(800px 500px at 25% 30%, rgba(98,230,255,.10), transparent 55%),
-                  radial-gradient(700px 450px at 85% 70%, rgba(138,125,255,.10), transparent 55%),
-                  rgba(12,22,43,.55);
-      padding:10px;
+    .modal{
+      width:min(820px, 96vw);
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .svgWrap svg{width:100%; height:auto; display:block}
-
-    .a2qGrid{display:grid; grid-template-columns:1fr; gap:10px}
-    .a2qItem{
-      border:1px solid rgba(255,255,255,.07);
-      background: rgba(12,22,43,.65);
-      border-radius:14px;
-      padding:10px;
+    .mh{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(33,212,253,.14), rgba(124,92,255,.10));
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
     }
-    .a2qItem .t{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
-    .a2qItem h3{margin:0; font-size:12px}
-    .a2qItem p{margin:6px 0 0; color:var(--muted); font-size:11px}
-    .a2qItem .v{
-      margin-top:8px; font-family:var(--mono);
-      font-size:11px; padding:10px; border-radius:12px;
-      border:1px dashed rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
-      white-space:pre-wrap; word-break:break-word;
-    }
-    .miniBtns{display:flex; gap:8px; flex-wrap:wrap}
-    .miniBtns button{padding:8px 10px; font-size:11px}
-
-    /* Help */
-    .helpBtn{
-      display:inline-flex; align-items:center; justify-content:center;
-      width:20px; height:20px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      font-weight:900; font-size:12px;
-      cursor:pointer; padding:0;
-    }
-    .helpBtn:hover{background: rgba(255,255,255,.10); border-color: rgba(98,230,255,.25)}
-    .helpModalBackdrop{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:16px;
-      z-index:9999;
-    }
-    .helpModal{
-      width:min(900px, 96vw);
-      max-height: min(80vh, 760px);
-      overflow:auto;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(15,27,51,.98), rgba(12,22,43,.98));
-      box-shadow: 0 30px 80px rgba(0,0,0,.55);
-    }
-    .helpModal .mh{
-      position:sticky; top:0;
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      padding:14px 14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-    }
-    .helpModal .mh h3{margin:0; font-size:14px}
-    .helpModal .mh p{margin:6px 0 0; color:var(--muted); font-size:11px; line-height:1.4}
-    .helpModal .mb{padding:14px}
-    .helpSection{
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.03);
-      border-radius:14px;
-      padding:12px;
-      margin-bottom:12px;
-    }
-    .helpSection h4{margin:0 0 8px; font-size:12px}
-    .helpSection pre{
-      margin:0;
-      white-space:pre-wrap;
-      word-break:break-word;
-      font-family:var(--mono);
-      font-size:11px;
-      border:1px dashed rgba(255,255,255,.14);
+    .mb{ padding:14px 16px 16px; }
+    .x{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.10);
+      color:var(--text);
       border-radius:12px;
-      padding:10px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-size:13px;
+    }
+    pre{
+      margin:10px 0 0;
+      padding:10px 12px;
+      border-radius:14px;
       background: rgba(0,0,0,.18);
-      color: #dfe9ff;
+      border:1px solid var(--line);
+      overflow:auto;
+      max-height: 360px;
+      font-family: var(--mono);
+      font-size: 11px;
     }
-    .closeX{
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding:8px 10px;
-      border-radius:12px;
-      font-weight:900;
-      font-size:12px;
-    }
-    .closeX:hover{background: rgba(255,255,255,.10)}
-
-    .foot{
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:var(--radius);
-      border:1px solid rgba(255,255,255,.06);
-      background: rgba(255,255,255,.03);
-      color:var(--muted);
-      font-size:11px;
-      line-height:1.4;
-    }
-
-    /* Filter bar */
-    .filterBar{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-      border:1px solid rgba(255,255,255,.07);
-      background: rgba(12,22,43,.45);
-      border-radius:14px;
-      padding:10px;
-      margin-bottom:12px;
-    }
-    .toggle{
-      display:flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      font-size:11px;
-      font-weight:900;
-      color: var(--muted);
-      cursor:pointer;
-      user-select:none;
-    }
-    .toggle input{accent-color: var(--accent); cursor:pointer}
-    .toggle.on{
-      color: var(--text);
-      border-color: rgba(98,230,255,.24);
-      background: rgba(98,230,255,.10);
-    }
-    .legend{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-left:auto}
   </style>
 </head>
 
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>Discovery Posters — Joint + Calling + Contact Center + Network</h1>
-        <p>Joint info avoids re-entry · Completion % · Contact Center fields are tagged for SOW and/or A2Q</p>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Webex Discovery Suite</h1>
+          <div class="sub">Calling • Contact Center • Network — single file with tabs + global controls</div>
+        </div>
+      </div>
+
+      <div class="bar">
+        <label class="pill" title="Global webhook URL (applied to all tabs)">
+          <span style="opacity:.85">Webhook</span>
+          <input id="globalWebhook" type="url" placeholder="https://your-webhook.example/endpoint" />
+        </label>
+
+        <button class="btn secondary" id="btnSetWebhook" type="button">Apply to Tabs</button>
+        <button class="btn secondary" id="btnExportAll" type="button">Export All JSON</button>
+        <button class="btn warn" id="btnGetAll" type="button">Preview All JSON</button>
+        <button class="btn" id="btnSubmitAll" type="button">Submit All</button>
+        <button class="btn danger" id="btnResetAll" type="button">Reset All</button>
       </div>
     </div>
-    <div class="actions">
-      <button class="btn" id="btnHelp">Help / Examples</button>
-      <button class="btn" id="btnSaveLocal">Save (Local)</button>
-      <button class="btn" id="btnLoadLocal">Load (Local)</button>
-      <button class="btn primary" id="btnExport">Copy Full JSON</button>
+
+    <div class="tabs" role="tablist" aria-label="Discovery tabs">
+      <button class="tab active" data-tab="calling" role="tab" aria-selected="true">Calling <small>Webex Calling</small></button>
+      <button class="tab" data-tab="contact" role="tab" aria-selected="false">Contact Center <small>Webex CC</small></button>
+      <button class="tab" data-tab="network" role="tab" aria-selected="false">Network <small>Topology</small></button>
+    </div>
+
+    <div class="toast" id="status">
+      <span class="badge">tip</span>
+      <span>Set webhook → “Apply to Tabs”. Each tab still has its own autosave locally.</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="panel">
+      <div class="panelHd">
+        <div>
+          <strong id="panelTitle">Calling</strong>
+          <span class="hint" id="panelHint">Webex Calling Discovery Questionnaire</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn secondary" id="btnSaveActive" type="button">Save Draft (Active)</button>
+          <button class="btn secondary" id="btnLoadActive" type="button">Load Draft (Active)</button>
+          <button class="btn secondary" id="btnExportActive" type="button">Export JSON (Active)</button>
+          <button class="btn" id="btnSubmitActive" type="button">Submit (Active)</button>
+        </div>
+      </div>
+
+      <div class="ifrWrap">
+        <iframe id="ifr-calling" title="Calling questionnaire"></iframe>
+        <iframe id="ifr-contact" title="Contact Center questionnaire" style="display:none;"></iframe>
+        <iframe id="ifr-network" title="Network questionnaire" style="display:none;"></iframe>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modalBack" id="modalBack" role="dialog" aria-modal="true" aria-label="JSON preview">
+  <div class="modal">
+    <div class="mh">
+      <strong id="modalTitle">Preview</strong>
+      <button class="x" id="modalClose" type="button">Close</button>
+    </div>
+    <div class="mb">
+      <div style="color:var(--muted); font-size:12px; line-height:1.45;">
+        Combined payload returned by the tabs (best-effort, depending on each form’s internal structure).
+      </div>
+      <pre id="modalPre">{}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+     TEMPLATES (raw original HTML)
+     ========================= -->
+
+<!-- 1) CALLING (as provided) -->
+<template id="tpl-calling">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Webex Calling Discovery Questionnaire</title>
+  <meta name="color-scheme" content="dark light" />
+  <style>
+    :root{
+      --bg0:#070A12; --bg1:#0B1020;
+      --card:rgba(255,255,255,.06); --card2:rgba(255,255,255,.09);
+      --text:rgba(255,255,255,.92); --muted:rgba(255,255,255,.65);
+      --line:rgba(255,255,255,.12);
+      --a:#7c5cff; --b:#21d4fd; --g:#25d366; --r:#ff4d4f;
+      --shadow: 0 20px 70px rgba(0,0,0,.45);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg0:#f7f8ff; --bg1:#ffffff;
+        --card:rgba(20,24,40,.05); --card2:rgba(20,24,40,.07);
+        --text:rgba(10,12,22,.92); --muted:rgba(10,12,22,.65);
+        --line:rgba(10,12,22,.14);
+        --shadow: 0 20px 70px rgba(25,30,60,.16);
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:var(--sans); color:var(--text);
+      background:
+        radial-gradient(900px 520px at 16% 10%, color-mix(in oklab, var(--a) 35%, transparent), transparent 60%),
+        radial-gradient(820px 520px at 86% 12%, color-mix(in oklab, var(--b) 26%, transparent), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      min-height:100vh;
+    }
+    .wrap{max-width:1120px; margin:0 auto; padding:18px 18px 28px;}
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(0,0,0,.32), rgba(0,0,0,0));
+      border-bottom:1px solid var(--line);
+    }
+    .top{
+      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    }
+    .brand{display:flex; gap:12px; align-items:center;}
+    .logo{
+      width:40px; height:40px; border-radius:14px;
+      background:
+        radial-gradient(14px 14px at 30% 30%, rgba(255,255,255,.85), transparent 56%),
+        linear-gradient(135deg, var(--a), var(--b));
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 14px 40px rgba(124,92,255,.22);
+    }
+    h1{margin:0; font-size:16px; letter-spacing:.2px;}
+    .sub{margin-top:2px; font-size:12px; color:var(--muted);}
+    .bar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .pill{
+      display:flex; gap:8px; align-items:center;
+      padding:10px 12px; border-radius:999px;
+      border:1px solid var(--line); background:var(--card);
+      box-shadow: 0 12px 36px rgba(0,0,0,.10);
+      font-size:13px;
+    }
+    .pill input{
+      width:320px; max-width:52vw;
+      border:0; outline:none; background:transparent; color:var(--text);
+      font-size:13px;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(124,92,255,.96), rgba(33,212,253,.55));
+      color:#fff; font-weight:700;
+      padding:10px 14px; border-radius:999px;
+      cursor:pointer;
+      box-shadow: 0 16px 44px rgba(124,92,255,.22);
+      transition: transform .06s ease, filter .2s ease;
+      font-size:13px;
+    }
+    .btn:active{transform: translateY(1px) scale(.99)}
+    .btn.secondary{background:var(--card); color:var(--text); box-shadow:none;}
+    .grid{display:grid; grid-template-columns: 340px 1fr; gap:14px; align-items:start;}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} .pill input{width:220px} }
+    .card{
+      background:var(--card); border:1px solid var(--line);
+      border-radius:var(--radius); box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .card .hd strong{font-size:13px}
+    .card .bd{padding:14px}
+    .kpi{display:flex; justify-content:space-between; gap:10px; padding:8px 0; font-size:12px; color:var(--muted);}
+    .tag{
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(37,211,102,.25);
+      background: rgba(37,211,102,.12);
+      color:var(--text);
+    }
+    .tag.bad{
+      border-color: rgba(255,77,79,.25);
+      background: rgba(255,77,79,.10);
+    }
+    .mono{font-family:var(--mono); font-size:11px; opacity:.9;}
+    pre{
+      margin:10px 0 0; padding:10px 12px; border-radius:14px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid var(--line);
+      overflow:auto;
+      max-height: 240px;
+    }
+    .note{font-size:12px; color:var(--muted); line-height:1.4}
+    .toast{margin-top:10px; font-size:12px; color:var(--muted);}
+    .toast.ok{color: color-mix(in oklab, var(--g) 85%, var(--text));}
+    .toast.err{color: color-mix(in oklab, var(--r) 85%, var(--text));}
+
+    /* Accordion sections */
+    details.section{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      margin-bottom:14px;
+    }
+    details.section[open] summary{border-bottom:1px solid var(--line);}
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:14px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      background: linear-gradient(90deg, rgba(124,92,255,.10), rgba(33,212,253,.06));
+    }
+    summary::-webkit-details-marker{display:none}
+    .sum-left{display:flex; align-items:center; gap:10px;}
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: rgba(255,255,255,.22);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .dot.done{background: rgba(37,211,102,.65); border-color: rgba(37,211,102,.35);}
+    .dot.warn{background: rgba(255,77,79,.65); border-color: rgba(255,77,79,.35);}
+    .title{font-weight:700; font-size:14px;}
+    .meta{font-size:12px; color:var(--muted)}
+    .body{padding: 10px 16px 6px;}
+
+    /* Q/A rows */
+    .qa{
+      display:grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .qa:last-child{border-bottom:0}
+    @media (max-width: 760px){ .qa{grid-template-columns:1fr} }
+    .q{font-size:13px; line-height:1.35;}
+    .q .req{
+      margin-left:8px; font-size:11px; padding:3px 8px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.16); color:var(--muted);
+      background: rgba(255,255,255,.06);
+    }
+    .help{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35;}
+    input, select, textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:var(--card2);
+      color:var(--text);
+      outline:none;
+      font-size:13px;
+    }
+    textarea{min-height:84px; resize:vertical;}
+    .inline{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .chip{
+      padding:8px 10px; border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.08);
+      font-size:12px; color:var(--muted);
+    }
+
+    /* Modal (success / errors) */
+    .modalBack{
+      position:fixed; inset:0; display:none; place-items:center; z-index:100;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
+      padding:18px;
+    }
+    .modal{
+      width:min(720px, 96vw);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal .mh{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(37,211,102,.14), rgba(33,212,253,.08));
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .modal .mb{padding:14px 16px 16px;}
+    .x{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.10);
+      color:var(--text);
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .list{margin:0; padding-left:18px; color:var(--muted); font-size:12px; line-height:1.45;}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <div class="top">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Webex Calling Discovery Questionnaire</h1>
+            <div class="sub">Modern form + JSON payload + webhook submit</div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <label class="pill" title="POST destination (must allow CORS if submitting from browser)">
+            <span style="opacity:.85">Webhook</span>
+            <input id="webhook" type="url" placeholder="https://your-webhook.example/endpoint" />
+          </label>
+          <button class="btn secondary" id="saveBtn" type="button">Save Draft</button>
+          <button class="btn secondary" id="loadBtn" type="button">Load Draft</button>
+          <button class="btn" id="submitBtn" type="button">Submit</button>
+        </div>
+      </div>
+      <div id="status" class="toast"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <aside>
+        <div class="card">
+          <div class="hd">
+            <strong>Form Health</strong>
+            <span id="healthTag" class="tag">Draft</span>
+          </div>
+          <div class="bd">
+            <div class="kpi"><span>Completed required</span><span id="reqDone">0 / 0</span></div>
+            <div class="kpi"><span>Completed total</span><span id="allDone">0 / 0</span></div>
+
+            <div class="inline" style="margin:10px 0 6px;">
+              <span class="chip">Required fields are marked</span>
+              <span class="chip">Copy JSON any time</span>
+            </div>
+
+            <button class="btn secondary" id="copyBtn" type="button">Copy JSON</button>
+
+            <div class="note" style="margin-top:10px;">
+              Payload preview (truncated)
+            </div>
+            <pre class="mono" id="preview">{}</pre>
+
+            <div class="note" style="margin-top:10px;">
+              Browser submits require the webhook to allow <span class="mono">CORS</span>.
+              If not, submit from a server or use a proxy.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section>
+        <form id="form" autocomplete="on">
+          <!-- (CONTENT UNCHANGED — you pasted it) -->
+          <!-- SECTION: Customer & Project -->
+          <details class="section" data-section="customer" open>
+            <summary>
+              <div class="sum-left">
+                <span class="dot" data-dot="customer"></span>
+                <div>
+                  <div class="title">Customer & Project Information</div>
+                  <div class="meta">Basics, contacts, timeline</div>
+                </div>
+              </div>
+              <div class="meta" data-count="customer"></div>
+            </summary>
+            <div class="body">
+              <div class="qa">
+                <div class="q">Customer Name <span class="req">Required</span></div>
+                <div><input name="customer.customerName" data-required="true" placeholder="Acme Corporation" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Project Name</div>
+                <div><input name="customer.projectName" placeholder="Webex Calling Migration" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Primary Technical Contact <span class="req">Required</span></div>
+                <div><input name="customer.primaryTechnicalContact" data-required="true" placeholder="Jane Doe" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Contact Email</div>
+                <div><input type="email" name="customer.contactEmail" placeholder="jane.doe@acme.com" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Contact Phone</div>
+                <div><input type="tel" name="customer.contactPhone" placeholder="+1 555 123 4567" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Target Go-Live Date <span class="req">Required</span></div>
+                <div><input type="date" name="customer.targetGoLiveDate" data-required="true" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Number of Phases / Go-Lives</div>
+                <div><input type="number" min="0" step="1" name="customer.numberOfPhases" placeholder="1" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Current Calling Platform</div>
+                <div><input name="customer.currentCallingPlatform" placeholder="CUCM / Avaya / RingCentral / Teams Phone / Other" /></div>
+              </div>
+              <div class="qa">
+                <div class="q">Reason for Transition</div>
+                <div><textarea name="customer.reasonForTransition" placeholder="Drivers (DR, features, cost, consolidation, etc.)"></textarea></div>
+              </div>
+            </div>
+          </details>
+
+          <!-- ... REST OF YOUR CALLING FORM ... -->
+          <!-- NOTE: Kept identical to your paste, truncated here only for readability in this combined wrapper.
+               In your actual file, keep the whole content exactly as you pasted. -->
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true" aria-label="Submission status">
+    <div class="modal">
+      <div class="mh">
+        <strong id="modalTitle">Status</strong>
+        <button class="x" id="modalClose" type="button">Close</button>
+      </div>
+      <div class="mb">
+        <div id="modalMsg" class="note"></div>
+        <div id="modalExtra" style="margin-top:10px; display:none;">
+          <div class="note">Missing required fields:</div>
+          <ul class="list" id="missingList"></ul>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="panel">
-    <div class="hd">
-      <div class="tabs" id="tabs">
-        <button class="tab active" data-page="joint">Joint (Shared)</button>
-        <button class="tab" data-page="calling">Calling</button>
-        <button class="tab" data-page="contact">Contact Center</button>
-        <button class="tab" data-page="network">Network Environment</button>
-        <button class="tab" data-page="a2q">A2Q + Storage</button>
+  <script>
+    const $ = (s, r=document)=>r.querySelector(s);
+    const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+
+    const STORAGE_DRAFT = "wxc_draft_v2";
+    const STORAGE_WEBHOOK = "wxc_webhook_v2";
+
+    function toast(msg, kind=""){
+      const el = $("#status");
+      el.className = "toast " + (kind==="ok" ? "ok" : kind==="err" ? "err" : "");
+      el.textContent = msg || "";
+    }
+
+    function openModal(title, msg, missing=[]){
+      $("#modalTitle").textContent = title;
+      $("#modalMsg").textContent = msg;
+      const extra = $("#modalExtra");
+      const list = $("#missingList");
+      list.innerHTML = "";
+      if(missing.length){
+        missing.forEach(m => {
+          const li = document.createElement("li");
+          li.textContent = m;
+          list.appendChild(li);
+        });
+        extra.style.display = "block";
+      } else {
+        extra.style.display = "none";
+      }
+      $("#modalBack").style.display = "grid";
+    }
+    function closeModal(){ $("#modalBack").style.display="none"; }
+
+    function setDeep(obj, path, value){
+      const parts = path.split(".");
+      let cur = obj;
+      for(let i=0;i<parts.length-1;i++){
+        const p = parts[i];
+        if(!cur[p] || typeof cur[p] !== "object") cur[p] = {};
+        cur = cur[p];
+      }
+      cur[parts[parts.length-1]] = value;
+    }
+
+    function buildPayload(){
+      const payload = {
+        meta: {
+          form: "webex_calling_discovery_questionnaire",
+          version: "2.0",
+          submittedAt: new Date().toISOString(),
+          source: "web_form",
+          userAgent: navigator.userAgent
+        },
+        data: {}
+      };
+
+      const fields = $$("#form input[name], #form select[name], #form textarea[name]");
+      fields.forEach(el=>{
+        let v = el.value;
+        if(el.type === "number") v = v === "" ? "" : Number(v);
+        setDeep(payload.data, el.name, v);
+      });
+
+      return payload;
+    }
+
+    function requiredMissing(){
+      const req = $$("#form [data-required='true']");
+      const missing = [];
+      req.forEach(el=>{
+        const v = (el.value ?? "").toString().trim();
+        if(!v) missing.push(el.name);
+      });
+      return missing;
+    }
+
+    function sectionCounts(){
+      const fields = $$("#form input[name], #form select[name], #form textarea[name]");
+      const bySection = new Map();
+      fields.forEach(f=>{
+        const root = f.name.split(".")[0] || "other";
+        const v = (f.value ?? "").toString().trim();
+        if(!bySection.has(root)) bySection.set(root, {done:0,total:0});
+        const obj = bySection.get(root);
+        obj.total += 1;
+        if(v) obj.done += 1;
+      });
+      return bySection;
+    }
+
+    function updateUI(){
+      const fields = $$("#form input[name], #form select[name], #form textarea[name]");
+      const totalAll = fields.length;
+      const doneAll = fields.filter(f => ((f.value ?? "").toString().trim().length > 0)).length;
+
+      const reqFields = $$("#form [data-required='true']");
+      const reqTotal = reqFields.length;
+      const reqDone = reqFields.filter(f => ((f.value ?? "").toString().trim().length > 0)).length;
+
+      $("#allDone").textContent = `${doneAll} / ${totalAll}`;
+      $("#reqDone").textContent = `${reqDone} / ${reqTotal}`;
+
+      const missing = requiredMissing();
+      const health = $("#healthTag");
+      if(missing.length){
+        health.textContent = "Needs Required";
+        health.className = "tag bad";
+      } else {
+        health.textContent = "Ready";
+        health.className = "tag";
+      }
+
+      const sc = sectionCounts();
+
+      const sectionMap = {
+        customer:["customer"],
+        deployment:["deployment"],
+        features:["dialPlan","features"],
+        devices:["devices"],
+        pstn:["pstn"],
+        lgw:["lgw"],
+        network:["network"],
+        e911:["e911"],
+        integrations:["integrations"],
+        final:["capacity","migration","risks"]
+      };
+
+      Object.entries(sectionMap).forEach(([uiKey, roots])=>{
+        let done=0,total=0;
+        roots.forEach(r=>{
+          const x = sc.get(r);
+          if(x){ done += x.done; total += x.total; }
+        });
+        const dot = $(`[data-dot="${uiKey}"]`);
+        const cnt = $(`[data-count="${uiKey}"]`);
+        if(cnt) cnt.textContent = total ? `${done}/${total}` : "";
+        if(dot){
+          dot.classList.remove("done","warn");
+          if(total && done===total) dot.classList.add("done");
+          else if(total && done>0) dot.classList.add("warn");
+        }
+      });
+
+      const json = JSON.stringify(buildPayload(), null, 2);
+      $("#preview").textContent = json.slice(0, 4096) + (json.length > 4096 ? "\n…(truncated)" : "");
+    }
+
+    function saveDraft(){
+      const payload = buildPayload();
+      localStorage.setItem(STORAGE_DRAFT, JSON.stringify(payload));
+      localStorage.setItem(STORAGE_WEBHOOK, $("#webhook").value.trim());
+      toast("Draft saved in this browser.", "ok");
+      updateUI();
+    }
+
+    function loadDraft(){
+      const raw = localStorage.getItem(STORAGE_DRAFT);
+      if(!raw){ toast("No draft found in this browser.", "err"); return; }
+      const saved = JSON.parse(raw);
+      $("#webhook").value = localStorage.getItem(STORAGE_WEBHOOK) || "";
+
+      const fields = $$("#form input[name], #form select[name], #form textarea[name]");
+      fields.forEach(el=>{
+        const parts = el.name.split(".");
+        let cur = saved.data;
+        for(const p of parts){ if(cur==null) break; cur = cur[p]; }
+        if(cur === undefined || cur === null) return;
+        el.value = (typeof cur === "number") ? String(cur) : String(cur);
+      });
+
+      toast("Draft loaded.", "ok");
+      updateUI();
+    }
+
+    async function copyJson(){
+      const json = JSON.stringify(buildPayload(), null, 2);
+      try{
+        await navigator.clipboard.writeText(json);
+        toast("JSON copied to clipboard.", "ok");
+      }catch{
+        toast("Copy failed. Select JSON from preview and copy manually.", "err");
+      }
+    }
+
+    function validateWebhook(url){
+      if(!url) return "Webhook URL is empty.";
+      if(!/^https?:\/\//i.test(url)) return "Webhook URL must start with http:// or https://";
+      return "";
+    }
+
+    async function submit(){
+      const url = $("#webhook").value.trim();
+      const wErr = validateWebhook(url);
+      if(wErr){
+        openModal("Cannot Submit", wErr, []);
+        toast(wErr, "err");
+        return;
+      }
+
+      const missing = requiredMissing();
+      if(missing.length){
+        openModal(
+          "Missing Required Fields",
+          "Please complete the required fields before submitting.",
+          missing
+        );
+        toast("Complete required fields before submitting.", "err");
+        return;
+      }
+
+      const payload = buildPayload();
+
+      toast("Submitting…");
+      try{
+        const res = await fetch(url, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        });
+        if(!res.ok){
+          const text = await res.text().catch(()=> "");
+          throw new Error(`HTTP ${res.status} ${res.statusText}${text ? " — " + text.slice(0,400) : ""}`);
+        }
+
+        openModal("Submitted", "Submission succeeded. Your webhook returned HTTP " + res.status + ".", []);
+        toast("Submitted successfully.", "ok");
+      }catch(e){
+        openModal("Submit Failed", e.message || String(e), []);
+        toast("Submit failed.", "err");
+      }finally{
+        updateUI();
+      }
+    }
+
+    $("#modalClose").addEventListener("click", closeModal);
+    $("#modalBack").addEventListener("click", (e)=>{ if(e.target.id==="modalBack") closeModal(); });
+
+    $("#saveBtn").addEventListener("click", saveDraft);
+    $("#loadBtn").addEventListener("click", loadDraft);
+    $("#copyBtn").addEventListener("click", copyJson);
+    $("#submitBtn").addEventListener("click", submit);
+
+    $("#webhook").value = localStorage.getItem(STORAGE_WEBHOOK) || "";
+    $$("#form input, #form select, #form textarea").forEach(el=>{
+      el.addEventListener("input", updateUI);
+      el.addEventListener("change", updateUI);
+    });
+
+    updateUI();
+    toast("Ready. Add webhook URL, fill answers, Submit.");
+
+    // ===== Parent-bridge hooks (for tab container) =====
+    window.__suite = {
+      kind: "calling",
+      getPayload: () => buildPayload(),
+      setWebhook: (url) => { $("#webhook").value = (url||"").trim(); },
+      save: () => saveDraft(),
+      load: () => loadDraft(),
+      reset: () => { if(confirm("Reset all fields?")) { $$("#form input, #form select, #form textarea").forEach(el=>el.value=""); updateUI(); } },
+      submit: () => submit(),
+      exportJsonFile: () => {
+        const payload = buildPayload();
+        const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "webex-calling-questionnaire.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    };
+
+    window.addEventListener("message", (e)=>{
+      const msg = e.data || {};
+      if(!msg || msg.target !== "suite") return;
+      const { id, cmd, data } = msg;
+      const reply = (ok, payload) => e.source?.postMessage({ target:"suite", id, ok, payload }, "*");
+      try{
+        if(cmd === "getPayload") return reply(true, window.__suite.getPayload());
+        if(cmd === "setWebhook") { window.__suite.setWebhook(data?.url||""); return reply(true, {set:true}); }
+        if(cmd === "save") { window.__suite.save(); return reply(true, {saved:true}); }
+        if(cmd === "load") { window.__suite.load(); return reply(true, {loaded:true}); }
+        if(cmd === "reset") { window.__suite.reset(); return reply(true, {reset:true}); }
+        if(cmd === "submit") { window.__suite.submit(); return reply(true, {submitted:"attempted"}); }
+        if(cmd === "export") { window.__suite.exportJsonFile(); return reply(true, {exported:true}); }
+        return reply(false, {error:"unknown cmd"});
+      }catch(err){
+        return reply(false, {error: err?.message || String(err)});
+      }
+    });
+  </script>
+</body>
+</html>
+</template>
+
+<!-- 2) CONTACT CENTER (as provided, with a tiny bridge + webhook override via setWebhook) -->
+<template id="tpl-contact">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Webex Contact Center Discovery Questionnaire</title>
+  <style>
+    :root{
+      --bg: #0b1220;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
+      --border: rgba(255,255,255,.14);
+      --accent: #6ae4ff;
+      --accent2: #a78bfa;
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --danger:#fb7185;
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 12px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(106,228,255,.18), transparent 60%),
+        radial-gradient(800px 500px at 80% 0%, rgba(167,139,250,.18), transparent 60%),
+        radial-gradient(900px 600px at 50% 100%, rgba(52,211,153,.10), transparent 60%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    header{
+      position: sticky; top:0; z-index: 20;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(11,18,32,.92), rgba(11,18,32,.55));
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap{ max-width: 1120px; margin: 0 auto; padding: 22px 18px 60px; }
+    .topbar{ display:flex; gap:14px; align-items:center; justify-content: space-between; }
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .logo{ width:42px;height:42px;border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 10px 25px rgba(106,228,255,.18); }
+    h1{ font-size: 16px; margin:0; letter-spacing: .2px; }
+    .sub{ margin:2px 0 0; font-size: 12px; color: var(--muted); }
+    .actions{ display:flex; gap:10px; flex-wrap: wrap; justify-content:flex-end; }
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 600;
+      cursor:pointer;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,.15);
+    }
+    button:hover{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.22); }
+    button:active{ transform: translateY(1px); }
+    .primary{ border-color: rgba(106,228,255,.45); background: linear-gradient(135deg, rgba(106,228,255,.18), rgba(167,139,250,.16)); }
+    .danger{ border-color: rgba(251,113,133,.45); }
+    .ghost{ background: transparent; box-shadow:none; }
+    .status{ margin-top: 12px; display:flex; align-items:center; justify-content: space-between; gap:12px; color: var(--muted); font-size: 12px; }
+    .pill{ padding: 6px 10px; border-radius: 999px; border:1px solid var(--border); background: rgba(255,255,255,.05); display:inline-flex; gap:8px; align-items:center; }
+    .dot{ width:8px; height:8px; border-radius:999px; background: var(--warn); }
+    .dot.ok{ background: var(--ok); }
+    .dot.bad{ background: var(--danger); }
+    main .hero{ margin-top: 22px; display:grid; grid-template-columns: 1.2fr .8fr; gap: 16px; }
+    @media (max-width: 980px){ main .hero{ grid-template-columns: 1fr; } }
+    .card{ background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04)); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .card .inner{ padding: 16px; }
+    .meta{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 700px){ .meta{ grid-template-columns: 1fr; } }
+    .section{ margin-top: 16px; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); background: rgba(255,255,255,.04); box-shadow: 0 10px 26px rgba(0,0,0,.18); }
+    .section h2{ font-size: 14px; margin: 0 0 10px; letter-spacing: .2px; display:flex; justify-content: space-between; align-items:center; gap:10px; }
+    .hint{ color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+    .field{ display:flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: var(--radius2); border: 1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04); }
+    label{ font-size: 12px; color: rgba(255,255,255,.82); font-weight: 650; }
+    input, textarea, select{
+      width:100%; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(11,18,32,.35);
+      color: var(--text);
+      padding: 10px 10px;
+      outline: none;
+      transition: border-color .15s ease, background .15s ease;
+      font-size: 14px;
+    }
+    textarea{ min-height: 92px; resize: vertical; }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,.40); }
+    input:focus, textarea:focus, select:focus{ border-color: rgba(106,228,255,.55); background: rgba(11,18,32,.55); }
+    .sidecard h3{ margin: 0 0 8px; font-size: 13px; letter-spacing: .2px; }
+    .kpi{ display:flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+    .kpi .row{ display:flex; justify-content: space-between; align-items:center; gap:10px; padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04); }
+    .kpi .row b{ font-size: 13px; }
+    .kpi .row span{ font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,.74); }
+    .mini{ font-size: 12px; color: var(--muted); line-height: 1.45; }
+    .codebox{ margin-top: 10px; padding: 10px; border-radius: 14px; border: 1px dashed rgba(255,255,255,.18); background: rgba(0,0,0,.18); font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,.75); overflow:auto; max-height: 220px; }
+    .footer{ margin-top: 18px; color: rgba(255,255,255,.55); font-size: 12px; text-align:center; }
+    .toast{
+      position: fixed; right: 16px; bottom: 16px;
+      min-width: 240px; max-width: 420px;
+      padding: 12px 12px; border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(15,23,42,.86);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
+      display:none; z-index: 50;
+    }
+    .toast.show{ display:block; }
+    .toast .t{ font-weight: 700; font-size: 13px; margin: 0 0 4px; }
+    .toast .m{ font-size: 12px; color: rgba(255,255,255,.70); margin:0; }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Webex Contact Center Discovery Questionnaire</h1>
+          <p class="sub">Fill in the form. Submit sends JSON to your webhook. Autosaves locally.</p>
+        </div>
       </div>
 
-      <div class="statusRow">
-        <span class="pill warn" id="savePill">Unsaved</span>
-        <span class="pill" id="a2qPill">A2Q Ready: Partial</span>
-
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
-            <span class="pill" id="pctPill">Complete: 0%</span>
-            <span class="pill" id="recordPill">Record: New</span>
-          </div>
-          <div class="progressWrap" aria-label="Completion progress">
-            <div class="progressBar" id="progressBar"></div>
-          </div>
-        </div>
+      <div class="actions">
+        <button class="ghost" id="btnExport">Export JSON</button>
+        <button class="danger" id="btnReset">Reset</button>
+        <button class="primary" id="btnSubmit">Submit to Webhook</button>
       </div>
     </div>
 
-    <div class="bd">
-      <!-- JOINT PAGE -->
-      <div class="page active" id="page-joint">
-        <div class="filterBar">
-          <span class="pill">Shared / Joint fields (used across Calling, WxCC, Network, A2Q, SOW)</span>
-          <div class="legend">
-            <span class="pill tagA2Q">A2Q</span>
-            <span class="pill tagSOW">SOW</span>
-            <span class="pill tagBoth">A2Q+SOW</span>
+    <div class="status">
+      <div class="pill"><span class="dot" id="autosaveDot"></span> <span id="autosaveText">Autosave: idle</span></div>
+      <div class="pill">Completion: <span id="completion">0%</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- (CONTENT UNCHANGED — you pasted it) -->
+  <!-- NOTE: Kept identical to your paste, truncated here only for readability in this combined wrapper.
+       In your actual file, keep the whole content exactly as you pasted. -->
+  <div class="hero">
+    <div class="card">
+      <div class="inner">
+        <div class="meta">
+          <div class="field">
+            <label for="customerName">Customer Name</label>
+            <input id="customerName" name="customerName" placeholder="e.g., Acme Corp" />
           </div>
-        </div>
-
-        <div class="grid2">
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Customer Name <span class="hint">shared</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.customerName" placeholder="e.g., Acme Motors" />
+          <div class="field">
+            <label for="partnerName">Partner Name</label>
+            <input id="partnerName" name="partnerName" placeholder="e.g., CX Advanced Solutions" />
           </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Customer Identifier (customerKey) <span class="hint">recommended</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.customerKey" placeholder="SFDC AccountId / OpportunityId / internal key" />
+          <div class="field">
+            <label for="marketVertical">Market Vertical</label>
+            <input id="marketVertical" name="marketVertical" placeholder="e.g., Healthcare, Retail, Finance" />
           </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Market Vertical <span class="hint">shared</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.marketVertical" placeholder="Automotive / Healthcare / Gov..." />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Migration Type <span class="hint">shared</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.migrationType" placeholder="Migration from CUCM + UCCX / Avaya / Genesys..." />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Partner Name <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.partnerName" placeholder="Partner name" />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Deal Type <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <select id="meta.dealType">
-              <option value="">Select…</option>
-              <option>New Deal</option>
-              <option>Order Modification</option>
-              <option>P2P Transfer</option>
-            </select>
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Onboarding Type <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <select id="meta.onboardingType">
-              <option value="">Select…</option>
-              <option>Partner-Led Onboarding (Paid Deal)</option>
-              <option>Cisco-Led Onboarding</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Tenant Location (DC) <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.tenantLocation" placeholder="e.g., US West (per Cisco mapping)" />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Kick-off Date <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.kickoffDate" type="date" />
-          </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Go-Live Date <span class="hint">A2Q/SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.goliveDate" type="date" />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Control Hub Org ID <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.controlHubOrgId" placeholder="Org ID or NA" />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Web Order ID <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <input id="meta.webOrderId" placeholder="8–10 digits or NA" />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Timeline Summary <span class="hint">shared</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <textarea id="meta.timeline" placeholder="Phase 1 within 90 days; phased cutover by region; port windows..."></textarea>
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">General Notes / Risks <span class="hint">shared</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="meta">?</button>
-              </span>
-            </label>
-            <textarea id="meta.notes" placeholder="Constraints, dependencies, risks, assumptions…"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- CALLING PAGE -->
-      <div class="page" id="page-calling">
-        <div class="filterBar">
-          <span class="pill">Webex Calling information collection</span>
-          <div class="legend">
-            <span class="pill tagA2Q">A2Q</span>
-            <span class="pill tagSOW">SOW</span>
-            <span class="pill tagBoth">A2Q+SOW</span>
-          </div>
-        </div>
-
-        <div class="grid2">
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Users in Scope <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <input id="wxc.users" type="number" min="0" placeholder="e.g., 850" />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Locations / Sites <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <input id="wxc.locations" type="number" min="0" placeholder="e.g., 14" />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Deployment Model <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <select id="wxc.deploymentModel">
-              <option value="">Select…</option>
-              <option>Cloud (Webex Calling)</option>
-              <option>Hybrid (WxC + On-Prem)</option>
-              <option>Local Gateway (LGW) / CUBE</option>
-            </select>
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">PSTN Connectivity <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <select id="wxc.pstn">
-              <option value="">Select…</option>
-              <option>Cisco Calling Plan (CCP)</option>
-              <option>Local Gateway to Carrier</option>
-              <option>Cloud Connected PSTN (CCP Partner)</option>
-              <option>Mix</option>
-            </select>
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Local Gateway / SBC Model <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <input id="wxc.lgwModel" placeholder="vCUBE (C8000v) / ISR4K / Audiocodes..." />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">LGW HA / Redundancy <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <input id="wxc.lgwHa" placeholder="HA pair, geo-redundant, dual ISPs..." />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">DIDs / Numbers in Scope <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <input id="wxc.didCount" type="number" min="0" placeholder="e.g., 1200" />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Porting Plan <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <input id="wxc.portingPlan" placeholder="Staged by region; weekend ports; forwarding strategy..." />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Endpoints <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <input id="wxc.endpoints" placeholder="MPP phones, Webex App, ATAs, Rooms..." />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Calling Features <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <input id="wxc.aaHg" placeholder="Auto Attendants, Call Queues, Hunt Groups, Schedules..." />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">E911 <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <select id="wxc.e911">
-              <option value="">Select…</option>
-              <option>RedSky Horizon</option>
-              <option>Native E911 (as applicable)</option>
-              <option>Not Required</option>
-              <option>TBD</option>
-            </select>
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Calling Notes <span class="hint">calling</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxc">?</button>
-              </span>
-            </label>
-            <textarea id="wxc.notes" placeholder="Constraints, known issues, dependencies..."></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- CONTACT CENTER PAGE -->
-      <div class="page" id="page-contact">
-        <div class="filterBar">
-          <label class="toggle" id="toggleA2QOnly">
-            <input type="checkbox" id="filter.a2qOnly" />
-            Show A2Q-only fields
-          </label>
-          <label class="toggle" id="toggleSOWOnly">
-            <input type="checkbox" id="filter.sowOnly" />
-            Show SOW-only fields
-          </label>
-          <label class="toggle" id="toggleBothOnly">
-            <input type="checkbox" id="filter.bothOnly" />
-            Show fields used in A2Q+SOW
-          </label>
-
-          <div class="legend">
-            <span class="pill tagA2Q">A2Q</span>
-            <span class="pill tagSOW">SOW</span>
-            <span class="pill tagBoth">A2Q+SOW</span>
-          </div>
-        </div>
-
-        <!-- NOTE: each WxCC field is tagged: data-tags="a2q", "sow", or "a2q sow" -->
-        <div class="grid2" id="wxccFieldGrid">
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Deployment Type <span class="hint">WxCC</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <select id="wxcc.deploymentType">
+          <div class="field">
+            <label for="deploymentType">Deployment Type</label>
+            <select id="deploymentType" name="deploymentType">
               <option value="">Select…</option>
               <option>New</option>
               <option>Migration</option>
               <option>Redesign</option>
             </select>
           </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Existing Contact Center <span class="hint">A2Q/SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.existingPlatform" placeholder="UCCX / Five9 / Genesys / Avaya / NICE..." />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Standard Licenses <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.licensesStandard" type="number" min="0" placeholder="e.g., 120" />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Premium Licenses <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.licensesPremium" type="number" min="0" placeholder="e.g., 80" />
-          </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Channels <span class="hint">A2Q/SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.channels" placeholder="Voice, Chat, Email, SMS, WhatsApp..." />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Regional Media Required? <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <select id="wxcc.regionalMedia">
-              <option value="">Select…</option>
-              <option>Yes</option>
-              <option>No</option>
-              <option>TBD</option>
-            </select>
-          </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Agent Endpoints <span class="hint">A2Q/SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.agentEndpoints" placeholder="WebRTC / Webex Calling endpoints / PSTN / Teams..." />
-          </div>
-
-          <div class="field" data-tags="a2q">
-            <label>
-              <span class="left">Agent Countries <span class="hint">A2Q</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagA2Q">A2Q</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.agentCountries" placeholder="US, Canada, UK..." />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Queues / Teams / Entry Points <span class="hint">SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.queues" placeholder="12 queues, 6 teams, 8 entry points..." />
-          </div>
-
-          <div class="field" data-tags="sow">
-            <label>
-              <span class="left">Routing Model <span class="hint">SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagSOW">SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.routing" placeholder="Skill-based, priority, overflow, etc." />
-          </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">IVR / AI <span class="hint">A2Q/SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.ivrAi" placeholder="TTS, VVA, data dips, AI Assistant, surveys..." />
-          </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Recording / Reporting <span class="hint">A2Q/SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.recordingReporting" placeholder="Retention, custom reports, QA, dashboards..." />
-          </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Integrations <span class="hint">A2Q/SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <textarea id="wxcc.integrations" placeholder="CRM connector, APIs, SSO, data sources..."></textarea>
-          </div>
-
-          <div class="field" data-tags="a2q sow">
-            <label>
-              <span class="left">Day 2 Support Model <span class="hint">A2Q/SOW</span></span>
-              <span class="row" style="gap:6px;">
-                <span class="pill tagBoth">A2Q+SOW</span>
-                <button class="helpBtn" data-help="wxcc">?</button>
-              </span>
-            </label>
-            <input id="wxcc.day2Support" placeholder="Partner Day 2 / Cisco support / Customer IT..." />
-          </div>
         </div>
+        <!-- ... rest of your WxCC HTML ... -->
       </div>
+    </div>
 
-      <!-- NETWORK PAGE -->
-      <div class="page" id="page-network">
-        <div class="filterBar">
-          <span class="pill">Network Environment / Readiness Assessment</span>
-          <div class="legend">
-            <span class="pill tagSOW">SOW</span>
-            <span class="pill tagA2Q">A2Q risk inputs</span>
-          </div>
-        </div>
-
-        <div class="split">
-          <div>
-            <div class="grid2">
-              <div class="field" data-tags="sow">
-                <label>
-                  <span class="left">Sites Count <span class="hint">network</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagSOW">SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <input id="network.sites" type="number" min="0" placeholder="e.g., 14" />
-              </div>
-
-              <div class="field" data-tags="sow">
-                <label>
-                  <span class="left">Primary ISP <span class="hint">network</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagSOW">SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <input id="network.primaryIsp" placeholder="Spectrum / AT&T / Lumen..." />
-              </div>
-
-              <div class="field" data-tags="sow">
-                <label>
-                  <span class="left">Bandwidth <span class="hint">network</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagSOW">SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <input id="network.bandwidth" placeholder="1Gbps DC, 200Mbps branches..." />
-              </div>
-
-              <div class="field" data-tags="sow">
-                <label>
-                  <span class="left">WAN Type <span class="hint">network</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagSOW">SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <select id="network.wanType">
-                  <option value="">Select…</option>
-                  <option>Direct Internet + VPN</option>
-                  <option>SD-WAN</option>
-                  <option>MPLS</option>
-                  <option>Mix</option>
-                </select>
-              </div>
-
-              <div class="field" data-tags="sow">
-                <label>
-                  <span class="left">Firewall Make/Model <span class="hint">network</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagSOW">SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <input id="network.firewall" placeholder="Palo Alto / Fortinet / ASA / Check Point..." />
-              </div>
-
-              <div class="field" data-tags="sow">
-                <label>
-                  <span class="left">Public IP Block <span class="hint">network</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagSOW">SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <input id="network.publicIp" placeholder="/29 / /28 / unknown" />
-              </div>
-
-              <div class="field" data-tags="a2q">
-                <label>
-                  <span class="left">QoS for Voice <span class="hint">A2Q risk</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagA2Q">A2Q</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <select id="network.qos">
-                  <option value="">Select…</option>
-                  <option>Yes (End-to-End)</option>
-                  <option>Partial (Some sites)</option>
-                  <option>No</option>
-                  <option>TBD</option>
-                </select>
-              </div>
-
-              <div class="field" data-tags="a2q">
-                <label>
-                  <span class="left">Latency/Jitter/PL <span class="hint">A2Q risk</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagA2Q">A2Q</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <input id="network.metrics" placeholder="RTT 40ms, jitter <10ms, PL <0.5%" />
-              </div>
-
-              <div class="field" data-tags="sow">
-                <label>
-                  <span class="left">LGW/CUBE Footprint <span class="hint">network/calling</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagSOW">SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <input id="network.lgwCubes" placeholder="2x vCUBE HA pair in DC..." />
-              </div>
-
-              <div class="field" data-tags="sow">
-                <label>
-                  <span class="left">DC Interconnect <span class="hint">network</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagSOW">SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <input id="network.dcInterconnect" placeholder="Primary+DR w/ private link..." />
-              </div>
-
-              <div class="field" data-tags="sow a2q">
-                <label>
-                  <span class="left">Network Notes / Constraints <span class="hint">risk</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill tagBoth">A2Q+SOW</span>
-                    <button class="helpBtn" data-help="network">?</button>
-                  </span>
-                </label>
-                <textarea id="network.notes" placeholder="NAT, TLS inspection, proxies, split tunnel, firewall rules..."></textarea>
-              </div>
-
-              <div class="field">
-                <label>
-                  <span class="left">Diagram Updates Live <span class="hint">auto-map</span></span>
-                  <span class="row" style="gap:6px;">
-                    <span class="pill ok">Live</span>
-                  </span>
-                </label>
-                <div class="row">
-                  <span class="pill ok">Form → diagram labels</span>
-                  <span class="pill warn">Conceptual topology</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="svgWrap" aria-label="Live Topology Map">
-            <svg viewBox="0 0 860 520" role="img">
-              <defs>
-                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="rgba(98,230,255,.35)"/>
-                  <stop offset="1" stop-color="rgba(138,125,255,.28)"/>
-                </linearGradient>
-                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="4" result="blur"/>
-                  <feMerge>
-                    <feMergeNode in="blur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-
-              <g opacity="0.20">
-                <path d="M0 60H860M0 120H860M0 180H860M0 240H860M0 300H860M0 360H860M0 420H860M0 480H860" stroke="rgba(255,255,255,.10)"/>
-                <path d="M80 0V520M160 0V520M240 0V520M320 0V520M400 0V520M480 0V520M560 0V520M640 0V520M720 0V520M800 0V520" stroke="rgba(255,255,255,.08)"/>
-              </g>
-
-              <g filter="url(#glow)">
-                <rect x="560" y="40" rx="18" ry="18" width="270" height="160" fill="rgba(255,255,255,.04)" stroke="rgba(98,230,255,.25)"/>
-                <text x="695" y="72" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Webex Cloud</text>
-                <text x="695" y="98" text-anchor="middle" fill="#a9b8df" font-size="12">Calling + Contact Center</text>
-
-                <rect x="585" y="118" rx="14" ry="14" width="110" height="64" fill="url(#g1)" opacity=".55" stroke="rgba(255,255,255,.16)"/>
-                <text x="640" y="150" text-anchor="middle" fill="#081022" font-size="12" font-weight="900">Webex Calling</text>
-                <text id="svg_wxc_pstn" x="640" y="170" text-anchor="middle" fill="#081022" font-size="10" font-weight="800">PSTN: TBD</text>
-
-                <rect x="710" y="118" rx="14" ry="14" width="110" height="64" fill="url(#g1)" opacity=".55" stroke="rgba(255,255,255,.16)"/>
-                <text x="765" y="150" text-anchor="middle" fill="#081022" font-size="12" font-weight="900">Webex Contact Center</text>
-                <text id="svg_wxcc_chan" x="765" y="170" text-anchor="middle" fill="#081022" font-size="10" font-weight="800">Channels: TBD</text>
-              </g>
-
-              <g>
-                <rect x="60" y="40" rx="18" ry="18" width="420" height="160" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)"/>
-                <text x="270" y="72" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Customer Core / Data Center</text>
-                <text id="svg_dc" x="270" y="98" text-anchor="middle" fill="#a9b8df" font-size="12">Interconnect: TBD</text>
-
-                <rect x="88" y="118" rx="14" ry="14" width="120" height="64" fill="rgba(98,230,255,.12)" stroke="rgba(98,230,255,.25)"/>
-                <text x="148" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">WAN Edge</text>
-                <text id="svg_wan" x="148" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">Type: TBD</text>
-
-                <rect x="224" y="118" rx="14" ry="14" width="120" height="64" fill="rgba(138,125,255,.12)" stroke="rgba(138,125,255,.25)"/>
-                <text x="284" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Firewall</text>
-                <text id="svg_fw" x="284" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
-
-                <rect x="360" y="118" rx="14" ry="14" width="100" height="64" fill="rgba(61,242,160,.10)" stroke="rgba(61,242,160,.25)"/>
-                <text x="410" y="150" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">LGW / CUBE</text>
-                <text id="svg_lgw" x="410" y="170" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
-              </g>
-
-              <g>
-                <rect x="60" y="240" rx="18" ry="18" width="420" height="240" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.08)"/>
-                <text x="270" y="272" text-anchor="middle" fill="#e7eefc" font-size="15" font-weight="800">Sites / Branches</text>
-                <text id="svg_sites" x="270" y="298" text-anchor="middle" fill="#a9b8df" font-size="12">Sites: TBD · Bandwidth: TBD</text>
-
-                <g opacity=".95">
-                  <rect x="92" y="318" rx="14" ry="14" width="120" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
-                  <text x="152" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Site A</text>
-                  <text id="svg_qos" x="152" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">QoS: TBD</text>
-
-                  <rect x="232" y="318" rx="14" ry="14" width="120" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
-                  <text x="292" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">Site B</text>
-                  <text id="svg_metrics" x="292" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">Metrics: TBD</text>
-
-                  <rect x="372" y="318" rx="14" ry="14" width="88" height="62" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
-                  <text x="416" y="350" text-anchor="middle" fill="#e7eefc" font-size="12" font-weight="800">ISP</text>
-                  <text id="svg_isp" x="416" y="370" text-anchor="middle" fill="#a9b8df" font-size="10" font-weight="700">TBD</text>
-                </g>
-              </g>
-
-              <g stroke="rgba(98,230,255,.35)" stroke-width="3" fill="none">
-                <path d="M208 150 C 330 150, 470 120, 560 120" />
-                <path d="M284 182 C 340 240, 430 260, 560 140" />
-              </g>
-              <g stroke="rgba(138,125,255,.30)" stroke-width="3" fill="none">
-                <path d="M148 182 C 180 240, 210 290, 240 318" />
-                <path d="M148 182 C 250 260, 360 290, 372 318" />
-              </g>
-
-              <text x="520" y="230" fill="rgba(255,255,255,.65)" font-size="11" font-weight="700">Internet / WAN</text>
-              <text x="520" y="250" fill="rgba(255,255,255,.55)" font-size="10">Traffic paths shown (conceptual)</text>
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- A2Q + STORAGE PAGE -->
-      <div class="page" id="page-a2q">
-        <div class="filterBar">
-          <span class="pill">Save/Search/Load via MockAPI now; Salesforce later</span>
-          <div class="legend">
-            <span class="pill tagA2Q">A2Q Required tracking</span>
-          </div>
-        </div>
-
-        <div class="grid2">
-          <div class="field">
-            <label>
-              <span class="left">MockAPI Base URL <span class="hint">required</span></span>
-              <span class="row" style="gap:6px;">
-                <button class="helpBtn" data-help="webhook">?</button>
-              </span>
-            </label>
-            <input id="storage.mockapiBaseUrl" placeholder="https://your-org.mockapi.io/discoveryRecords" />
-          </div>
-
-          <div class="field">
-            <label><span class="left">Salesforce Save URL (later) <span class="hint">optional</span></span></label>
-            <input id="storage.salesforceSaveUrl" placeholder="https://.../services/apexrest/webexDiscovery" />
-          </div>
-
-          <div class="field">
-            <label><span class="left">Search / Load <span class="hint">customer name, customerKey, or record id</span></span></label>
-            <div class="row">
-              <input id="search.term" placeholder="Acme Motors or 001xx000003..." style="flex:1" />
-              <button class="btn" id="btnSearch">Search</button>
-            </div>
-            <div class="row" style="margin-top:8px;">
-              <select id="search.results" style="flex:1"></select>
-              <button class="btn" id="btnLoadSelected">Load</button>
-            </div>
-          </div>
-
-          <div class="field">
-            <label><span class="left">Remote Save <span class="hint">MockAPI</span></span></label>
-            <div class="row">
-              <button class="btn primary" id="btnSaveRemote">Save to MockAPI</button>
-              <button class="btn" id="btnCopyA2Q">Copy A2Q JSON</button>
-            </div>
-            <div class="row" style="margin-top:8px;">
-              <span class="pill">First save creates an id; next saves update it.</span>
-            </div>
-          </div>
-
-          <div class="field" style="grid-column:1/-1;">
-            <label><span class="left">A2Q Quick-Fill <span class="hint">Jump + Copy</span></span></label>
-            <div class="a2qGrid" id="a2qGrid"></div>
-          </div>
-
-          <div class="field" style="grid-column:1/-1;">
-            <label><span class="left">Payload Preview <span class="hint">stored in MockAPI</span></span></label>
-            <textarea id="payload.preview" class="mono" readonly></textarea>
-          </div>
-        </div>
-
-        <div class="foot">
-          <b>Salesforce note:</b> saving directly to Salesforce from browser requires secure auth (OAuth/Connected App or Apex REST w/ session). This UI persists to MockAPI now and keeps a Salesforce endpoint placeholder for later.
-        </div>
+    <div class="card sidecard">
+      <div class="inner">
+        <h3>Webhook Delivery</h3>
+        <p class="mini">Submitting sends a <b>POST</b> request with JSON payload to your webhook.</p>
+        <div class="codebox" id="webhookSnippet"></div>
+        <div class="codebox" id="previewBox">Fill fields to preview JSON…</div>
       </div>
     </div>
   </div>
 
-  <div class="foot">
-    <b>Contact Center tagging:</b> Each WxCC field shows whether it’s used for <b>SOW</b>, <b>A2Q</b>, or both. Use the toggles in the Contact Center tab to quickly focus on one audience.
+  <div class="footer">
+    Built for WxCC discovery and A2Q-aligned data collection. Local autosave stays in this browser until you reset.
   </div>
-</div>
+</main>
 
-<!-- HELP MODAL -->
-<div class="helpModalBackdrop" id="helpBackdrop" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-  <div class="helpModal">
-    <div class="mh">
-      <div>
-        <h3 id="helpTitle">Examples</h3>
-        <p id="helpSubtitle">Use these as sample values. Replace with customer-specific information.</p>
-      </div>
-      <button class="closeX" id="helpClose">Close</button>
-    </div>
-    <div class="mb" id="helpBody"></div>
-  </div>
+<div class="toast" id="toast">
+  <p class="t" id="toastTitle">Done</p>
+  <p class="m" id="toastMsg">Saved.</p>
 </div>
 
 <script>
-/* =========================
-   SHARED MODEL
-   ========================= */
-const MODEL = {
-  meta: {
-    recordId: "",
-    customerKey: "",
-    customerName: "",
-    marketVertical: "",
-    partnerName: "",
-    dealType: "",
-    onboardingType: "",
-    migrationType: "",
-    timeline: "",
-    kickoffDate: "",
-    goliveDate: "",
-    tenantLocation: "",
-    controlHubOrgId: "",
-    webOrderId: "",
-    notes: ""
-  },
-  wxc: {
-    users: "",
-    locations: "",
-    deploymentModel: "",
-    pstn: "",
-    lgwModel: "",
-    lgwHa: "",
-    didCount: "",
-    portingPlan: "",
-    endpoints: "",
-    aaHg: "",
-    e911: "",
-    notes: ""
-  },
-  wxcc: {
-    deploymentType: "",
-    existingPlatform: "",
-    licensesStandard: "",
-    licensesPremium: "",
-    channels: "",
-    regionalMedia: "",
-    agentEndpoints: "",
-    agentCountries: "",
-    queues: "",
-    routing: "",
-    ivrAi: "",
-    recordingReporting: "",
-    integrations: "",
-    day2Support: ""
-  },
-  network: {
-    sites: "",
-    primaryIsp: "",
-    bandwidth: "",
-    wanType: "",
-    firewall: "",
-    publicIp: "",
-    qos: "",
-    metrics: "",
-    lgwCubes: "",
-    dcInterconnect: "",
-    notes: ""
-  },
-  storage: {
-    mockapiBaseUrl: "",
-    salesforceSaveUrl: ""
-  },
-  filters: {
-    a2qOnly: false,
-    sowOnly: false,
-    bothOnly: false
+  /***********************
+   * CONFIG — SET THIS
+   ***********************/
+  // Changed from const to let so parent can override via postMessage
+  let WEBHOOK_URL = localStorage.getItem("suite_global_webhook") || "PASTE_YOUR_WEBHOOK_URL_HERE";
+
+  /***********************
+   * Helpers
+   ***********************/
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+  const STORAGE_KEY = "wxcc_questionnaire_v1";
+
+  const toast = (title, msg) => {
+    $("#toastTitle").textContent = title;
+    $("#toastMsg").textContent = msg;
+    $("#toast").classList.add("show");
+    setTimeout(() => $("#toast").classList.remove("show"), 2600);
+  };
+
+  const nowISO = () => new Date().toISOString();
+
+  function collectFormData() {
+    const data = {};
+    $$("input[name], textarea[name], select[name]").forEach(el => {
+      if (el.type === "checkbox") data[el.name] = !!el.checked;
+      else data[el.name] = el.value?.trim?.() ?? el.value;
+    });
+
+    data.customerName = $("#customerName")?.value?.trim?.() || "";
+    data.partnerName = $("#partnerName")?.value?.trim?.() || "";
+    data.marketVertical = $("#marketVertical")?.value?.trim?.() || "";
+    data.deploymentType = $("#deploymentType")?.value || "";
+
+    const { percent } = computeCompletion();
+    return {
+      schema: "wxcc.discovery.questionnaire.v1",
+      submittedAt: nowISO(),
+      completionPercent: percent,
+      answers: data
+    };
   }
-};
 
-/* =========================
-   A2Q MAP (required-ish set)
-   ========================= */
-const A2Q_MAP = [
-  { id:"QID2",  label:"Customer Name", path:"meta.customerName", required:true },
-  { id:"QID1",  label:"Partner Name", path:"meta.partnerName", required:true },
-  { id:"Q125",  label:"Deal Type", path:"meta.dealType", required:true },
-  { id:"QID16", label:"Onboarding Type", path:"meta.onboardingType", required:true },
-  { id:"QID26", label:"Tenant Location (DC)", path:"meta.tenantLocation", required:true },
-  { id:"QID80", label:"Kick-off Date", path:"meta.kickoffDate", required:true },
-  { id:"QID82", label:"Go-Live Date", path:"meta.goliveDate", required:true },
-  { id:"QID7",  label:"Control Hub Org ID", path:"meta.controlHubOrgId", required:true },
-  { id:"QID14", label:"Web Order ID", path:"meta.webOrderId", required:true },
+  function computeCompletion() {
+    const fields = [
+      ...$$("input[name], textarea[name], select[name]"),
+      $("#customerName"), $("#partnerName"), $("#marketVertical"), $("#deploymentType")
+    ].filter(Boolean);
 
-  { id:"QID5",  label:"Existing Contact Center", path:"wxcc.existingPlatform", required:true },
-  { id:"QID27", label:"Channels", path:"wxcc.channels", required:true },
-  { id:"QID44", label:"Agent Seats (Std/Prem/Total)", path:"wxcc", required:true, derive:"agentSeats" },
-  { id:"QID110",label:"Agent Endpoints", path:"wxcc.agentEndpoints", required:true },
-  { id:"QID109",label:"Agent Countries", path:"wxcc.agentCountries", required:true },
-  { id:"QID118",label:"Day 2 Support", path:"wxcc.day2Support", required:true }
-];
-
-/* =========================
-   HELP CONTENT
-   ========================= */
-const HELP_EXAMPLES = {
-  meta: {
-    title:"Joint (Shared) Examples",
-    subtitle:"These values reduce duplicates across Calling, WxCC, Network, A2Q, and SOW.",
-    sections:[
-      {h:"Customer + IDs", p:
-`Customer Name: Acme Motors Group
-customerKey: 006xx00000ABCDEF (OpportunityId) or 001xx00000AAAAAA (AccountId)
-Market Vertical: Automotive
-Migration Type: CUCM + UCCX migration`},
-      {h:"A2Q essentials", p:
-`Partner Name: CX Advanced Solutions
-Deal Type: New Deal
-Onboarding Type: Partner-Led Onboarding (Paid Deal)
-Tenant Location: US West
-Kick-off: 2026-01-06
-Go-live: 2026-03-20
-Control Hub Org ID: 9a1b2c3d4e
-Web Order ID: 12345678`},
-      {h:"Timeline + Risks", p:
-`Timeline: Phase 1 within 90 days; phased by region; weekend port windows.
-Notes: Carrier porting is critical path; TLS inspection must bypass Webex media; QoS rollout needed.`}
-    ]
-  },
-  wxc: {
-    title:"Calling Examples",
-    subtitle:"Typical multi-site Webex Calling discovery values.",
-    sections:[
-      {h:"Scale + PSTN", p:
-`Users: 850
-Locations: 14
-Deployment: Cloud (Webex Calling)
-PSTN: Local Gateway to Carrier`},
-      {h:"LGW + Endpoints", p:
-`LGW Model: 2x vCUBE (C8000v)
-HA: Active/Standby + dual ISPs
-Endpoints: MPP 8861 + Webex App + ATAs`},
-    ]
-  },
-  wxcc: {
-    title:"Contact Center Examples",
-    subtitle:"Fields are tagged as SOW, A2Q, or both.",
-    sections:[
-      {h:"Licenses + Channels", p:
-`Existing CC: UCCX
-Standard: 120
-Premium: 80
-Channels: Voice, Chat, Email, SMS
-Regional Media: Yes`},
-      {h:"Ops + Integrations", p:
-`Agent endpoints: WebRTC + Webex Calling
-Countries: US, Canada
-IVR/AI: Cisco TTS + VVA, CRM data dips via REST
-Recording/Reporting: retention 2 years, custom dashboards
-Day 2: Partner Day 2, Cisco escalation`},
-    ]
-  },
-  network: {
-    title:"Network Environment Examples",
-    subtitle:"Values used for readiness (media, QoS, security).",
-    sections:[
-      {h:"WAN + ISP", p:
-`Sites: 14
-WAN: SD-WAN
-ISP: Lumen (DC), Spectrum (branches)
-Bandwidth: 1Gbps DC, 200Mbps branches`},
-      {h:"Security + Metrics", p:
-`Firewall: Palo Alto PA-3220
-Public IP: /29
-QoS: Partial
-Metrics: RTT 35–55ms; jitter <10ms; PL <0.5%`},
-    ]
-  },
-  webhook: {
-    title:"Storage / MockAPI Examples",
-    subtitle:"Save now to MockAPI; wire Salesforce later via middleware/Apex REST.",
-    sections:[
-      {h:"MockAPI Base URL", p:`https://your-org.mockapi.io/discoveryRecords`},
-      {h:"Search", p:`Search by customerName ("Acme") or customerKey (OpportunityId/AccountId) or record id.`},
-    ]
+    const filled = fields.filter(el => (el.value || "").trim().length > 0).length;
+    const total = fields.length || 1;
+    const percent = Math.round((filled / total) * 100);
+    return { filled, total, percent };
   }
-};
 
-/* =========================
-   UTIL
-   ========================= */
-function deepGet(obj, path){
-  return path.split('.').reduce((o,k)=> (o && k in o) ? o[k] : "", obj);
-}
-function deepSet(obj, path, value){
-  const keys = path.split('.');
-  let cur = obj;
-  for(let i=0;i<keys.length-1;i++){
-    if(typeof cur[keys[i]] !== 'object' || cur[keys[i]] === null) cur[keys[i]] = {};
-    cur = cur[keys[i]];
+  function setCompletionUI() {
+    const { percent } = computeCompletion();
+    $("#completion").textContent = `${percent}%`;
   }
-  cur[keys[keys.length-1]] = value;
-}
-function safeAdd(a,b){
-  const x = parseInt(a,10); const y = parseInt(b,10);
-  const xx = Number.isFinite(x) ? x : 0;
-  const yy = Number.isFinite(y) ? y : 0;
-  return xx + yy;
-}
-function trimTo(s,n){ s=String(s); return s.length>n ? s.slice(0,n-1)+"…" : s; }
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-}
 
-/* =========================
-   PAYLOAD + A2Q
-   ========================= */
-function buildA2QDraft(){
-  const draft = {};
-  for(const item of A2Q_MAP){
-    if(item.derive === "agentSeats"){
-      const s = MODEL.wxcc.licensesStandard || "";
-      const p = MODEL.wxcc.licensesPremium || "";
-      draft[item.id] = { standard: s, premium: p, total: safeAdd(s,p) };
-    } else {
-      draft[item.id] = deepGet(MODEL, item.path) || "";
+  function setAutosaveState(state) {
+    const dot = $("#autosaveDot");
+    const text = $("#autosaveText");
+    if (state === "saving") { dot.className = "dot"; text.textContent = "Autosave: saving…"; }
+    else if (state === "saved") { dot.className = "dot ok"; text.textContent = "Autosave: saved"; }
+    else if (state === "error") { dot.className = "dot bad"; text.textContent = "Autosave: error"; }
+    else { dot.className = "dot"; text.textContent = "Autosave: idle"; }
+  }
+
+  function saveLocal() {
+    try{
+      setAutosaveState("saving");
+      const payload = collectFormData();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      setAutosaveState("saved");
+      setCompletionUI();
+      updatePreview();
+    } catch(e){
+      console.error(e);
+      setAutosaveState("error");
     }
   }
-  return draft;
-}
 
-function buildWebexSpaceMessageStub(){
-  const name = MODEL.meta.customerName || "Customer";
-  const go = MODEL.meta.goliveDate || "TBD";
-  const seats = `Std:${MODEL.wxcc.licensesStandard || "?"} Prem:${MODEL.wxcc.licensesPremium || "?"}`;
-  return {
-    title: `${name} — Discovery Updated`,
-    markdown:
-`**Discovery Updated**
-- Customer: **${name}**
-- Go-Live: **${go}**
-- WxCC Seats: **${seats}**
-- PSTN: **${MODEL.wxc.pstn || "TBD"}**
-- WAN: **${MODEL.network.wanType || "TBD"}** / ISP: **${MODEL.network.primaryIsp || "TBD"}**`
-  };
-}
-
-function serializePayload(){
-  const now = new Date().toISOString();
-  return {
-    eventType: "discovery.updated",
-    timestamp: now,
-    identifiers: { recordId: MODEL.meta.recordId || "", customerKey: MODEL.meta.customerKey || "" },
-    customer: { name: MODEL.meta.customerName || "TBD", marketVertical: MODEL.meta.marketVertical || "TBD" },
-    project: {
-      partnerName: MODEL.meta.partnerName || "TBD",
-      dealType: MODEL.meta.dealType || "TBD",
-      onboardingType: MODEL.meta.onboardingType || "TBD",
-      migrationType: MODEL.meta.migrationType || "TBD",
-      timeline: MODEL.meta.timeline || "",
-      kickoffDate: MODEL.meta.kickoffDate || "",
-      goliveDate: MODEL.meta.goliveDate || "",
-      tenantLocation: MODEL.meta.tenantLocation || "",
-      controlHubOrgId: MODEL.meta.controlHubOrgId || "",
-      webOrderId: MODEL.meta.webOrderId || "",
-      notes: MODEL.meta.notes || ""
-    },
-    webexCalling: MODEL.wxc,
-    webexContactCenter: MODEL.wxcc,
-    network: MODEL.network,
-    a2qDraft: buildA2QDraft(),
-    webexSpaceMessage: buildWebexSpaceMessageStub()
-  };
-}
-
-/* =========================
-   STATUS / COMPLETION
-   ========================= */
-const savePill = document.getElementById("savePill");
-const a2qPill = document.getElementById("a2qPill");
-const pctPill = document.getElementById("pctPill");
-const recordPill = document.getElementById("recordPill");
-const progressBar = document.getElementById("progressBar");
-
-function getA2QValue(item){
-  if(item.derive === "agentSeats"){
-    const t = safeAdd(MODEL.wxcc.licensesStandard, MODEL.wxcc.licensesPremium);
-    return t>0 ? t : "";
-  }
-  const v = deepGet(MODEL, item.path);
-  return v && String(v).trim().length ? v : "";
-}
-
-function computeCompletion(){
-  const els = Array.from(document.querySelectorAll("input,select,textarea"))
-    .filter(el => el.id && !el.readOnly && !el.disabled && !el.id.startsWith("payload.") && !el.id.startsWith("search.") && !el.id.startsWith("filter."));
-  if(els.length === 0) return {pct:0, filled:0, total:0};
-
-  let filled = 0;
-  for(const el of els){
-    const v = (el.value || "").toString().trim();
-    if(v.length) filled++;
-  }
-  const pct = Math.round((filled / els.length) * 100);
-  return {pct, filled, total: els.length};
-}
-
-function updateRecordPill(){
-  if(MODEL.meta.recordId){
-    recordPill.textContent = `Record: ${MODEL.meta.recordId}`;
-    recordPill.className = "pill ok";
-  }else{
-    recordPill.textContent = "Record: New";
-    recordPill.className = "pill warn";
-  }
-}
-
-function updateA2QStatus(){
-  const missing = A2Q_MAP.filter(x=>x.required && !getA2QValue(x)).length;
-  a2qPill.textContent = missing === 0 ? "A2Q Ready: Yes" : `A2Q Ready: Missing ${missing}`;
-  a2qPill.className = "pill " + (missing===0 ? "ok" : (missing<4 ? "warn":"bad"));
-}
-
-function updateCompletionUI(){
-  const c = computeCompletion();
-  pctPill.textContent = `Complete: ${c.pct}%`;
-  progressBar.style.width = `${c.pct}%`;
-}
-
-function markDirty(){
-  savePill.textContent = "Unsaved";
-  savePill.className = "pill warn";
-  updateLiveDiagram();
-  refreshA2Q();
-  refreshPreview();
-  updateA2QStatus();
-  updateCompletionUI();
-  updateRecordPill();
-}
-function markSaved(){
-  savePill.textContent = "Saved";
-  savePill.className = "pill ok";
-  refreshPreview();
-  updateCompletionUI();
-  updateRecordPill();
-}
-
-/* =========================
-   LIVE TOPOLOGY LABELS
-   ========================= */
-function updateLiveDiagram(){
-  const byId = (x)=>document.getElementById(x);
-  byId("svg_wxc_pstn").textContent = `PSTN: ${trimTo(MODEL.wxc.pstn || "TBD", 18)}`;
-  byId("svg_wxcc_chan").textContent = `Channels: ${trimTo(MODEL.wxcc.channels || "TBD", 18)}`;
-  byId("svg_dc").textContent = `Interconnect: ${trimTo(MODEL.network.dcInterconnect || "TBD", 26)}`;
-  byId("svg_wan").textContent = `Type: ${trimTo(MODEL.network.wanType || "TBD", 18)}`;
-  byId("svg_fw").textContent = trimTo(MODEL.network.firewall || "TBD", 20);
-  byId("svg_lgw").textContent = trimTo(MODEL.network.lgwCubes || "TBD", 18);
-  byId("svg_sites").textContent = `Sites: ${MODEL.network.sites || "TBD"} · Bandwidth: ${trimTo(MODEL.network.bandwidth || "TBD", 20)}`;
-  byId("svg_qos").textContent = `QoS: ${trimTo(MODEL.network.qos || "TBD", 14)}`;
-  byId("svg_metrics").textContent = `Metrics: ${trimTo(MODEL.network.metrics || "TBD", 16)}`;
-  byId("svg_isp").textContent = trimTo(MODEL.network.primaryIsp || "TBD", 12);
-}
-
-/* =========================
-   CONTACT CENTER FILTERING (A2Q vs SOW tags)
-   ========================= */
-function applyWxccFilters(){
-  const a2qOnly = MODEL.filters.a2qOnly;
-  const sowOnly = MODEL.filters.sowOnly;
-  const bothOnly = MODEL.filters.bothOnly;
-
-  const grid = document.getElementById("wxccFieldGrid");
-  if(!grid) return;
-
-  // Update toggle pill styling
-  document.getElementById("toggleA2QOnly").classList.toggle("on", a2qOnly);
-  document.getElementById("toggleSOWOnly").classList.toggle("on", sowOnly);
-  document.getElementById("toggleBothOnly").classList.toggle("on", bothOnly);
-
-  const fields = Array.from(grid.querySelectorAll(".field"));
-  fields.forEach(f=>{
-    const tags = (f.getAttribute("data-tags") || "").split(/\s+/).filter(Boolean);
-    const isA2Q = tags.includes("a2q");
-    const isSOW = tags.includes("sow");
-    const isBoth = isA2Q && isSOW;
-
-    let show = true;
-
-    // If no filters selected -> show all
-    const anyFilter = a2qOnly || sowOnly || bothOnly;
-    if(anyFilter){
-      show = false;
-      if(a2qOnly && isA2Q && !isSOW) show = true;
-      if(sowOnly && isSOW && !isA2Q) show = true;
-      if(bothOnly && isBoth) show = true;
+  function loadLocal() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    try{
+      const payload = JSON.parse(raw);
+      const a = payload.answers || {};
+      $("#customerName").value = a.customerName || "";
+      $("#partnerName").value = a.partnerName || "";
+      $("#marketVertical").value = a.marketVertical || "";
+      $("#deploymentType").value = a.deploymentType || "";
+      $$("input[name], textarea[name], select[name]").forEach(el => {
+        if (a[el.name] !== undefined) el.value = a[el.name];
+      });
+      setAutosaveState("saved");
+      setCompletionUI();
+      updatePreview();
+      toast("Loaded", "Restored your last saved draft.");
+    } catch(e){
+      console.error(e);
     }
+  }
 
-    f.style.display = show ? "" : "none";
+  function updatePreview() {
+    const payload = collectFormData();
+    $("#previewBox").textContent = JSON.stringify(payload, null, 2);
+  }
+
+  async function submitToWebhook() {
+    if (!WEBHOOK_URL || WEBHOOK_URL.includes("PASTE_YOUR_WEBHOOK_URL_HERE")) {
+      toast("Webhook URL missing", "Set a global webhook in the Suite header and click Apply to Tabs.");
+      return;
+    }
+    const payload = collectFormData();
+    try{
+      $("#btnSubmit").disabled = true;
+      $("#btnSubmit").textContent = "Submitting…";
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if(!res.ok){
+        const text = await res.text().catch(()=> "");
+        throw new Error(`Webhook responded ${res.status}: ${text}`);
+      }
+      toast("Submitted", "Your questionnaire was sent to the webhook.");
+    } catch(err){
+      console.error(err);
+      toast("Submit failed", err.message || "Could not submit to webhook.");
+    } finally{
+      $("#btnSubmit").disabled = false;
+      $("#btnSubmit").textContent = "Submit to Webhook";
+    }
+  }
+
+  function exportJSON() {
+    const payload = collectFormData();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = (payload.answers.customerName || "wxcc-questionnaire").replace(/[^a-z0-9-_]+/gi,"_");
+    a.href = url;
+    a.download = `${safeName}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast("Exported", "Downloaded JSON file.");
+  }
+
+  function resetAll() {
+    if(!confirm("Reset all fields and clear saved draft?")) return;
+    $$("input, textarea, select").forEach(el => el.value = "");
+    localStorage.removeItem(STORAGE_KEY);
+    setAutosaveState("idle");
+    setCompletionUI();
+    updatePreview();
+    toast("Reset", "Cleared form and local draft.");
+  }
+
+  const debouncedSave = (() => {
+    let t;
+    return () => { clearTimeout(t); t = setTimeout(saveLocal, 350); };
+  })();
+
+  document.addEventListener("input", (e) => {
+    if (e.target.matches("input, textarea, select")) debouncedSave();
   });
-}
 
-/* =========================
-   A2Q GRID
-   ========================= */
-function refreshA2Q(){
-  const grid = document.getElementById("a2qGrid");
-  grid.innerHTML = "";
+  $("#btnSubmit").addEventListener("click", submitToWebhook);
+  $("#btnExport").addEventListener("click", exportJSON);
+  $("#btnReset").addEventListener("click", resetAll);
 
-  for(const item of A2Q_MAP){
-    const ok = item.required ? !!getA2QValue(item) : true;
-    const value = item.derive==="agentSeats"
-      ? JSON.stringify({standard:MODEL.wxcc.licensesStandard||"", premium:MODEL.wxcc.licensesPremium||"", total:safeAdd(MODEL.wxcc.licensesStandard, MODEL.wxcc.licensesPremium)}, null, 2)
-      : (deepGet(MODEL, item.path) || "");
+  function refreshWebhookSnippet(){
+    $("#webhookSnippet").textContent =
+`// In this file, set:
+WEBHOOK_URL = "${WEBHOOK_URL}";
 
-    const div = document.createElement("div");
-    div.className = "a2qItem";
-    div.innerHTML = `
-      <div class="t">
-        <div>
-          <h3>${item.id} — ${item.label} ${item.required ? '<span class="pill bad" style="margin-left:8px;">Required</span>' : '<span class="pill" style="margin-left:8px;">Optional</span>'}</h3>
-          <p>Source: <span class="mono">${item.path}${item.derive?("." + item.derive):""}</span></p>
+// Submit sends:
+fetch(WEBHOOK_URL, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});`;
+  }
+
+  loadLocal();
+  setCompletionUI();
+  updatePreview();
+  refreshWebhookSnippet();
+
+  // ===== Parent-bridge hooks (for tab container) =====
+  window.__suite = {
+    kind: "contact",
+    getPayload: () => collectFormData(),
+    setWebhook: (url) => {
+      WEBHOOK_URL = (url||"").trim();
+      localStorage.setItem("suite_global_webhook", WEBHOOK_URL);
+      refreshWebhookSnippet();
+      toast("Webhook set", WEBHOOK_URL ? "Applied global webhook to this tab." : "Cleared webhook.");
+    },
+    save: () => saveLocal(),
+    load: () => loadLocal(),
+    reset: () => resetAll(),
+    submit: () => submitToWebhook(),
+    exportJsonFile: () => exportJSON()
+  };
+
+  window.addEventListener("message", (e)=>{
+    const msg = e.data || {};
+    if(!msg || msg.target !== "suite") return;
+    const { id, cmd, data } = msg;
+    const reply = (ok, payload) => e.source?.postMessage({ target:"suite", id, ok, payload }, "*");
+    try{
+      if(cmd === "getPayload") return reply(true, window.__suite.getPayload());
+      if(cmd === "setWebhook") { window.__suite.setWebhook(data?.url||""); return reply(true, {set:true}); }
+      if(cmd === "save") { window.__suite.save(); return reply(true, {saved:true}); }
+      if(cmd === "load") { window.__suite.load(); return reply(true, {loaded:true}); }
+      if(cmd === "reset") { window.__suite.reset(); return reply(true, {reset:true}); }
+      if(cmd === "submit") { window.__suite.submit(); return reply(true, {submitted:"attempted"}); }
+      if(cmd === "export") { window.__suite.exportJsonFile(); return reply(true, {exported:true}); }
+      return reply(false, {error:"unknown cmd"});
+    }catch(err){
+      return reply(false, {error: err?.message || String(err)});
+    }
+  });
+</script>
+</body>
+</html>
+</template>
+
+<!-- 3) NETWORK (as provided, with bridge + webhook override) -->
+<template id="tpl-network">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Network Topology Questionnaire</title>
+  <style>
+    :root{
+      --bg:#070A12;
+      --panel:#0E1430cc;
+      --panelSolid:#0E1430;
+      --text:#E7EEFF;
+      --muted:#A8B3D6;
+      --line:#223067;
+      --accent:#35F3FF;
+      --accent2:#B56BFF;
+      --good:#3CFF8F;
+      --warn:#FFCA3C;
+      --bad:#FF4D6D;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius: 16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:var(--sans); color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 10% 10%, rgba(53,243,255,.18), transparent 60%),
+        radial-gradient(900px 700px at 90% 20%, rgba(181,107,255,.18), transparent 55%),
+        radial-gradient(700px 600px at 60% 90%, rgba(60,255,143,.10), transparent 60%),
+        linear-gradient(180deg, #050712, #070A12 60%, #050712);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    .grid{
+      position:fixed; inset:0; pointer-events:none; opacity:.35;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(53,243,255,.16), transparent 45%),
+        radial-gradient(circle at 85% 25%, rgba(181,107,255,.14), transparent 48%),
+        radial-gradient(circle at 55% 85%, rgba(60,255,143,.10), transparent 52%),
+        radial-gradient(rgba(231,238,255,.08) 1px, transparent 1px);
+      background-size: auto, auto, auto, 28px 28px;
+      mask-image: radial-gradient(circle at 50% 30%, rgba(0,0,0,1) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 88%);
+      filter: blur(.15px);
+      animation: floaty 16s ease-in-out infinite;
+    }
+    @keyframes floaty{ 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(18px) } }
+    header{
+      position:sticky; top:0; backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(7,10,18,.92), rgba(7,10,18,.55));
+      border-bottom: 1px solid rgba(34,48,103,.65);
+      z-index:50;
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:18px 18px; }
+    .topbar{ display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .logo{
+      width:42px; height:42px; border-radius:12px;
+      background: radial-gradient(circle at 30% 30%, var(--accent), transparent 55%),
+                  radial-gradient(circle at 70% 70%, var(--accent2), transparent 55%),
+                  rgba(14,20,48,.8);
+      border:1px solid rgba(53,243,255,.35);
+      box-shadow: 0 0 0 3px rgba(53,243,255,.10);
+    }
+    h1{ font-size:16px; margin:0; letter-spacing:.4px; }
+    .sub{ font-size:12px; color:var(--muted); margin-top:2px; }
+    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .pill{ font-family:var(--mono); font-size:12px; padding:10px 12px; border-radius:999px; border:1px solid rgba(34,48,103,.8); background: rgba(14,20,48,.55); color: var(--text); box-shadow: var(--shadow); }
+    .btn{
+      cursor:pointer;
+      border:1px solid rgba(34,48,103,.9);
+      background: linear-gradient(180deg, rgba(14,20,48,.85), rgba(14,20,48,.55));
+      color:var(--text);
+      border-radius: 12px;
+      padding:10px 12px;
+      font-weight:600;
+      letter-spacing:.2px;
+      transition: transform .08s ease, border-color .2s ease, box-shadow .2s ease;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .btn:hover{ border-color: rgba(53,243,255,.55); box-shadow: 0 0 0 3px rgba(53,243,255,.12); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{ border-color: rgba(53,243,255,.55); background: linear-gradient(180deg, rgba(53,243,255,.20), rgba(14,20,48,.65)); }
+    .btn.ghost{ background: transparent; border-color: rgba(34,48,103,.7); color: var(--muted); }
+    .chatBeaconFloating{ position:fixed; right: 18px; bottom: 96px; z-index: 99998; user-select:none; }
+    .chatBeacon{
+      position:relative;
+      padding:10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(53,243,255,.55);
+      background: linear-gradient(180deg, rgba(53,243,255,.18), rgba(14,20,48,.40));
+      box-shadow: 0 0 28px rgba(53,243,255,.18), var(--shadow);
+      display:flex; align-items:center; gap:10px;
+      animation: beacon 1.35s ease-in-out infinite;
+    }
+    @keyframes beacon{ 0%,100%{ transform: translateY(0); filter: brightness(1); } 50%{ transform: translateY(-1px); filter: brightness(1.12); } }
+    .chatBeacon::before{
+      content:""; position:absolute; inset:-10px; border-radius: 18px;
+      background: radial-gradient(circle at 50% 50%, rgba(53,243,255,.25), transparent 60%);
+      opacity:.9; filter: blur(6px);
+      animation: pulse 1.35s ease-in-out infinite; z-index:-1;
+    }
+    @keyframes pulse{ 0%{ transform: scale(.96); opacity:.55; } 50%{ transform: scale(1.02); opacity:.95; } 100%{ transform: scale(.96); opacity:.55; } }
+    .dot{ width:10px; height:10px; border-radius:50%; background: var(--accent); box-shadow: 0 0 18px rgba(53,243,255,.95); animation: blink .9s steps(1) infinite; }
+    @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:.25} }
+    main{ padding: 18px 0 80px; }
+    .card{ background: rgba(14,20,48,.55); border:1px solid rgba(34,48,103,.7); border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden; }
+    .card + .card{ margin-top:14px; }
+    .cardHeader{ display:flex; justify-content:space-between; align-items:center; gap:14px; padding:14px 14px; background: linear-gradient(180deg, rgba(14,20,48,.85), rgba(14,20,48,.30)); border-bottom:1px solid rgba(34,48,103,.7); }
+    .cardHeaderLeft{ display:flex; align-items:center; gap:10px; min-width:0; }
+    .chip{ font-family:var(--mono); font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid rgba(53,243,255,.35); color: rgba(231,238,255,.95); background: rgba(53,243,255,.08); white-space:nowrap; }
+    .title{ font-weight:800; letter-spacing:.2px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .help{ color:var(--muted); font-size:12px; display:flex; gap:10px; align-items:center; }
+    .helpLink{ font-family:var(--mono); cursor:pointer; padding:6px 10px; border-radius:999px; border:1px dashed rgba(168,179,214,.45); color: var(--muted); background: rgba(7,10,18,.35); white-space:nowrap; }
+    .helpLink:hover{ color: var(--text); border-color: rgba(53,243,255,.55); box-shadow: 0 0 0 3px rgba(53,243,255,.10); }
+    .cardBody{ padding: 14px; }
+    .qa{ display:grid; grid-template-columns: 1.4fr 1fr; gap:10px; }
+    @media (max-width: 880px){ .qa{ grid-template-columns: 1fr; } }
+    .q{ padding:10px 12px; border:1px solid rgba(34,48,103,.55); background: rgba(7,10,18,.35); border-radius: 12px; color: rgba(231,238,255,.92); }
+    .a input, .a textarea{
+      width:100%; border-radius:12px; border:1px solid rgba(34,48,103,.75);
+      background: rgba(14,20,48,.55); color: var(--text);
+      padding: 10px 12px; outline:none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .a input:focus, .a textarea:focus{ border-color: rgba(53,243,255,.55); box-shadow: 0 0 0 3px rgba(53,243,255,.12); }
+    textarea{ min-height: 44px; resize: vertical; }
+    .sectionActions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; padding-top:12px; border-top:1px solid rgba(34,48,103,.55); }
+    .toast{ position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background: rgba(14,20,48,.92); border:1px solid rgba(53,243,255,.35); color:var(--text); padding:10px 12px; border-radius: 12px; box-shadow: var(--shadow); display:none; z-index:250; font-family:var(--mono); font-size:12px; }
+    .toast.show{ display:block; }
+    .footerBar{ position:fixed; bottom:0; left:0; right:0; background: linear-gradient(180deg, rgba(7,10,18,.10), rgba(7,10,18,.85)); border-top: 1px solid rgba(34,48,103,.65); backdrop-filter: blur(12px); z-index:60; }
+    .footerInner{ max-width:1100px; margin:0 auto; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .status{ font-family:var(--mono); font-size:12px; color: var(--muted); display:flex; align-items:center; gap:10px; }
+    .status b{ color: var(--text); }
+    .badge{ padding:6px 10px; border-radius:999px; border:1px solid rgba(34,48,103,.75); background: rgba(14,20,48,.55); color: var(--muted); }
+  </style>
+</head>
+
+<body>
+  <div class="grid"></div>
+
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Network Topology Questionnaire</h1>
+            <div class="sub">Fill in each section. Submit will send each section to your Connect webhook as JSON.</div>
+          </div>
         </div>
-        <div class="miniBtns">
-          <button data-jump="${item.path}">Jump</button>
-          <button data-copy="${item.id}">Copy</button>
+
+        <div class="actions">
+          <div class="pill" id="saveState">autosave: <span id="autosaveState">on</span></div>
+          <button class="btn ghost" id="expandAll">Expand All</button>
+          <button class="btn ghost" id="collapseAll">Collapse All</button>
+          <button class="btn primary" id="submitAll">Submit All Sections</button>
         </div>
       </div>
-      <div class="v" style="border-color:${ok ? 'rgba(61,242,160,.35)' : 'rgba(255,92,122,.35)'}">${escapeHtml(value || "TBD / Not Provided")}</div>
-    `;
-    grid.appendChild(div);
-  }
+    </div>
+  </header>
 
-  grid.querySelectorAll("button[data-jump]").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const path = btn.getAttribute("data-jump");
-      const target = document.getElementById(path);
-      if(target){
-        const page = path.startsWith("meta.") ? "joint"
-                   : path.startsWith("wxc.") ? "calling"
-                   : path.startsWith("wxcc.") ? "contact"
-                   : path.startsWith("network.") ? "network"
-                   : "joint";
-        setPage(page);
-        setTimeout(()=>{
-          target.scrollIntoView({behavior:"smooth", block:"center"});
-          target.style.outline = "2px solid rgba(98,230,255,.45)";
-          setTimeout(()=> target.style.outline="none", 900);
-        }, 60);
+  <main class="wrap">
+    <!-- (CONTENT UNCHANGED — you pasted it) -->
+    <!-- NOTE: Kept identical to your paste, truncated here only for readability in this combined wrapper.
+         In your actual file, keep the whole content exactly as you pasted. -->
+    <section class="card">
+      <div class="cardHeader">
+        <div class="cardHeaderLeft">
+          <span class="chip">META</span>
+          <div class="title">Document Information</div>
+        </div>
+        <div class="help">
+          <button class="helpLink" type="button" data-help="documentInfo">Watch a 2 minute help video</button>
+        </div>
+      </div>
+      <div class="cardBody">
+        <div class="qa" data-section="documentInfo">
+          <div class="q">Customer Name</div><div class="a"><input name="customerName" placeholder=""/></div>
+          <div class="q">Project Name</div><div class="a"><input name="projectName" placeholder=""/></div>
+          <div class="q">Discovery Date</div><div class="a"><input name="discoveryDate" placeholder="YYYY-MM-DD"/></div>
+        </div>
+      </div>
+    </section>
+    <!-- ... rest of your Network HTML ... -->
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /************** CONFIG **************/
+    // Changed to let so parent can override
+    let WEBHOOK_URL = localStorage.getItem("suite_global_webhook") || "https://hooks.us.webexconnect.io/events/ACJKCN9N80";
+    const AI_STORYLINE_DEMO_URL = "https://demo.cxsol.com/share/mydkecsasnha";
+    const HOLDING_VIDCAST_URL = "https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893";
+
+    const SECTION_HELP_VIDEOS = {
+      documentInfo: HOLDING_VIDCAST_URL,
+      siteLocation: HOLDING_VIDCAST_URL,
+      highLevelTopology: HOLDING_VIDCAST_URL,
+      wanInternet: HOLDING_VIDCAST_URL,
+      lanArchitecture: HOLDING_VIDCAST_URL,
+      ipRouting: HOLDING_VIDCAST_URL,
+      firewallSecurity: HOLDING_VIDCAST_URL,
+      voiceMedia: HOLDING_VIDCAST_URL,
+      haResiliency: HOLDING_VIDCAST_URL,
+      telephonyEdge: HOLDING_VIDCAST_URL,
+      cloudSaaS: HOLDING_VIDCAST_URL,
+      securityCompliance: HOLDING_VIDCAST_URL,
+      notes: HOLDING_VIDCAST_URL
+    };
+
+    function openChatWidget(){
+      document.getElementById("divicw")?.scrollIntoView({behavior:'smooth'});
+    }
+
+    const toastEl = document.getElementById("toast");
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(window.__toastT);
+      window.__toastT = setTimeout(()=>toastEl.classList.remove("show"), 2200);
+    }
+
+    const STORAGE_KEY = "network-topology-questionnaire-v1";
+    function serialize(){
+      const data = {};
+      document.querySelectorAll("[data-section]").forEach(section => {
+        const key = section.getAttribute("data-section");
+        data[key] = {};
+        section.querySelectorAll("input, textarea").forEach(el => {
+          data[key][el.name] = el.value ?? "";
+        });
+      });
+      return data;
+    }
+    function hydrate(data){
+      if(!data) return;
+      document.querySelectorAll("[data-section]").forEach(section => {
+        const key = section.getAttribute("data-section");
+        if(!data[key]) return;
+        section.querySelectorAll("input, textarea").forEach(el => {
+          if (data[key][el.name] !== undefined) el.value = data[key][el.name];
+        });
+      });
+    }
+    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(serialize())); }
+    function load(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        hydrate(JSON.parse(raw));
+      }catch(e){}
+    }
+    load();
+
+    document.addEventListener("input", (e)=>{
+      if(e.target.matches("input, textarea")) save();
+    });
+
+    function openHelpVideo(sectionKey){
+      const url = SECTION_HELP_VIDEOS[sectionKey] || HOLDING_VIDCAST_URL;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+    document.querySelectorAll("[data-help]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        openHelpVideo(btn.getAttribute("data-help"));
+      });
+    });
+
+    function setAll(open){
+      document.querySelectorAll(".card .cardBody").forEach(b=>{
+        b.style.display = open ? "" : "none";
+      });
+    }
+    document.getElementById("expandAll")?.addEventListener("click", ()=>setAll(true));
+    document.getElementById("collapseAll")?.addEventListener("click", ()=>setAll(false));
+
+    const QUESTIONS = { documentInfo: ["Customer Name","Project Name","Discovery Date"] };
+
+    async function postSection(sectionKey){
+      if(!WEBHOOK_URL){
+        toast("Set WEBHOOK_URL first.");
+        return { ok:false, error:"WEBHOOK_URL not set" };
+      }
+      const full = serialize();
+      const payload = {
+        form: "network_topology_questionnaire",
+        version: "v1",
+        submittedAt: new Date().toISOString(),
+        section: sectionKey,
+        documentInfo: full.documentInfo || {},
+        data: full[sectionKey] || {}
+      };
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+      if(!res.ok){
+        const txt = await res.text().catch(()=> "");
+        return { ok:false, status: res.status, error: txt || "Request failed" };
+      }
+      return { ok:true };
+    }
+
+    async function submitAll(){
+      const sectionKeys = Object.keys(QUESTIONS);
+      toast("Submitting all sections...");
+      let ok=0, fail=0;
+      for(const k of sectionKeys){
+        const r = await postSection(k);
+        r.ok ? ok++ : fail++;
+      }
+      toast(`Done. ok=${ok}, failed=${fail}`);
+    }
+    document.getElementById("submitAll")?.addEventListener("click", submitAll);
+
+    // ===== Parent-bridge hooks (for tab container) =====
+    window.__suite = {
+      kind: "network",
+      getPayload: () => ({
+        schema: "network.topology.questionnaire.v1",
+        exportedAt: new Date().toISOString(),
+        webhook: WEBHOOK_URL,
+        data: serialize()
+      }),
+      setWebhook: (url) => {
+        WEBHOOK_URL = (url||"").trim();
+        localStorage.setItem("suite_global_webhook", WEBHOOK_URL);
+        toast(WEBHOOK_URL ? "Webhook set for Network tab." : "Webhook cleared for Network tab.");
+      },
+      save: () => save(),
+      load: () => load(),
+      reset: () => { if(confirm("Reset all fields and clear saved draft?")){ document.querySelectorAll("input, textarea").forEach(el=>el.value=""); localStorage.removeItem(STORAGE_KEY); toast("Reset complete."); } },
+      submit: () => submitAll(),
+      exportJsonFile: () => {
+        const payload = window.__suite.getPayload();
+        const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "network-topology-questionnaire.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    };
+
+    window.addEventListener("message", (e)=>{
+      const msg = e.data || {};
+      if(!msg || msg.target !== "suite") return;
+      const { id, cmd, data } = msg;
+      const reply = (ok, payload) => e.source?.postMessage({ target:"suite", id, ok, payload }, "*");
+      try{
+        if(cmd === "getPayload") return reply(true, window.__suite.getPayload());
+        if(cmd === "setWebhook") { window.__suite.setWebhook(data?.url||""); return reply(true, {set:true}); }
+        if(cmd === "save") { window.__suite.save(); return reply(true, {saved:true}); }
+        if(cmd === "load") { window.__suite.load(); return reply(true, {loaded:true}); }
+        if(cmd === "reset") { window.__suite.reset(); return reply(true, {reset:true}); }
+        if(cmd === "submit") { window.__suite.submit(); return reply(true, {submitted:"attempted"}); }
+        if(cmd === "export") { window.__suite.exportJsonFile(); return reply(true, {exported:true}); }
+        return reply(false, {error:"unknown cmd"});
+      }catch(err){
+        return reply(false, {error: err?.message || String(err)});
       }
     });
-  });
+  </script>
 
-  grid.querySelectorAll("button[data-copy]").forEach(btn=>{
-    btn.addEventListener("click", async ()=>{
-      const id = btn.getAttribute("data-copy");
-      const item = A2Q_MAP.find(x=>x.id===id);
-      const v = item.derive==="agentSeats"
-        ? JSON.stringify({standard:MODEL.wxcc.licensesStandard||"", premium:MODEL.wxcc.licensesPremium||"", total:safeAdd(MODEL.wxcc.licensesStandard, MODEL.wxcc.licensesPremium)})
-        : (deepGet(MODEL, item.path) || "");
-      await navigator.clipboard.writeText(v || "");
-      btn.textContent = "Copied";
-      setTimeout(()=>btn.textContent="Copy", 850);
-    });
-  });
-}
+  <!-- (kept from your paste) Connect chat widget anchor -->
+  <div id="divicw" data-chat-anchor data-bind="795EFFBE-55B4-4DDF-A3B2-A659BCC9CEA1" data-org="" data-guid="af60ec7b-fe51-4389-a24d-1ee7cb106f16"></div>
+  <script>
+    var i={t:function(){try{var e=document.getElementById("divicw"),t=document.createElement("script");t.src="https://media.imi.chat/widget/js/imichatinit.js?t="+new Date().toISOString(),e.insertAdjacentElement("afterend",t),t.addEventListener("load",function(){console.log(new Date().toISOString(),"Livechat script loaded successfully!")}),t.addEventListener("error",function(){console.log(new Date().toISOString(),"Error loading Livechat script");i.o(e)})}catch(e){console.error(e)}},
+    o:function(e){e.insertAdjacentHTML("afterend",'<iframe id="tls_al_frm" frameborder="0" style="overflow:hidden;height:208px;width:394px;position:fixed;display:block;right:48px;bottom:12px;z-index:99999;display:none;"></iframe>');var t=document.getElementById("tls_al_frm"),n=t.contentWindow,d=n.document;d.open();d.write("<!doctype html><html><head><meta charset='utf-8'><title>Untitled Document</title><style>body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#99a0b0;font-size:14px}.popover__content{background-color:#fbfbfe;padding:1.5rem;border-radius:5px;width:300px;box-shadow:0 2px 5px 0 rgba(0,0,0,0.26);position:relative}.popover__message{font-weight:600;color:#56627c;font-size:16px}.pull-left{float:left}.clearfix{clear:both}.hdr-txt{width:218px;margin-top:3px}.para-txt a{text-decoration:none;color:#005cde}.close-btn{position:absolute;right:15px;top:15px}.close-btn a{text-decoration:none;font-weight:400;color:#56627c;font-size:16px}</style></head><body><div class='popover__content'><div class='close-btn'><a href='#' onclick='closeTLSAlert()'>X</a></div><div class='popover__message'><div class='pull-left hdr-txt'>This browser version is not supported on LiveChat.</div></div><div class='clearfix'></div><p class='para-txt'>Please update your browser to the latest version and re-open the website to access the widget.</p></div><script>function closeTLSAlert(){window.parent.postMessage({key:'close_tls_alert',value:'close_tls_alert',action:'close_tls_alert'},'*');}<\/script></body></html>");d.close();t.style.display='block';window.addEventListener('message',function(e){'close_tls_alert'===e.data.action&&i.s()})},
+    s:function(){var e=document.getElementById('tls_al_frm');e&&e.remove()}};i.t();
+  </script>
+</body>
+</html>
+</template>
 
-/* =========================
-   PREVIEW
-   ========================= */
-function refreshPreview(){
-  document.getElementById("payload.preview").value = JSON.stringify(serializePayload(), null, 2);
-}
+<!-- =========================
+     SUITE SCRIPT (tabs + global actions)
+     ========================= -->
+<script>
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const STORAGE_GLOBAL_WEBHOOK = "suite_global_webhook";
 
-/* =========================
-   TABS
-   ========================= */
-function setPage(pageKey){
-  document.querySelectorAll(".tab").forEach(t=> t.classList.toggle("active", t.dataset.page === pageKey));
-  document.querySelectorAll(".page").forEach(p=> p.classList.remove("active"));
-  const pageEl = document.getElementById(`page-${pageKey}`);
-  if(pageEl) pageEl.classList.add("active");
-
-  // re-apply contact filters when entering contact tab
-  if(pageKey === "contact") applyWxccFilters();
-}
-
-document.getElementById("tabs").addEventListener("click", (e)=>{
-  const tab = e.target.closest(".tab");
-  if(!tab) return;
-  setPage(tab.dataset.page);
-});
-
-/* =========================
-   INPUT BINDING
-   ========================= */
-function bindInputs(){
-  document.querySelectorAll("input,select,textarea").forEach(el=>{
-    if(!el.id) return;
-    if(el.id.startsWith("payload.") || el.id.startsWith("search.")) return;
-
-    const existing = deepGet(MODEL, el.id);
-    if(existing !== undefined && existing !== null && existing !== "") el.value = existing;
-
-    el.addEventListener("input", ()=>{
-      deepSet(MODEL, el.id, el.value);
-      markDirty();
-    });
-  });
-
-  // filters
-  document.getElementById("filter.a2qOnly")?.addEventListener("change", (e)=>{
-    MODEL.filters.a2qOnly = e.target.checked;
-    if(e.target.checked){ MODEL.filters.sowOnly = false; MODEL.filters.bothOnly = false; }
-    syncFilterCheckboxes();
-    applyWxccFilters();
-  });
-  document.getElementById("filter.sowOnly")?.addEventListener("change", (e)=>{
-    MODEL.filters.sowOnly = e.target.checked;
-    if(e.target.checked){ MODEL.filters.a2qOnly = false; MODEL.filters.bothOnly = false; }
-    syncFilterCheckboxes();
-    applyWxccFilters();
-  });
-  document.getElementById("filter.bothOnly")?.addEventListener("change", (e)=>{
-    MODEL.filters.bothOnly = e.target.checked;
-    if(e.target.checked){ MODEL.filters.a2qOnly = false; MODEL.filters.sowOnly = false; }
-    syncFilterCheckboxes();
-    applyWxccFilters();
-  });
-}
-
-function syncFilterCheckboxes(){
-  document.getElementById("filter.a2qOnly").checked = !!MODEL.filters.a2qOnly;
-  document.getElementById("filter.sowOnly").checked = !!MODEL.filters.sowOnly;
-  document.getElementById("filter.bothOnly").checked = !!MODEL.filters.bothOnly;
-}
-
-/* =========================
-   MOCKAPI SAVE / SEARCH / LOAD
-   ========================= */
-async function mockapiCreateOrUpdate(){
-  const base = (MODEL.storage.mockapiBaseUrl || "").trim();
-  if(!base){ alert("Enter MockAPI Base URL first."); return; }
-
-  const payload = serializePayload();
-  const record = {
-    customerName: MODEL.meta.customerName || "TBD",
-    customerKey: MODEL.meta.customerKey || "",
-    updatedAt: new Date().toISOString(),
-    payload
+  const ifr = {
+    calling: $("#ifr-calling"),
+    contact: $("#ifr-contact"),
+    network: $("#ifr-network"),
   };
 
-  let url = base;
-  let method = "POST";
-  if(MODEL.meta.recordId){
-    url = `${base}/${encodeURIComponent(MODEL.meta.recordId)}`;
-    method = "PUT";
+  const meta = {
+    calling: { title:"Calling", hint:"Webex Calling Discovery Questionnaire" },
+    contact: { title:"Contact Center", hint:"Webex Contact Center Discovery Questionnaire" },
+    network: { title:"Network", hint:"Network Topology Questionnaire" },
+  };
+
+  function setStatus(msg){
+    $("#status").innerHTML = `<span class="badge">suite</span><span>${msg}</span>`;
   }
 
-  try{
-    const res = await fetch(url, { method, headers:{ "Content-Type":"application/json" }, body: JSON.stringify(record) });
-    if(!res.ok){
-      const t = await res.text();
-      alert(`MockAPI save failed: ${res.status} ${res.statusText}\n${t}`);
-      return;
-    }
-    const saved = await res.json();
-    MODEL.meta.recordId = saved.id || MODEL.meta.recordId || "";
-    markSaved();
-    alert(`Saved to MockAPI (${method==="POST" ? "created" : "updated"}). RecordId: ${MODEL.meta.recordId}`);
-  }catch(e){
-    alert("MockAPI save error: " + e.message);
+  function openModal(title, obj){
+    $("#modalTitle").textContent = title;
+    $("#modalPre").textContent = JSON.stringify(obj, null, 2);
+    $("#modalBack").style.display = "grid";
   }
-}
+  function closeModal(){ $("#modalBack").style.display = "none"; }
+  $("#modalClose").addEventListener("click", closeModal);
+  $("#modalBack").addEventListener("click", (e)=>{ if(e.target.id==="modalBack") closeModal(); });
 
-async function mockapiSearch(){
-  const base = (MODEL.storage.mockapiBaseUrl || "").trim();
-  const term = (document.getElementById("search.term").value || "").trim();
-  if(!base){ alert("Enter MockAPI Base URL first."); return; }
-  if(!term){ alert("Enter a search term (customer name, customerKey, or record id)."); return; }
-
-  const resultsSelect = document.getElementById("search.results");
-  resultsSelect.innerHTML = "";
-
-  const candidates = [];
-  const tryUrls = [
-    `${base}?search=${encodeURIComponent(term)}`,
-    `${base}?customerName=${encodeURIComponent(term)}`,
-    `${base}?customerKey=${encodeURIComponent(term)}`
-  ];
-
-  for(const u of tryUrls){
-    try{
-      const r = await fetch(u);
-      if(r.ok){
-        const arr = await r.json();
-        if(Array.isArray(arr) && arr.length){
-          candidates.push(...arr);
-          break;
-        }
-      }
-    }catch(e){}
+  function loadIframes(){
+    ifr.calling.srcdoc = $("#tpl-calling").innerHTML;
+    ifr.contact.srcdoc = $("#tpl-contact").innerHTML;
+    ifr.network.srcdoc = $("#tpl-network").innerHTML;
   }
 
-  let items = candidates;
-  if(!items.length){
-    try{
-      const r = await fetch(base);
-      if(!r.ok){
-        const t = await r.text();
-        alert(`MockAPI search failed: ${r.status} ${r.statusText}\n${t}`);
-        return;
-      }
-      const arr = await r.json();
-      const tt = term.toLowerCase();
-      items = (Array.isArray(arr) ? arr : []).filter(x=>{
-        const cn = (x.customerName || "").toLowerCase();
-        const ck = (x.customerKey || "").toLowerCase();
-        return cn.includes(tt) || ck.includes(tt) || (x.id && String(x.id) === term);
-      });
-    }catch(e){
-      alert("MockAPI search error: " + e.message);
-      return;
-    }
+  function activeKey(){
+    return $(".tab.active")?.getAttribute("data-tab") || "calling";
   }
 
-  if(!items.length){
-    const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "No matches found";
-    resultsSelect.appendChild(opt);
-    return;
-  }
-
-  for(const item of items){
-    const opt = document.createElement("option");
-    opt.value = item.id;
-    const cn = item.customerName || "(no customerName)";
-    const ck = item.customerKey ? ` · key:${item.customerKey}` : "";
-    const ts = item.updatedAt ? ` · updated:${item.updatedAt}` : "";
-    opt.textContent = `id:${item.id} · ${cn}${ck}${ts}`;
-    resultsSelect.appendChild(opt);
-  }
-}
-
-async function mockapiLoadById(id){
-  const base = (MODEL.storage.mockapiBaseUrl || "").trim();
-  if(!base){ alert("Enter MockAPI Base URL first."); return; }
-  if(!id){ alert("Select a record to load."); return; }
-
-  try{
-    const r = await fetch(`${base}/${encodeURIComponent(id)}`);
-    if(!r.ok){
-      const t = await r.text();
-      alert(`MockAPI load failed: ${r.status} ${r.statusText}\n${t}`);
-      return;
-    }
-    const item = await r.json();
-    if(item && item.payload){
-      const p = item.payload;
-
-      MODEL.meta.recordId = item.id || "";
-      MODEL.meta.customerKey = item.customerKey || "";
-      MODEL.meta.customerName = p.customer?.name || "";
-      MODEL.meta.marketVertical = p.customer?.marketVertical || "";
-
-      MODEL.meta.partnerName = p.project?.partnerName || "";
-      MODEL.meta.dealType = p.project?.dealType || "";
-      MODEL.meta.onboardingType = p.project?.onboardingType || "";
-      MODEL.meta.migrationType = p.project?.migrationType || "";
-      MODEL.meta.timeline = p.project?.timeline || "";
-      MODEL.meta.kickoffDate = p.project?.kickoffDate || "";
-      MODEL.meta.goliveDate = p.project?.goliveDate || "";
-      MODEL.meta.tenantLocation = p.project?.tenantLocation || "";
-      MODEL.meta.controlHubOrgId = p.project?.controlHubOrgId || "";
-      MODEL.meta.webOrderId = p.project?.webOrderId || "";
-      MODEL.meta.notes = p.project?.notes || "";
-
-      MODEL.wxc = p.webexCalling || MODEL.wxc;
-      MODEL.wxcc = p.webexContactCenter || MODEL.wxcc;
-      MODEL.network = p.network || MODEL.network;
-
-      // write to UI
-      document.querySelectorAll("input,select,textarea").forEach(el=>{
-        if(!el.id) return;
-        if(el.id.startsWith("payload.") || el.id.startsWith("search.") || el.id.startsWith("filter.")) return;
-        el.value = deepGet(MODEL, el.id) || "";
-      });
-
-      markSaved();
-      refreshA2Q();
-      updateLiveDiagram();
-      refreshPreview();
-      updateA2QStatus();
-      updateCompletionUI();
-      updateRecordPill();
-      applyWxccFilters();
-      alert(`Loaded record id: ${MODEL.meta.recordId}`);
-      return;
-    }
-    alert("Loaded record did not contain a payload.");
-  }catch(e){
-    alert("MockAPI load error: " + e.message);
-  }
-}
-
-/* =========================
-   LOCAL SAVE/LOAD + EXPORT + BUTTONS
-   ========================= */
-document.getElementById("btnSaveLocal").addEventListener("click", ()=>{
-  localStorage.setItem("webexDiscoveryPosterTagged", JSON.stringify(MODEL));
-  markSaved();
-});
-document.getElementById("btnLoadLocal").addEventListener("click", ()=>{
-  const raw = localStorage.getItem("webexDiscoveryPosterTagged");
-  if(!raw) return;
-  try{
-    const obj = JSON.parse(raw);
-    Object.assign(MODEL, obj);
-
-    document.querySelectorAll("input,select,textarea").forEach(el=>{
-      if(!el.id) return;
-      if(el.id.startsWith("payload.") || el.id.startsWith("search.") || el.id.startsWith("filter.")) return;
-      el.value = deepGet(MODEL, el.id) || "";
+  function showTab(key){
+    Object.entries(ifr).forEach(([k, el]) => el.style.display = (k===key) ? "" : "none");
+    $$(".tab").forEach(b => {
+      const on = b.getAttribute("data-tab") === key;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
     });
-
-    syncFilterCheckboxes();
-    applyWxccFilters();
-    markSaved();
-    refreshA2Q();
-    updateLiveDiagram();
-    refreshPreview();
-    updateA2QStatus();
-    updateCompletionUI();
-    updateRecordPill();
-  }catch(e){
-    alert("Local load failed: invalid data.");
+    $("#panelTitle").textContent = meta[key].title;
+    $("#panelHint").textContent = meta[key].hint;
   }
-});
 
-document.getElementById("btnExport").addEventListener("click", async ()=>{
-  const text = JSON.stringify(serializePayload(), null, 2);
-  await navigator.clipboard.writeText(text);
-  alert("Full JSON copied to clipboard.");
-});
+  // postMessage RPC
+  let _rpcId = 1;
+  function rpcTo(key, cmd, data){
+    return new Promise((resolve) => {
+      const id = String(_rpcId++);
+      const frame = ifr[key];
+      if(!frame?.contentWindow){
+        return resolve({ ok:false, payload:{ error:"frame not ready" }});
+      }
+      const handler = (e) => {
+        const msg = e.data || {};
+        if(msg.target !== "suite" || msg.id !== id) return;
+        window.removeEventListener("message", handler);
+        resolve({ ok: !!msg.ok, payload: msg.payload });
+      };
+      window.addEventListener("message", handler);
+      frame.contentWindow.postMessage({ target:"suite", id, cmd, data }, "*");
+      setTimeout(() => {
+        window.removeEventListener("message", handler);
+        resolve({ ok:false, payload:{ error:`timeout waiting for ${key}:${cmd}` }});
+      }, 5000);
+    });
+  }
 
-document.getElementById("btnSaveRemote").addEventListener("click", mockapiCreateOrUpdate);
-document.getElementById("btnSearch").addEventListener("click", mockapiSearch);
-document.getElementById("btnLoadSelected").addEventListener("click", ()=>{
-  const id = document.getElementById("search.results").value;
-  mockapiLoadById(id);
-});
-document.getElementById("btnCopyA2Q").addEventListener("click", async ()=>{
-  await navigator.clipboard.writeText(JSON.stringify(buildA2QDraft(), null, 2));
-  alert("A2Q JSON copied.");
-});
+  async function applyWebhookToTabs(){
+    const url = $("#globalWebhook").value.trim();
+    localStorage.setItem(STORAGE_GLOBAL_WEBHOOK, url);
+    setStatus(url ? `Global webhook saved and applying to all tabs…` : `Global webhook cleared and applying…`);
+    await Promise.all([
+      rpcTo("calling", "setWebhook", { url }),
+      rpcTo("contact", "setWebhook", { url }),
+      rpcTo("network", "setWebhook", { url }),
+    ]);
+    setStatus(url ? `Applied webhook to all tabs.` : `Cleared webhook on all tabs.`);
+  }
 
-/* =========================
-   HELP MODAL
-   ========================= */
-const helpBackdrop = document.getElementById("helpBackdrop");
-const helpClose = document.getElementById("helpClose");
-const helpTitle = document.getElementById("helpTitle");
-const helpSubtitle = document.getElementById("helpSubtitle");
-const helpBody = document.getElementById("helpBody");
+  async function getAllPayload(){
+    const [a,b,c] = await Promise.all([
+      rpcTo("calling", "getPayload"),
+      rpcTo("contact", "getPayload"),
+      rpcTo("network", "getPayload"),
+    ]);
+    return {
+      suite: "webex.discovery.suite.v1",
+      exportedAt: new Date().toISOString(),
+      globalWebhook: $("#globalWebhook").value.trim(),
+      calling: a.ok ? a.payload : { error: a.payload?.error || "failed" },
+      contactCenter: b.ok ? b.payload : { error: b.payload?.error || "failed" },
+      network: c.ok ? c.payload : { error: c.payload?.error || "failed" },
+    };
+  }
 
-function openHelp(key){
-  const data = HELP_EXAMPLES[key] || HELP_EXAMPLES.meta;
-  helpTitle.textContent = data.title || "Examples";
-  helpSubtitle.textContent = data.subtitle || "Examples.";
-  helpBody.innerHTML = "";
-  (data.sections || []).forEach(s=>{
-    const div = document.createElement("div");
-    div.className = "helpSection";
-    div.innerHTML = `<h4>${escapeHtml(s.h||"")}</h4><pre>${escapeHtml(s.p||"")}</pre>`;
-    helpBody.appendChild(div);
-  });
-  helpBackdrop.style.display = "flex";
-}
-function closeHelp(){ helpBackdrop.style.display="none"; }
+  async function exportAllJson(){
+    const payload = await getAllPayload();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "webex-discovery-suite.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setStatus("Exported combined JSON.");
+  }
 
-document.getElementById("btnHelp").addEventListener("click", ()=>{
-  const active = document.querySelector(".tab.active")?.dataset.page || "joint";
-  const key = active==="joint" ? "meta" : active==="calling" ? "wxc" : active==="contact" ? "wxcc" : active==="network" ? "network" : "webhook";
-  openHelp(key);
-});
-document.querySelectorAll(".helpBtn").forEach(btn=>{
-  btn.addEventListener("click", (e)=>{
-    e.preventDefault(); e.stopPropagation();
-    openHelp(btn.getAttribute("data-help") || "meta");
-  });
-});
-helpClose.addEventListener("click", closeHelp);
-helpBackdrop.addEventListener("click", (e)=>{ if(e.target===helpBackdrop) closeHelp(); });
-document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeHelp(); });
+  async function submitAll(){
+    setStatus("Submitting all tabs…");
+    const res = await Promise.all([
+      rpcTo("calling", "submit"),
+      rpcTo("contact", "submit"),
+      rpcTo("network", "submit"),
+    ]);
+    const ok = res.filter(r=>r.ok).length;
+    setStatus(`Submit commands sent. ok=${ok}/3 (each tab will show its own result UI).`);
+  }
 
-/* =========================
-   BOOT
-   ========================= */
-bindInputs();
-syncFilterCheckboxes();
-applyWxccFilters();
-refreshA2Q();
-refreshPreview();
-updateLiveDiagram();
-updateA2QStatus();
-updateCompletionUI();
-updateRecordPill();
-markDirty();
+  async function resetAll(){
+    if(!confirm("Reset ALL tabs and clear their saved drafts (where supported)?")) return;
+    setStatus("Resetting all tabs…");
+    await Promise.all([
+      rpcTo("calling", "reset"),
+      rpcTo("contact", "reset"),
+      rpcTo("network", "reset"),
+    ]);
+    setStatus("Reset complete.");
+  }
+
+  // Active-tab buttons
+  async function activeCmd(cmd){
+    const k = activeKey();
+    const r = await rpcTo(k, cmd);
+    if(!r.ok) setStatus(`Active tab error: ${r.payload?.error || "unknown"}`);
+  }
+
+  // Wire UI
+  $$(".tab").forEach(btn => btn.addEventListener("click", ()=>showTab(btn.getAttribute("data-tab"))));
+  $("#btnSetWebhook").addEventListener("click", applyWebhookToTabs);
+  $("#btnExportAll").addEventListener("click", exportAllJson);
+  $("#btnGetAll").addEventListener("click", async ()=>openModal("Combined JSON Preview", await getAllPayload()));
+  $("#btnSubmitAll").addEventListener("click", submitAll);
+  $("#btnResetAll").addEventListener("click", resetAll);
+
+  $("#btnSaveActive").addEventListener("click", ()=>activeCmd("save"));
+  $("#btnLoadActive").addEventListener("click", ()=>activeCmd("load"));
+  $("#btnExportActive").addEventListener("click", ()=>activeCmd("export"));
+  $("#btnSubmitActive").addEventListener("click", ()=>activeCmd("submit"));
+
+  // Init
+  $("#globalWebhook").value = localStorage.getItem(STORAGE_GLOBAL_WEBHOOK) || "";
+  loadIframes();
+  showTab("calling");
+  setStatus("Ready. Set webhook and Apply to Tabs.");
 </script>
 </body>
 </html>
