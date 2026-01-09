@@ -1,11 +1,180 @@
-/* Webex Calling Discovery - Static Form + JSON + Webhook
-   - Renders sections/questions
-   - Stores answers in localStorage
-   - Exports JSON (download/copy)
-   - Submits JSON to webhook URL
-*/
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Webex Calling Assessment</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#121a33; --panel2:#0f1730; --text:#e8ecff; --muted:#aeb8e6;
+      --border:#25305d; --accent:#6ea8fe; --danger:#ff5c7a; --ok:#43d19e; --warn:#ffcc66;
+      --shadow:0 10px 30px rgba(0,0,0,.35); --radius:14px;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:var(--sans); color:var(--text);
+      background: radial-gradient(1200px 800px at 20% 10%, #1a2a6f 0%, var(--bg) 55%);
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(11,16,32,.78); backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .wrap{max-width:1150px; margin:0 auto; padding:16px}
+    .head{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    h1{margin:0; font-size:20px}
+    .sub{margin:6px 0 0; color:var(--muted); font-size:13px}
+    .btnbar{display:flex; gap:10px; flex-wrap:wrap}
+    button{
+      border:1px solid rgba(255,255,255,.10);
+      background:#16224a; color:var(--text);
+      padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:700;
+    }
+    button:hover{border-color:rgba(255,255,255,.18)}
+    .primary{background:linear-gradient(90deg,#2b69ff,#6ea8fe); border-color:transparent}
+    .secondary{background:#0d1636}
+    .danger{background:rgba(255,92,122,.12); border-color:rgba(255,92,122,.35); color:#ffdbe2}
+    main{max-width:1150px; margin:0 auto; padding:16px}
+    .card{
+      background:linear-gradient(180deg, rgba(18,26,51,.95), rgba(15,23,48,.95));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px; margin:16px 0;
+    }
+    .card h2{margin:0 0 12px; font-size:16px}
+    .grid{display:grid; gap:12px}
+    .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+    label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
+    input, textarea, select{
+      width:100%; border-radius:10px; border:1px solid rgba(255,255,255,.08);
+      background:#0b122a; color:var(--text); padding:10px 12px; outline:none;
+    }
+    textarea{resize:vertical}
+    .help{display:block; font-size:11px; color:rgba(174,184,230,.9); margin-top:6px}
+    .status{
+      margin-top:12px; padding:10px 12px; border-radius:10px;
+      border:1px solid rgba(255,255,255,.06); background:rgba(0,0,0,.18);
+      color:var(--muted); display:none;
+    }
+    .ok{display:block; border-color:rgba(67,209,158,.35); color:#bff3df}
+    .warn{display:block; border-color:rgba(255,204,102,.35); color:#ffe5b5}
+    .err{display:block; border-color:rgba(255,92,122,.35); color:#ffdbe2}
+    .accordion{display:flex; flex-direction:column; gap:10px}
+    .section{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px; overflow:hidden; background:rgba(0,0,0,.10);
+    }
+    .secHead{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px; cursor:pointer; user-select:none;
+    }
+    .secTitle{font-weight:800}
+    .secMeta{color:var(--muted); font-size:12px}
+    .secBody{display:none; padding:12px; border-top:1px solid rgba(255,255,255,.06)}
+    .open .secBody{display:block}
+    table{width:100%; border-collapse:separate; border-spacing:0}
+    th,td{vertical-align:top; border-bottom:1px solid rgba(255,255,255,.06); padding:10px}
+    th{text-align:left; color:var(--muted); font-size:12px; font-weight:800}
+    .qcol{width:52%} .acol{width:48%}
+    .json{
+      font-family:var(--mono); font-size:12px;
+      background:#080d1e; border:1px solid rgba(255,255,255,.06);
+      border-radius:12px; padding:14px; overflow:auto; max-height:520px;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap head">
+    <div>
+      <h1>Webex Calling Assessment</h1>
+      <div class="sub">Comprehensive assessment form. Submit to a webhook and capture structured JSON.</div>
+    </div>
+    <div class="btnbar">
+      <button class="secondary" id="expandAll">Expand all</button>
+      <button class="secondary" id="collapseAll">Collapse all</button>
+      <button class="danger" id="clearAll">Clear</button>
+    </div>
+  </div>
+</header>
 
-const STORAGE_KEY = "wxc_discovery_v1_state";
+<main>
+  <section class="card">
+    <h2>Webhook & Metadata</h2>
+    <div class="grid grid2">
+      <div>
+        <label for="webhookUrl">Webhook URL</label>
+        <input id="webhookUrl" type="url" placeholder="https://your-webhook.example/endpoint" />
+        <span class="help">On Submit, the form POSTs JSON to this URL (Content-Type: application/json).</span>
+      </div>
+      <div>
+        <label for="templateId">Template ID</label>
+        <input id="templateId" type="text" value="wxc-assessment-v1" />
+      </div>
+
+      <div>
+        <label for="customerName">Customer Name</label>
+        <input id="customerName" type="text" placeholder="Customer legal name" />
+      </div>
+      <div>
+        <label for="opportunityId">Opportunity / Deal ID</label>
+        <input id="opportunityId" type="text" placeholder="e.g., SFDC Opp ID" />
+      </div>
+
+      <div>
+        <label for="projectName">Project Name</label>
+        <input id="projectName" type="text" placeholder="e.g., Webex Calling Migration" />
+      </div>
+      <div>
+        <label for="targetGoLive">Target Go-Live Date</label>
+        <input id="targetGoLive" type="date" />
+      </div>
+
+      <div>
+        <label for="preparedBy">Prepared By</label>
+        <input id="preparedBy" type="text" placeholder="Name / email" />
+      </div>
+      <div>
+        <label for="notes">General Notes</label>
+        <textarea id="notes" rows="3" placeholder="Any global notes..."></textarea>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+      <button class="secondary" id="validateBtn">Validate</button>
+      <button class="secondary" id="copyBtn">Copy JSON</button>
+      <button class="secondary" id="downloadBtn">Download JSON</button>
+      <button class="primary" id="submitBtn">Submit to Webhook</button>
+    </div>
+    <div id="status" class="status"></div>
+  </section>
+
+  <section class="card">
+    <h2>Assessment Form</h2>
+    <div id="formRoot" class="accordion"></div>
+  </section>
+
+  <section class="card">
+    <h2>JSON Payload Preview (what submits)</h2>
+    <pre id="jsonPreview" class="json">{}</pre>
+  </section>
+</main>
+
+<script>
+/** =============================
+ *  Webex Calling Assessment Form
+ *  - Single-file HTML: no build tools
+ *  - Saves answers in localStorage
+ *  - Submits structured JSON to webhook
+ *  ============================= */
+
+const STORAGE_KEY = "wxc_assessment_v1_state";
 
 const SECTIONS = [
   {
@@ -20,7 +189,7 @@ const SECTIONS = [
       { id: "voice_user_count", label: "Number of Voice Users (Estimated)", type: "text" },
       { id: "countries_of_operation", label: "Countries of Operation", type: "text" },
       { id: "business_drivers", label: "Business Drivers for Webex Calling (cost, DR, features, cloud, etc.)", type: "textarea" },
-      { id: "stakeholders", label: "Key Stakeholders (Exec sponsor, technical lead, network lead, security, ops)", type: "textarea" }
+      { id: "stakeholders", label: "Key Stakeholders (Exec sponsor, technical, network, security, operations)", type: "textarea" }
     ]
   },
 
@@ -28,17 +197,16 @@ const SECTIONS = [
     id: "deployment_model_scope",
     title: "Deployment Model & Scope",
     questions: [
-      { id: "deployment_type", label: "Deployment Type (New / Migration / Hybrid)", type: "select", options: ["", "New", "Migration", "Hybrid"] },
-      { id: "global_or_regional", label: "Global or Regional deployment?", type: "text" },
+      { id: "deployment_type", label: "Deployment Type", type: "select", options: ["", "New", "Migration", "Hybrid"] },
+      { id: "global_or_regional", label: "Global or regional deployment?", type: "text" },
       { id: "total_locations", label: "Total number of locations", type: "text" },
-      { id: "location_list", label: "List of locations (City, State, Country)", type: "textarea" },
-      { id: "users_day1", label: "Number of users – Day 1", type: "text" },
-      { id: "users_full_rollout", label: "Number of users – Full rollout", type: "text" },
+      { id: "location_list", label: "List locations (City/State/Country)", type: "textarea" },
+      { id: "users_day1", label: "Users in scope (Day 1)", type: "text" },
+      { id: "users_total", label: "Users in scope (Total)", type: "text" },
       { id: "remote_users_percent", label: "Remote users (%)", type: "text" },
-      { id: "office_users_percent", label: "Office-based users (%)", type: "text" },
-      { id: "common_area_phones", label: "Common area phones (qty)", type: "text" },
-      { id: "workspaces_rooms", label: "Conference rooms / workspaces (qty)", type: "text" },
-      { id: "site_survivability_required", label: "Is site survivability required? (Where/Why)", type: "textarea" }
+      { id: "common_area_phones_qty", label: "Common area phones (qty)", type: "text" },
+      { id: "workspaces_qty", label: "Workspaces / conference rooms (qty)", type: "text" },
+      { id: "site_survivability", label: "Site survivability required? (Where/Why)", type: "textarea" }
     ]
   },
 
@@ -47,13 +215,13 @@ const SECTIONS = [
     title: "Existing Voice Environment",
     questions: [
       { id: "current_voice_platform", label: "Current voice platform (CUCM/Avaya/Mitel/UCaaS/etc.)", type: "text" },
-      { id: "current_deployment_model", label: "Current deployment model (On-Prem/Cloud/Hybrid)", type: "text" },
+      { id: "current_model", label: "Current deployment model (On-Prem/Cloud/Hybrid)", type: "text" },
       { id: "current_pstn_type", label: "Current PSTN type (PRI/SIP/Analog)", type: "text" },
-      { id: "current_carriers", label: "Current PSTN carrier(s)", type: "text" },
+      { id: "current_carriers", label: "Current PSTN carrier(s)", type: "textarea" },
       { id: "carrier_contract_end_dates", label: "Carrier contract end dates", type: "text" },
-      { id: "early_termination_risks", label: "Early termination risks / penalties", type: "textarea" },
-      { id: "existing_features", label: "Existing call features in use (AAs, HGs, queues, VM, etc.)", type: "textarea" },
-      { id: "known_pain_points", label: "Known limitations / pain points", type: "textarea" }
+      { id: "early_termination_risk", label: "Early termination risks / penalties", type: "textarea" },
+      { id: "existing_features", label: "Existing features in use (AA/HG/Queue/VM/Forwarding/etc.)", type: "textarea" },
+      { id: "pain_points", label: "Known pain points / limitations", type: "textarea" }
     ]
   },
 
@@ -63,10 +231,8 @@ const SECTIONS = [
     questions: [
       { id: "avg_daily_inbound", label: "Average daily inbound calls", type: "text" },
       { id: "avg_daily_outbound", label: "Average daily outbound calls", type: "text" },
-      { id: "peak_concurrent_calls", label: "Peak concurrent calls (Busy Hour)", type: "text" },
+      { id: "peak_concurrent_calls", label: "Peak concurrent calls (busy hour)", type: "text" },
       { id: "bhca", label: "Busy Hour Call Attempts (BHCA)", type: "text" },
-      { id: "inbound_outbound_ratio", label: "Inbound vs outbound ratio", type: "text" },
-      { id: "seasonal_spikes", label: "Seasonal call spikes? (Explain)", type: "textarea" },
       { id: "cdrs_available", label: "CDRs available for analysis? (Yes/No + details)", type: "text" }
     ]
   },
@@ -75,38 +241,32 @@ const SECTIONS = [
     id: "pstn_numbering_strategy",
     title: "PSTN & Numbering Strategy",
     questions: [
-      { id: "preferred_pstn_model", label: "Preferred PSTN model (CCP / LGW / Hybrid)", type: "text" },
-      { id: "ccp_required", label: "Cisco Calling Plans required? (Yes/No)", type: "text" },
-      { id: "lgw_required", label: "Local Gateway required? (Yes/No)", type: "text" },
-      { id: "total_dids", label: "Total number of DIDs", type: "text" },
-      { id: "toll_free_numbers", label: "Toll-free numbers required (qty + list)", type: "textarea" },
+      { id: "preferred_pstn_model", label: "Preferred PSTN model", type: "select", options: ["", "Cisco Calling Plans (CCP)", "Local Gateway (LGW)", "Hybrid (CCP+LGW)"] },
+      { id: "telephony_carriers", label: "How many carriers are in use / required?", type: "text" },
+      { id: "total_dids", label: "Total DIDs", type: "text" },
+      { id: "toll_free_numbers", label: "Toll-free numbers (qty + list)", type: "textarea" },
       { id: "extension_length", label: "Extension length", type: "text" },
-      { id: "dial_plan_model", label: "Dial plan model (Global / Site-based)", type: "text" },
-      { id: "overlapping_dial_plans", label: "Overlapping dial plans present? (Yes/No)", type: "text" },
-      { id: "inter_site_dialing", label: "Inter-site dialing requirements", type: "textarea" },
-      { id: "international_dialing", label: "International dialing requirements / restrictions", type: "textarea" },
+      { id: "dial_plan_notes", label: "Dial plan requirements (inter-site dialing, overlaps, restrictions)", type: "textarea" },
       { id: "number_porting_required", label: "Number porting required? (Yes/No)", type: "text" },
-      { id: "dids_to_port", label: "Estimated DIDs to port", type: "text" },
-      { id: "staggered_porting", label: "Staggered porting required? (Yes/No + approach)", type: "textarea" },
-      { id: "temporary_call_forwarding", label: "Temporary call forwarding required? (Explain)", type: "textarea" }
+      { id: "porting_schedule", label: "Porting schedule / approach", type: "textarea" },
+      { id: "temporary_forwarding", label: "Temporary forwarding needed during port? (Explain)", type: "textarea" }
     ]
   },
 
   {
     id: "local_gateway_design",
-    title: "Local Gateway (LGW) Design",
+    title: "Local Gateway (LGW) Design (if applicable)",
     questions: [
-      { id: "lgw_deployment_type", label: "LGW deployment type (Physical / Virtual)", type: "text" },
-      { id: "lgw_vendor", label: "LGW vendor (Cisco/Adtran/etc.)", type: "text" },
+      { id: "lgw_required", label: "LGW required? (Yes/No)", type: "text" },
+      { id: "lgw_type", label: "LGW type (physical / virtual)", type: "text" },
+      { id: "lgw_vendor", label: "LGW vendor", type: "text" },
       { id: "lgw_model", label: "LGW model", type: "text" },
       { id: "ios_xe_version", label: "IOS-XE version", type: "text" },
-      { id: "registration_type", label: "Registration type (Certificate-based / Registration-based)", type: "text" },
-      { id: "number_of_lgws", label: "Number of LGWs", type: "text" },
-      { id: "ha_model", label: "High Availability model (Active/Active, Active/Standby, None)", type: "text" },
-      { id: "max_concurrent_calls", label: "Maximum concurrent calls required", type: "text" },
+      { id: "registration_method", label: "Registration method (Certificate-based / Registration-based)", type: "text" },
+      { id: "ha_model", label: "HA model (Active/Active, Active/Standby, None)", type: "text" },
+      { id: "concurrent_calls_required", label: "Concurrent calls required (sizing)", type: "text" },
       { id: "codec_requirements", label: "Codec requirements (G.711/G.729/Opus)", type: "text" },
-      { id: "fax_modem_support", label: "Fax/modem traffic via LGW? (Yes/No + details)", type: "textarea" },
-      { id: "multi_carrier", label: "Multiple PSTN carriers supported? (Yes/No + how)", type: "textarea" }
+      { id: "multi_trunk_multi_carrier", label: "Multiple trunks/carriers? (Explain)", type: "textarea" }
     ]
   },
 
@@ -117,20 +277,18 @@ const SECTIONS = [
       { id: "isp_per_site", label: "ISP(s) per site", type: "textarea" },
       { id: "internet_type", label: "Internet type (DIA/MPLS/SD-WAN)", type: "text" },
       { id: "bandwidth_per_site", label: "Bandwidth per site (Up/Down)", type: "textarea" },
-      { id: "redundant_links", label: "Redundant internet links available? (Yes/No)", type: "text" },
+      { id: "redundant_links", label: "Redundant links available? (Yes/No)", type: "text" },
       { id: "sdwan_vendor", label: "SD-WAN vendor (if applicable)", type: "text" },
-      { id: "switch_manufacturer", label: "LAN switch manufacturer", type: "text" },
-      { id: "voice_vlans", label: "Voice VLANs implemented? (Yes/No)", type: "text" },
-      { id: "qos_configured", label: "QoS configured for voice traffic? (Yes/No + notes)", type: "textarea" },
-      { id: "poe_available", label: "Power over Ethernet available? (Yes/No)", type: "text" },
-      { id: "firewall_vendor_model", label: "Firewall vendor and model", type: "text" },
-      { id: "nat_in_use", label: "NAT in use? (Yes/No)", type: "text" },
-      { id: "sip_alg_disabled", label: "SIP ALG disabled? (Yes/No)", type: "text" },
-      { id: "public_ips", label: "Public IPs available for voice?", type: "text" },
-      { id: "latency_ms", label: "One-way latency (ms)", type: "text" },
-      { id: "jitter_ms", label: "Jitter (ms)", type: "text" },
-      { id: "packet_loss_pct", label: "Packet loss (%)", type: "text" },
-      { id: "network_constraints", label: "Known network risks/constraints", type: "textarea" }
+      { id: "switch_vendor", label: "Switch vendor/model", type: "text" },
+      { id: "voice_vlans", label: "Voice VLANs (Yes/No + details)", type: "textarea" },
+      { id: "qos", label: "QoS for voice configured? (Yes/No + DSCP details)", type: "textarea" },
+      { id: "firewall_vendor", label: "Firewall vendor/model", type: "text" },
+      { id: "nat", label: "NAT in use? (Yes/No)", type: "text" },
+      { id: "sip_alg", label: "SIP ALG disabled? (Yes/No)", type: "text" },
+      { id: "latency", label: "Latency (ms)", type: "text" },
+      { id: "jitter", label: "Jitter (ms)", type: "text" },
+      { id: "packet_loss", label: "Packet loss (%)", type: "text" },
+      { id: "constraints", label: "Known constraints / risks", type: "textarea" }
     ]
   },
 
@@ -139,13 +297,12 @@ const SECTIONS = [
     title: "Endpoints & Devices",
     questions: [
       { id: "endpoint_types", label: "Endpoint types (MPP/Webex App/Mobile/3rd-party SIP)", type: "textarea" },
-      { id: "mpp_models", label: "Cisco MPP phone models", type: "textarea" },
-      { id: "desk_phone_qty", label: "Desk phones (qty)", type: "text" },
-      { id: "conference_phone_qty", label: "Conference phones (qty)", type: "text" },
-      { id: "wireless_phone_qty", label: "Wireless phones (qty)", type: "text" },
-      { id: "reuse_existing_phones", label: "Existing phones to be reused? (Yes/No)", type: "text" },
-      { id: "zero_touch", label: "Zero-touch provisioning required? (Yes/No)", type: "text" },
-      { id: "third_party_sip", label: "Third-party SIP devices present? (List)", type: "textarea" }
+      { id: "mpp_models", label: "Cisco MPP models in scope", type: "textarea" },
+      { id: "desk_phone_qty", label: "Desk phone quantity", type: "text" },
+      { id: "conference_phone_qty", label: "Conference phone quantity", type: "text" },
+      { id: "wireless_qty", label: "Wireless handset quantity", type: "text" },
+      { id: "reuse_devices", label: "Reusing existing devices? (Yes/No + which)", type: "textarea" },
+      { id: "zero_touch", label: "Zero-touch provisioning required? (Yes/No)", type: "text" }
     ]
   },
 
@@ -153,73 +310,64 @@ const SECTIONS = [
     id: "analog_specialty_devices",
     title: "Analog & Specialty Devices",
     questions: [
-      { id: "fax_count", label: "Fax machines (qty + locations)", type: "textarea" },
-      { id: "fax_method", label: "Fax method (ATA / eFax)", type: "text" },
-      { id: "t38_required", label: "T.38 required? (Yes/No)", type: "text" },
-      { id: "elevator_lines", label: "Elevator phones/lines (qty + locations)", type: "textarea" },
-      { id: "alarm_lines", label: "Alarm lines (qty + locations)", type: "textarea" },
-      { id: "paging_system", label: "Paging system details (vendor/model/location)", type: "textarea" },
-      { id: "overhead_paging", label: "Overhead paging required? (Yes/No)", type: "text" },
-      { id: "ata_qty", label: "ATA quantity required", type: "text" },
-      { id: "informacast", label: "Informacast or similar system used? (Yes/No + details)", type: "textarea" }
+      { id: "fax_qty", label: "Fax devices (qty + locations)", type: "textarea" },
+      { id: "fax_method", label: "Fax method (ATA / eFax / other)", type: "text" },
+      { id: "t38", label: "T.38 required? (Yes/No)", type: "text" },
+      { id: "elevator", label: "Elevator lines (qty + locations)", type: "textarea" },
+      { id: "alarms", label: "Alarm lines (qty + locations)", type: "textarea" },
+      { id: "paging", label: "Paging system / intercom requirements", type: "textarea" },
+      { id: "ata_qty", label: "ATA quantity required", type: "text" }
     ]
   },
 
   {
-    id: "calling_features_ux",
+    id: "calling_features",
     title: "Calling Features & User Experience",
     questions: [
-      { id: "auto_attendants", label: "Auto attendants required (qty + requirements)", type: "textarea" },
-      { id: "business_hours", label: "Business hours/holiday schedules", type: "textarea" },
-      { id: "hunt_groups", label: "Hunt groups required (qty + logic)", type: "textarea" },
-      { id: "call_queues", label: "Call queues required (qty + logic)", type: "textarea" },
-      { id: "shared_virtual_lines", label: "Shared lines / virtual lines requirements", type: "textarea" },
-      { id: "call_park_paging", label: "Call park / paging groups", type: "textarea" },
-      { id: "voicemail_email", label: "Voicemail to email required? (Yes/No)", type: "text" },
-      { id: "snr", label: "Single Number Reach required? (Yes/No + groups)", type: "textarea" },
-      { id: "call_recording_required", label: "Call recording required? (Yes/No)", type: "text" },
-      { id: "recording_scope", label: "Recording scope (Selective / Always-On)", type: "text" },
-      { id: "compliance_recording", label: "Compliance recording requirements (regulatory, retention, etc.)", type: "textarea" },
-      { id: "monitoring_whisper_barge", label: "Call monitoring (whisper/barge/coach) required?", type: "textarea" }
+      { id: "auto_attendants", label: "Auto attendants (qty + requirements)", type: "textarea" },
+      { id: "hunt_groups", label: "Hunt groups (qty + routing)", type: "textarea" },
+      { id: "call_queues", label: "Call queues (qty + routing)", type: "textarea" },
+      { id: "business_hours", label: "Business hours / holidays / schedules", type: "textarea" },
+      { id: "shared_lines_virtual_lines", label: "Shared lines / virtual lines needs", type: "textarea" },
+      { id: "voicemail", label: "Voicemail requirements (VM-to-email, greeting rules, etc.)", type: "textarea" },
+      { id: "snr", label: "Single Number Reach (SNR) requirements", type: "textarea" },
+      { id: "recording_required", label: "Call recording required? (Yes/No)", type: "text" },
+      { id: "recording_scope", label: "Recording scope (Selective/Always-On)", type: "text" },
+      { id: "compliance_retention", label: "Compliance/retention requirements", type: "textarea" }
     ]
   },
 
   {
-    id: "emergency_calling_e911",
+    id: "e911",
     title: "Emergency Calling (E911)",
     questions: [
       { id: "e911_solution", label: "E911 solution (Native / RedSky)", type: "text" },
-      { id: "buildings_count", label: "Number of buildings", type: "text" },
-      { id: "floors_zones", label: "Floors/zones per building (how many + naming)", type: "textarea" },
-      { id: "remote_worker_strategy", label: "Remote worker E911 strategy", type: "textarea" },
-      { id: "karis_law", label: "Kari’s Law compliance required? (Yes/No)", type: "text" },
-      { id: "ray_baum", label: "RAY BAUM’s Act compliance required? (Yes/No)", type: "text" }
+      { id: "buildings", label: "Buildings count + addresses", type: "textarea" },
+      { id: "floors_zones", label: "Floors/zones per building", type: "textarea" },
+      { id: "remote_worker_strategy", label: "Remote worker E911 strategy", type: "textarea" }
     ]
   },
 
   {
-    id: "identity_security_controlhub",
+    id: "identity_security",
     title: "Identity, Security & Control Hub",
     questions: [
       { id: "idp", label: "Identity provider (Azure AD/Okta/Other)", type: "text" },
-      { id: "sso_required", label: "SSO required? (Yes/No)", type: "text" },
-      { id: "mfa_required", label: "MFA required? (Yes/No)", type: "text" },
-      { id: "ad_sync_required", label: "AD Sync required? (Yes/No)", type: "text" },
-      { id: "admin_separation", label: "Role-based admin separation required? (Describe)", type: "textarea" },
-      { id: "controlhub_features", label: "Control Hub features desired (analytics, troubleshooting, ThousandEyes, etc.)", type: "textarea" }
+      { id: "sso", label: "SSO required? (Yes/No)", type: "text" },
+      { id: "mfa", label: "MFA required? (Yes/No)", type: "text" },
+      { id: "ad_sync", label: "AD Sync required? (Yes/No)", type: "text" },
+      { id: "admin_roles", label: "Admin role separation / RBAC needs", type: "textarea" }
     ]
   },
 
   {
-    id: "integrations_interop",
+    id: "integrations",
     title: "Integrations & Interoperability",
     questions: [
-      { id: "teams_integration", label: "Microsoft Teams integration required? (Yes/No + approach)", type: "textarea" },
-      { id: "crm_integration", label: "CRM integration required? (which CRM + scope)", type: "textarea" },
-      { id: "contact_center_planned", label: "Contact Center integration planned? (Yes/No + platform + timing)", type: "textarea" },
-      { id: "api_requirements", label: "API / custom integration requirements", type: "textarea" },
-      { id: "call_data_export", label: "Call data export required? (CDRs/analytics)", type: "textarea" },
-      { id: "recording_integrations", label: "Recording access / integrations required", type: "textarea" }
+      { id: "ms_teams", label: "Microsoft Teams integration (Yes/No + approach)", type: "textarea" },
+      { id: "crm", label: "CRM integrations (which + scope)", type: "textarea" },
+      { id: "contact_center", label: "Contact Center dependency/integration (platform + timing)", type: "textarea" },
+      { id: "api", label: "API/custom integration requirements", type: "textarea" }
     ]
   },
 
@@ -228,12 +376,9 @@ const SECTIONS = [
     title: "Migration & Cutover Strategy",
     questions: [
       { id: "migration_approach", label: "Migration approach (Big Bang / Phased / Hybrid)", type: "text" },
-      { id: "phasing_method", label: "Phasing method (by site, by department, by user group)", type: "textarea" },
-      { id: "temporary_hybrid", label: "Temporary hybrid period required? (duration + why)", type: "textarea" },
-      { id: "admin_training", label: "Admin training required? (Yes/No + audience)", type: "textarea" },
-      { id: "end_user_training", label: "End-user training required? (Yes/No + method)", type: "textarea" },
-      { id: "communications_plan", label: "Communications plan required? (Yes/No)", type: "text" },
-      { id: "blackout_periods", label: "Blackout periods (month-end, peak season, etc.)", type: "textarea" }
+      { id: "phasing_method", label: "Phasing method (by site / by group)", type: "textarea" },
+      { id: "training", label: "Training requirements (admin/end-user)", type: "textarea" },
+      { id: "blackout_periods", label: "Blackout periods / change freezes", type: "textarea" }
     ]
   },
 
@@ -241,42 +386,48 @@ const SECTIONS = [
     id: "support_day2",
     title: "Operations, Support & Day 2",
     questions: [
-      { id: "day2_owner", label: "Day 2 support owner (Customer / Partner / Cisco)", type: "text" },
-      { id: "solution_support", label: "Cisco Solution Support needed? (Yes/No)", type: "text" },
-      { id: "partner_managed_support", label: "Partner-managed support required? (Yes/No + scope)", type: "textarea" },
-      { id: "hypercare", label: "Hypercare required? (Yes/No)", type: "text" },
-      { id: "hypercare_duration", label: "Hypercare duration", type: "text" },
-      { id: "ongoing_reporting", label: "Ongoing reporting/monitoring requirements", type: "textarea" }
+      { id: "day2_owner", label: "Day 2 support owner (Customer/Partner/Cisco)", type: "text" },
+      { id: "hypercare", label: "Hypercare required? (Yes/No + duration)", type: "textarea" },
+      { id: "support_sla", label: "Support SLA expectations", type: "textarea" }
     ]
   },
 
   {
-    id: "risks_assumptions_dependencies",
-    title: "Risks, Assumptions & Dependencies",
+    id: "risks_open_items",
+    title: "Risks, Assumptions, Dependencies & Open Items",
     questions: [
-      { id: "known_risks", label: "Known risks", type: "textarea" },
-      { id: "network_gaps", label: "Network readiness gaps", type: "textarea" },
-      { id: "porting_risks", label: "Carrier porting risks", type: "textarea" },
-      { id: "hardware_risks", label: "Hardware procurement risks", type: "textarea" },
+      { id: "risks", label: "Known risks", type: "textarea" },
       { id: "assumptions", label: "Key assumptions", type: "textarea" },
-      { id: "dependencies", label: "Key dependencies", type: "textarea" }
-    ]
-  },
-
-  {
-    id: "open_items",
-    title: "Open Items / TBD",
-    questions: [
-      { id: "open_technical_items", label: "Open technical items", type: "textarea" },
-      { id: "decisions_pending", label: "Decisions pending", type: "textarea" },
-      { id: "follow_up_actions", label: "Follow-up actions (include owner + due date)", type: "textarea" }
+      { id: "dependencies", label: "Key dependencies", type: "textarea" },
+      { id: "open_items", label: "Open items / follow-ups (owner + due date)", type: "textarea" }
     ]
   }
 ];
 
-function nowISO() { return new Date().toISOString(); }
+function isoNow(){ return new Date().toISOString(); }
 
-function getMetaFromUI() {
+function setStatus(kind, msg){
+  const el = document.getElementById("status");
+  el.className = "status " + (kind || "");
+  el.textContent = msg;
+  el.style.display = "block";
+}
+function clearStatus(){
+  const el = document.getElementById("status");
+  el.style.display = "none";
+  el.textContent = "";
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){
+    return null;
+  }
+}
+
+function baseMeta(){
   return {
     customerName: document.getElementById("customerName").value || "",
     opportunityId: document.getElementById("opportunityId").value || "",
@@ -287,310 +438,283 @@ function getMetaFromUI() {
   };
 }
 
-function setStatus(kind, msg) {
-  const el = document.getElementById("status");
-  el.className = "status";
-  if (kind === "ok") el.classList.add("status--ok");
-  if (kind === "warn") el.classList.add("status--warn");
-  if (kind === "err") el.classList.add("status--err");
-  el.textContent = msg;
-  el.style.display = "block";
-}
-
-function clearStatus() {
-  const el = document.getElementById("status");
-  el.style.display = "none";
-  el.textContent = "";
-}
-
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
-}
-
-function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-function buildEmptyState() {
-  const state = {
+function buildEmptyPayload(){
+  const templateId = document.getElementById("templateId").value || "wxc-assessment-v1";
+  const payload = {
     schemaVersion: "1.0",
-    templateId: document.getElementById("templateVersion").value || "wxc-discovery-v1",
-    meta: {
-      ...getMetaFromUI(),
-      createdAt: nowISO(),
-      updatedAt: nowISO()
-    },
+    templateId,
+    meta: { ...baseMeta(), createdAt: isoNow(), updatedAt: isoNow() },
     sections: {}
   };
-
-  for (const s of SECTIONS) {
-    state.sections[s.id] = { title: s.title, responses: {} };
-    for (const q of s.questions) state.sections[s.id].responses[q.id] = "";
+  for(const s of SECTIONS){
+    payload.sections[s.id] = { title: s.title, responses: {} };
+    for(const q of s.questions){
+      payload.sections[s.id].responses[q.id] = "";
+    }
   }
-  return state;
+  return payload;
 }
 
-function hydrateMetaUI(state) {
-  if (!state?.meta) return;
-  document.getElementById("customerName").value = state.meta.customerName || "";
-  document.getElementById("opportunityId").value = state.meta.opportunityId || "";
-  document.getElementById("projectName").value = state.meta.projectName || "";
-  document.getElementById("targetGoLive").value = state.meta.targetGoLive || "";
-  document.getElementById("preparedBy").value = state.meta.preparedBy || "";
-  document.getElementById("notes").value = state.meta.notes || "";
-  document.getElementById("templateVersion").value = state.templateId || "wxc-discovery-v1";
+function ensureKeys(payload){
+  for(const s of SECTIONS){
+    if(!payload.sections[s.id]) payload.sections[s.id] = { title: s.title, responses: {} };
+    payload.sections[s.id].title = s.title;
+    if(!payload.sections[s.id].responses) payload.sections[s.id].responses = {};
+    for(const q of s.questions){
+      if(typeof payload.sections[s.id].responses[q.id] !== "string") payload.sections[s.id].responses[q.id] = "";
+    }
+  }
 }
 
-function renderForm(state) {
+function renderForm(payload){
   const root = document.getElementById("formRoot");
   root.innerHTML = "";
 
-  for (const section of SECTIONS) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "section section--open";
-    wrapper.dataset.sectionId = section.id;
+  for(const s of SECTIONS){
+    const sec = document.createElement("div");
+    sec.className = "section open";
 
-    const header = document.createElement("div");
-    header.className = "section__header";
-    header.innerHTML = `
+    const head = document.createElement("div");
+    head.className = "secHead";
+    head.innerHTML = `
       <div>
-        <div class="section__title">${section.title}</div>
-        <div class="section__meta">${section.questions.length} questions</div>
+        <div class="secTitle">${s.title}</div>
+        <div class="secMeta">${s.questions.length} questions</div>
       </div>
-      <div class="section__meta">Click to toggle</div>
+      <div class="secMeta">Click to toggle</div>
     `;
-
-    header.addEventListener("click", () => {
-      wrapper.classList.toggle("section--open");
-    });
+    head.addEventListener("click", () => sec.classList.toggle("open"));
 
     const body = document.createElement("div");
-    body.className = "section__body";
+    body.className = "secBody";
 
     const table = document.createElement("table");
-    table.className = "table";
     table.innerHTML = `
-      <thead>
-        <tr>
-          <th class="q">Question</th>
-          <th class="a">Answer</th>
-        </tr>
-      </thead>
+      <thead><tr><th class="qcol">Question</th><th class="acol">Answer</th></tr></thead>
     `;
+    const tb = document.createElement("tbody");
 
-    const tbody = document.createElement("tbody");
-
-    for (const q of section.questions) {
+    for(const q of s.questions){
       const tr = document.createElement("tr");
-
       const tdQ = document.createElement("td");
-      tdQ.className = "q";
+      tdQ.className = "qcol";
       tdQ.textContent = q.label;
 
       const tdA = document.createElement("td");
-      tdA.className = "a";
+      tdA.className = "acol";
 
+      const current = payload.sections[s.id].responses[q.id] || "";
       let input;
-      const currentVal = state.sections?.[section.id]?.responses?.[q.id] ?? "";
 
-      if (q.type === "textarea") {
+      if(q.type === "textarea"){
         input = document.createElement("textarea");
-        input.className = "answerTextArea";
         input.rows = 3;
-        input.value = currentVal;
-      } else if (q.type === "select") {
+        input.value = current;
+      }else if(q.type === "select"){
         input = document.createElement("select");
-        input.className = "answerSelect";
-        (q.options || [""]).forEach(opt => {
+        for(const opt of q.options){
           const o = document.createElement("option");
           o.value = opt;
           o.textContent = opt === "" ? "— Select —" : opt;
           input.appendChild(o);
-        });
-        input.value = currentVal;
-      } else {
+        }
+        input.value = current;
+      }else{
         input = document.createElement("input");
         input.type = "text";
-        input.className = "answerInput";
-        input.value = currentVal;
+        input.value = current;
       }
 
-      input.dataset.sectionId = section.id;
+      input.dataset.sectionId = s.id;
       input.dataset.questionId = q.id;
 
       input.addEventListener("input", () => {
-        state.sections[section.id].responses[q.id] = input.value;
-        state.meta = { ...state.meta, ...getMetaFromUI(), updatedAt: nowISO() };
-        saveState(state);
-        updatePreview(state);
+        payload.sections[s.id].responses[q.id] = input.value;
+        payload.meta = { ...payload.meta, ...baseMeta(), updatedAt: isoNow() };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        updatePreview(payload);
         clearStatus();
       });
 
       tdA.appendChild(input);
       tr.appendChild(tdQ);
       tr.appendChild(tdA);
-      tbody.appendChild(tr);
+      tb.appendChild(tr);
     }
 
-    table.appendChild(tbody);
+    table.appendChild(tb);
     body.appendChild(table);
 
-    wrapper.appendChild(header);
-    wrapper.appendChild(body);
-    root.appendChild(wrapper);
+    sec.appendChild(head);
+    sec.appendChild(body);
+    root.appendChild(sec);
   }
 }
 
-function updatePreview(state) {
-  document.getElementById("jsonPreview").textContent = JSON.stringify(state, null, 2);
+function updatePreview(payload){
+  document.getElementById("jsonPreview").textContent = JSON.stringify(payload, null, 2);
 }
 
-function validate(state) {
-  const warnings = [];
-  // Basic meta checks
-  if (!state.meta.customerName) warnings.push("Customer Name is empty.");
-  if (!state.meta.projectName) warnings.push("Project Name is empty.");
+function hydrateMeta(payload){
+  const m = payload.meta || {};
+  document.getElementById("templateId").value = payload.templateId || "wxc-assessment-v1";
+  document.getElementById("customerName").value = m.customerName || "";
+  document.getElementById("opportunityId").value = m.opportunityId || "";
+  document.getElementById("projectName").value = m.projectName || "";
+  document.getElementById("targetGoLive").value = m.targetGoLive || "";
+  document.getElementById("preparedBy").value = m.preparedBy || "";
+  document.getElementById("notes").value = m.notes || "";
+}
 
-  // At least some answers check
-  let answered = 0;
-  let total = 0;
-  for (const s of SECTIONS) {
-    for (const q of s.questions) {
+function wireMeta(payload){
+  const ids = ["templateId","customerName","opportunityId","projectName","targetGoLive","preparedBy","notes"];
+  ids.forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+      payload.templateId = document.getElementById("templateId").value || "wxc-assessment-v1";
+      payload.meta = { ...payload.meta, ...baseMeta(), updatedAt: isoNow() };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      updatePreview(payload);
+      clearStatus();
+    });
+  });
+}
+
+function validate(payload){
+  const warnings = [];
+  if(!payload.meta.customerName) warnings.push("Customer Name is empty.");
+  if(!payload.meta.projectName) warnings.push("Project Name is empty.");
+  let answered = 0, total = 0;
+  for(const s of SECTIONS){
+    for(const q of s.questions){
       total++;
-      const v = (state.sections[s.id].responses[q.id] || "").trim();
-      if (v) answered++;
+      const v = (payload.sections[s.id].responses[q.id] || "").trim();
+      if(v) answered++;
     }
   }
-  if (answered === 0) warnings.push("No questionnaire answers have been entered yet.");
+  if(answered === 0) warnings.push("No answers entered yet.");
   return { warnings, answered, total };
 }
 
-function downloadJSON(state) {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+async function submitWebhook(payload){
+  const url = (document.getElementById("webhookUrl").value || "").trim();
+  if(!url){
+    setStatus("err", "Webhook URL is empty. Add a webhook URL first.");
+    return;
+  }
+  payload.templateId = document.getElementById("templateId").value || payload.templateId || "wxc-assessment-v1";
+  payload.meta = { ...payload.meta, ...baseMeta(), updatedAt: isoNow() };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  updatePreview(payload);
+
+  try{
+    const res = await fetch(url, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+    const text = await res.text().catch(()=> "");
+    if(!res.ok){
+      setStatus("err", `Webhook POST failed (${res.status}). ${text ? "Response: " + text : ""}`);
+      return;
+    }
+    setStatus("ok", `Webhook POST successful (${res.status}).`);
+  }catch(e){
+    setStatus("err", "Webhook POST failed (network/CORS). If using GitHub Pages, your webhook must allow CORS.");
+  }
+}
+
+function downloadJSON(payload){
+  payload.templateId = document.getElementById("templateId").value || payload.templateId || "wxc-assessment-v1";
+  payload.meta = { ...payload.meta, ...baseMeta(), updatedAt: isoNow() };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  const safeName = (state.meta.customerName || "customer").replace(/[^\w\-]+/g, "_");
+  const name = (payload.meta.customerName || "customer").replace(/[^\w\-]+/g,"_");
   a.href = url;
-  a.download = `${safeName}_wxc_discovery.json`;
+  a.download = `${name}_wxc_assessment.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
 }
 
-async function copyJSON(state) {
-  await navigator.clipboard.writeText(JSON.stringify(state, null, 2));
+async function copyJSON(payload){
+  payload.templateId = document.getElementById("templateId").value || payload.templateId || "wxc-assessment-v1";
+  payload.meta = { ...payload.meta, ...baseMeta(), updatedAt: isoNow() };
+  await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  setStatus("ok", "JSON copied to clipboard.");
 }
 
-async function submitWebhook(state) {
-  const url = document.getElementById("webhookUrl").value.trim();
-  if (!url) {
-    setStatus("err", "Webhook URL is empty. Add a webhook URL or export JSON instead.");
-    return;
-  }
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(state)
-  });
-
-  if (!res.ok) {
-    const txt = await res.text().catch(() => "");
-    setStatus("err", `Webhook POST failed (${res.status}). ${txt ? "Response: " + txt : ""}`);
-    return;
-  }
-
-  setStatus("ok", `Webhook POST successful (${res.status}).`);
+function setExpand(open){
+  document.querySelectorAll(".section").forEach(sec => sec.classList.toggle("open", open));
 }
 
-function expandCollapseAll(open) {
-  document.querySelectorAll(".section").forEach(el => {
-    el.classList.toggle("section--open", open);
-  });
-}
+function init(){
+  let payload = loadState();
+  if(!payload) payload = buildEmptyPayload();
+  if(!payload.sections) payload.sections = {};
+  ensureKeys(payload);
+  hydrateMeta(payload);
+  renderForm(payload);
+  wireMeta(payload);
+  updatePreview(payload);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 
-function wireMetaInputs(state) {
-  const ids = ["customerName", "opportunityId", "projectName", "targetGoLive", "preparedBy", "notes", "templateVersion"];
-  ids.forEach(id => {
-    document.getElementById(id).addEventListener("input", () => {
-      state.templateId = document.getElementById("templateVersion").value || "wxc-discovery-v1";
-      state.meta = { ...state.meta, ...getMetaFromUI(), updatedAt: nowISO() };
-      saveState(state);
-      updatePreview(state);
-      clearStatus();
-    });
-  });
-}
+  document.getElementById("expandAll").addEventListener("click", ()=> setExpand(true));
+  document.getElementById("collapseAll").addEventListener("click", ()=> setExpand(false));
 
-function init() {
-  let state = loadState();
-  if (!state) state = buildEmptyState();
-  hydrateMetaUI(state);
-
-  // Ensure templateId aligns to UI
-  state.templateId = document.getElementById("templateVersion").value || state.templateId || "wxc-discovery-v1";
-
-  // Ensure all section/question keys exist (forward compatibility)
-  for (const s of SECTIONS) {
-    state.sections[s.id] = state.sections[s.id] || { title: s.title, responses: {} };
-    state.sections[s.id].title = s.title;
-    state.sections[s.id].responses = state.sections[s.id].responses || {};
-    for (const q of s.questions) {
-      if (typeof state.sections[s.id].responses[q.id] !== "string") {
-        state.sections[s.id].responses[q.id] = "";
-      }
-    }
-  }
-
-  saveState(state);
-  renderForm(state);
-  updatePreview(state);
-  wireMetaInputs(state);
-
-  document.getElementById("btnExpandAll").addEventListener("click", () => expandCollapseAll(true));
-  document.getElementById("btnCollapseAll").addEventListener("click", () => expandCollapseAll(false));
-
-  document.getElementById("btnValidate").addEventListener("click", () => {
-    const { warnings, answered, total } = validate(state);
-    if (warnings.length) {
-      setStatus("warn", `Validation warnings: ${warnings.join(" ")} (Answered: ${answered}/${total})`);
-    } else {
-      setStatus("ok", `Validation passed. (Answered: ${answered}/${total})`);
-    }
+  document.getElementById("validateBtn").addEventListener("click", ()=>{
+    const {warnings, answered, total} = validate(payload);
+    if(warnings.length) setStatus("warn", `Validation warnings: ${warnings.join(" ")} (Answered: ${answered}/${total})`);
+    else setStatus("ok", `Validation passed. (Answered: ${answered}/${total})`);
   });
 
-  document.getElementById("btnExport").addEventListener("click", () => {
-    state.meta.updatedAt = nowISO();
-    saveState(state);
-    downloadJSON(state);
-    setStatus("ok", "Downloaded JSON.");
-  });
+  document.getElementById("submitBtn").addEventListener("click", ()=> submitWebhook(payload));
+  document.getElementById("downloadBtn").addEventListener("click", ()=> downloadJSON(payload));
+  document.getElementById("copyBtn").addEventListener("click", ()=> copyJSON(payload));
 
-  document.getElementById("btnCopy").addEventListener("click", async () => {
-    state.meta.updatedAt = nowISO();
-    saveState(state);
-    await copyJSON(state);
-    setStatus("ok", "Copied JSON to clipboard.");
-  });
-
-  document.getElementById("btnSubmit").addEventListener("click", async () => {
-    state.meta.updatedAt = nowISO();
-    saveState(state);
-    await submitWebhook(state);
-  });
-
-  document.getElementById("btnClear").addEventListener("click", () => {
-    if (!confirm("Clear all saved answers? This cannot be undone.")) return;
+  document.getElementById("clearAll").addEventListener("click", ()=>{
+    if(!confirm("Clear all saved answers? This cannot be undone.")) return;
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
   });
 }
 
 document.addEventListener("DOMContentLoaded", init);
+</script>
+
+<!--
+==============================
+JSON OUTPUT FORMAT (Webhook Payload)
+==============================
+This form submits the following JSON shape:
+
+{
+  "schemaVersion": "1.0",
+  "templateId": "wxc-assessment-v1",
+  "meta": {
+    "customerName": "...",
+    "opportunityId": "...",
+    "projectName": "...",
+    "targetGoLive": "YYYY-MM-DD",
+    "preparedBy": "...",
+    "notes": "...",
+    "createdAt": "ISO-8601",
+    "updatedAt": "ISO-8601"
+  },
+  "sections": {
+    "<section_id>": {
+      "title": "<section title>",
+      "responses": {
+        "<question_id>": "<string answer>",
+        ...
+      }
+    },
+    ...
+  }
+}
+
+All question answers are strings for simplicity; parse numbers/dates downstream if required.
+-->
+</body>
+</html>
