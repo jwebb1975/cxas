@@ -3,184 +3,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Assessment Portal – CX AI Prototype</title>
+<title>Network Topology Questionnaire</title>
 <style>
-  body{font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;margin:0;}
-  header{background:#003c6c;color:#fff;padding:10px 20px;}
-  header h1{margin:0;}
-  nav{display:flex;gap:10px;margin-top:10px;}
-  nav button{background:#0078d4;color:#fff;border:none;padding:8px 15px;border-radius:4px;cursor:pointer;}
-  nav button.active{background:#005a9e;}
-  section.tab{display:none;padding:20px;background:#fff;margin:20px;border-radius:8px;
-              box-shadow:0 0 8px rgba(0,0,0,0.1);}
-  section.tab.active{display:grid;grid-template-columns:150px auto 250px;gap:20px;}
-  h2{grid-column:1/4;border-bottom:2px solid #ccc;padding-bottom:5px;color:#003c6c;}
-  label{display:block;font-weight:bold;margin-top:10px;}
-  input,textarea{width:100%;padding:6px;border:1px solid #ccc;border-radius:4px;margin-top:4px;}
-  textarea{height:60px;}
-  .help-left{text-align:center;}
-  .help-left img{width:120px;border-radius:6px;border:1px solid #ccc;cursor:pointer;}
-  .help-right iframe{width:100%;height:200px;border:1px solid #ccc;border-radius:6px;}
-  footer{background:#003c6c;color:#fff;text-align:center;padding:15px;}
-  footer button{margin:0 10px;background:#0078d4;color:#fff;border:none;
-                padding:10px 18px;border-radius:5px;cursor:pointer;}
-  footer button:hover{background:#005a9e;}
-  @media(max-width:900px){
-    section.tab.active{grid-template-columns:1fr;}
-    .help-left,.help-right{display:none;}
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f9fc;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  h1, h2 {
+    color: #005073;
+    border-bottom: 2px solid #0078ae;
+    padding-bottom: 5px;
+  }
+  form {
+    max-width: 1200px;
+    margin: auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .section {
+    margin-bottom: 30px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  td {
+    vertical-align: top;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  td:first-child {
+    width: 40%;
+    font-weight: bold;
+  }
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  textarea {
+    height: 60px;
+  }
+  button {
+    background-color: #0078ae;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #005073;
+  }
+  .note {
+    font-size: 13px;
+    color: #777;
   }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Customer Experience Assessment Portal</h1>
-  <nav>
-    <button id="tabCalling" class="active" onclick="showTab('calling')">Calling</button>
-    <button id="tabCC" onclick="showTab('cc')">Contact Center</button>
-    <button id="tabNet" onclick="showTab('network')">Network</button>
-    <button id="tabFuture" onclick="showTab('future')">Future Enhancements</button>
-  </nav>
-</header>
+<h1>Network Topology Questionnaire</h1>
+<form id="networkForm" action="https://your-webhook-url-here.com" method="POST">
 
-<form id="assessmentForm">
+<!-- Section 1 -->
+<div class="section">
+<h2>1. General Information</h2>
+<table>
+<tr><td>Customer Name</td><td><input type="text" name="customer_name"></td></tr>
+<tr><td>Site(s) / Location(s)</td><td><input type="text" name="locations"></td></tr>
+<tr><td>Primary Contact Name / Email</td><td><input type="text" name="contact_info"></td></tr>
+<tr><td>Project Name or Reference ID</td><td><input type="text" name="project_name"></td></tr>
+<tr><td>Expected Go-Live Date</td><td><input type="text" name="go_live_date"></td></tr>
+<tr><td>Current WAN / Internet Provider(s)</td><td><input type="text" name="isp_provider"></td></tr>
+<tr><td>Current Voice Provider / Carrier</td><td><input type="text" name="voice_provider"></td></tr>
+</table>
+</div>
 
-<!-- ========== Calling Section ========== -->
-<section id="calling" class="tab active">
-  <h2>Webex Calling Assessment</h2>
-  <div class="help-left">
-    <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
-      <img src="https://via.placeholder.com/120x90.png?text=AI+Help" alt="Help">
-    </a>
-  </div>
-  <div>
-    <label>Customer Legal Name</label><input name="calling_customerName">
-    <label>Deployment Type (New/Migration/Hybrid)</label><input name="calling_deploymentType">
-    <label>PSTN Model (CCP/LGW/Hybrid)</label><input name="calling_pstnModel">
-    <label>Total Users</label><input name="calling_totalUsers">
-    <label>Business Drivers</label><textarea name="calling_businessDrivers"></textarea>
-  </div>
-  <div class="help-right">
-    <iframe src="https://demo.cxsol.com/share/migration_plan"></iframe>
-  </div>
-</section>
+<!-- Section 2 -->
+<div class="section">
+<h2>2. WAN / Internet Connectivity</h2>
+<table>
+<tr><td>Connection Type</td><td><input type="text" name="wan_type"></td></tr>
+<tr><td>ISP or Carrier</td><td><input type="text" name="wan_isp"></td></tr>
+<tr><td>Bandwidth (Upload / Download)</td><td><input type="text" name="bandwidth"></td></tr>
+<tr><td>Handoff Type (Ethernet, Fiber, etc.)</td><td><input type="text" name="handoff_type"></td></tr>
+<tr><td>Redundancy / Failover Method</td><td><input type="text" name="redundancy"></td></tr>
+<tr><td>SD-WAN In Use (Vendor/Version)</td><td><input type="text" name="sdwan"></td></tr>
+<tr><td>Static Public IPs Available?</td><td><input type="text" name="static_ips"></td></tr>
+<tr><td>Average Latency</td><td><input type="text" name="latency"></td></tr>
+<tr><td>Jitter and Packet Loss</td><td><input type="text" name="jitter_loss"></td></tr>
+<tr><td>QoS Configured for Voice/Video?</td><td><input type="text" name="qos"></td></tr>
+</table>
+</div>
 
-<!-- ========== Contact Center Section ========== -->
-<section id="cc" class="tab">
-  <h2>Webex Contact Center Assessment</h2>
-  <div class="help-left">
-    <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
-      <img src="https://via.placeholder.com/120x90.png?text=AI+Help" alt="Help">
-    </a>
-  </div>
-  <div>
-    <label>Project Name</label><input name="cc_projectName">
-    <label>Total Agents</label><input name="cc_totalAgents">
-    <label>Licensing (Standard/Premium)</label><input name="cc_license">
-    <label>Channels Enabled</label><input name="cc_channels">
-    <label>CRM Integration (Yes/No)</label><input name="cc_crmIntegration">
-  </div>
-  <div class="help-right">
-    <iframe src="https://demo.cxsol.com/share/migration_plan"></iframe>
-  </div>
-</section>
+<!-- Section 3 -->
+<div class="section">
+<h2>3. LAN Infrastructure</h2>
+<table>
+<tr><td>Switch Model / Manufacturer</td><td><input type="text" name="switch_model"></td></tr>
+<tr><td>PoE Available?</td><td><input type="text" name="poe"></td></tr>
+<tr><td>Existing VLANs (Data/Voice/Management)</td><td><input type="text" name="vlans"></td></tr>
+<tr><td>Voice VLAN Segregation?</td><td><input type="text" name="voice_vlan"></td></tr>
+<tr><td>DHCP Handling (Central/Local/Static)</td><td><input type="text" name="dhcp"></td></tr>
+<tr><td>LAN Type (L2/L3 Routed)</td><td><input type="text" name="lan_type"></td></tr>
+<tr><td>Known LAN Issues?</td><td><textarea name="lan_issues"></textarea></td></tr>
+</table>
+</div>
 
-<!-- ========== Network Section ========== -->
-<section id="network" class="tab">
-  <h2>Network Topology Assessment</h2>
-  <div class="help-left">
-    <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
-      <img src="https://via.placeholder.com/120x90.png?text=AI+Help" alt="Help">
-    </a>
-  </div>
-  <div>
-    <label>Number of Sites</label><input name="net_siteCount" type="number">
-    <label>Interconnect (MPLS/SD-WAN/VPN)</label><input name="net_interconnect">
-    <label>Internet Breakout (Local/Backhaul)</label><input name="net_breakout">
-    <label>Firewall Model</label><input name="net_firewallModel">
-    <label>Latency (ms)</label><input name="net_latency" type="number">
-  </div>
-  <div class="help-right">
-    <iframe src="https://demo.cxsol.com/share/migration_plan"></iframe>
-  </div>
-</section>
+<!-- Section 4 -->
+<div class="section">
+<h2>4. Firewall & Security</h2>
+<table>
+<tr><td>Firewall Model</td><td><input type="text" name="firewall_model"></td></tr>
+<tr><td>Firmware Version</td><td><input type="text" name="firewall_fw"></td></tr>
+<tr><td>NAT Enabled?</td><td><input type="text" name="nat"></td></tr>
+<tr><td>ACL or Port Restrictions?</td><td><input type="text" name="acl"></td></tr>
+<tr><td>Proxy Servers in Use?</td><td><input type="text" name="proxy"></td></tr>
+<tr><td>VPN or Direct Internet?</td><td><input type="text" name="vpn"></td></tr>
+<tr><td>SSL Inspection Enabled?</td><td><input type="text" name="ssl_inspection"></td></tr>
+</table>
+</div>
 
-<!-- ========== Future Enhancements Section ========== -->
-<section id="future" class="tab">
-  <h2>Future Enhancements / Ideas</h2>
-  <div class="help-left">
-    <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
-      <img src="https://via.placeholder.com/120x90.png?text=AI+Help" alt="Help">
-    </a>
-  </div>
-  <div>
-    <label>Potential Integrations</label><textarea name="future_integrations"></textarea>
-    <label>Desired AI Features</label><textarea name="future_aiFeatures"></textarea>
-    <label>Comments / Requests</label><textarea name="future_comments"></textarea>
-  </div>
-  <div class="help-right">
-    <iframe src="https://demo.cxsol.com/share/migration_plan"></iframe>
-  </div>
-</section>
+<!-- Section 5 -->
+<div class="section">
+<h2>5. Site Interconnects & Data Centers</h2>
+<table>
+<tr><td>Number of Data Centers</td><td><input type="text" name="datacenters"></td></tr>
+<tr><td>Interconnect Type (MPLS, VPN, etc.)</td><td><input type="text" name="interconnect_type"></td></tr>
+<tr><td>Redundant Paths?</td><td><input type="text" name="redundant_paths"></td></tr>
+<tr><td>Centralized or Local Internet Egress?</td><td><input type="text" name="egress"></td></tr>
+<tr><td>Existing PBX/SIP/CUBE Gateways?</td><td><input type="text" name="pbx_cubes"></td></tr>
+</table>
+</div>
 
-<footer>
-  <button type="button" onclick="submitAll()">Submit All</button>
-  <button type="button" onclick="exportForGPT()">Export for GPT</button>
-  <button type="button" onclick="generateSOW()">Generate SOW</button>
-  <button type="button" onclick="openCRM()">View CRM</button>
-</footer>
+<!-- Section 6 -->
+<div class="section">
+<h2>6. Wireless Infrastructure</h2>
+<table>
+<tr><td>Wireless Handsets in Use?</td><td><input type="text" name="wireless_handsets"></td></tr>
+<tr><td>Wireless Vendor and Model</td><td><input type="text" name="wireless_vendor"></td></tr>
+<tr><td>SSID Split (Data vs Voice)?</td><td><input type="text" name="ssid_split"></td></tr>
+<tr><td>Roaming Optimized for Voice?</td><td><input type="text" name="roaming"></td></tr>
+</table>
+</div>
+
+<!-- Section 7 -->
+<div class="section">
+<h2>7. Voice Infrastructure Integration</h2>
+<table>
+<tr><td>Local Gateway or SBC Model</td><td><input type="text" name="lgw_model"></td></tr>
+<tr><td>HA Configuration?</td><td><input type="text" name="ha_config"></td></tr>
+<tr><td>Concurrent Call Capacity</td><td><input type="text" name="call_capacity"></td></tr>
+<tr><td>Analog Devices in Use</td><td><input type="text" name="analog_devices"></td></tr>
+<tr><td>DIDs or PRIs to be Ported?</td><td><input type="text" name="porting"></td></tr>
+<tr><td>Paging / Informacast Integration</td><td><input type="text" name="informacast"></td></tr>
+<tr><td>E911 (RedSky Horizon) Enabled?</td><td><input type="text" name="e911"></td></tr>
+</table>
+</div>
+
+<!-- Section 8 -->
+<div class="section">
+<h2>8. Performance & Monitoring</h2>
+<table>
+<tr><td>Monitoring Tools (ThousandEyes, SolarWinds, etc.)</td><td><input type="text" name="monitoring_tools"></td></tr>
+<tr><td>Voice Quality Monitoring Method</td><td><input type="text" name="voice_monitoring"></td></tr>
+<tr><td>Automated Alerts Configured?</td><td><input type="text" name="alerts"></td></tr>
+<tr><td>Who Manages Network Performance?</td><td><input type="text" name="performance_manager"></td></tr>
+</table>
+</div>
+
+<!-- Section 9 -->
+<div class="section">
+<h2>9. Readiness & Risks</h2>
+<table>
+<tr><td>LAN/WAN Assessment Completed?</td><td><input type="text" name="assessment"></td></tr>
+<tr><td>Known Latency or Congestion Issues?</td><td><input type="text" name="latency_issues"></td></tr>
+<tr><td>Non-Cisco Firewalls or Routers?</td><td><input type="text" name="non_cisco"></td></tr>
+<tr><td>Pending Infrastructure Upgrades?</td><td><input type="text" name="upgrades"></td></tr>
+<tr><td>Sites Not Meeting QoS Thresholds?</td><td><input type="text" name="qos_risks"></td></tr>
+<tr><td>Single Points of Failure?</td><td><input type="text" name="failures"></td></tr>
+</table>
+</div>
+
+<!-- Section 10 -->
+<div class="section">
+<h2>10. Additional Notes / Attachments</h2>
+<table>
+<tr><td>Provide Diagrams or Attachments (URLs)</td><td><input type="text" name="attachments"></td></tr>
+<tr><td>Additional Comments</td><td><textarea name="comments"></textarea></td></tr>
+</table>
+</div>
+
+<div style="text-align:center;">
+  <button type="submit">Submit Questionnaire</button>
+</div>
+
+<p class="note" style="text-align:center;margin-top:20px;">
+This form will submit securely to the configured webhook endpoint.
+</p>
+
 </form>
 
 <script>
-/* --- Tab switching --- */
-function showTab(tabName){
-  document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById(tabName).classList.add('active');
-  document.getElementById('tab'+tabName.charAt(0).toUpperCase()+tabName.slice(1)).classList.add('active');
-}
-
-/* --- Action Buttons --- */
-async function submitAll(){
-  const fd=new FormData(document.getElementById('assessmentForm'));
-  const json={}; fd.forEach((v,k)=>json[k]=v);
-  const payload={
-    eventType:"AssessmentSubmit",
-    timestamp:new Date().toISOString(),
-    customer:{name:json.calling_customerName||"Unknown"},
-    sections:{
-      calling:json,
-      contactcenter:json,
-      network:json,
-      future:json
-    }
-  };
-  await Promise.all([
-    fetch("https://659f21365023b02bfe894b27.mockapi.io/cx/gpt",
-          {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    fetch("https://hooks.us.webexconnect.io/events/ACJKCN9N80",
-          {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
-  ]);
-  alert("Assessment submitted to MockAPI + Webex Connect.");
-}
-
-function exportForGPT(){
-  const fd=new FormData(document.getElementById('assessmentForm'));
-  const json={}; fd.forEach((v,k)=>json[k]=v);
-  const blob=new Blob([JSON.stringify(json,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='assessment_export.json';a.click();
-  URL.revokeObjectURL(url);
-}
-
-function generateSOW(){
-  alert("This button will call GPT webhook to generate a Statement of Work.");
-}
-
-function openCRM(){
-  window.open('crm.html','_blank');
-}
+document.getElementById('networkForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target).entries());
+  fetch(e.target.action, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  }).then(res => {
+    if (res.ok) alert('Form successfully submitted!');
+    else alert('Submission failed. Check webhook URL.');
+  }).catch(() => alert('Error sending data.'));
+});
 </script>
+
 </body>
 </html>
