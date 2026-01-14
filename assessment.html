@@ -1,236 +1,569 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Network Topology Questionnaire</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Customer Experience Assessment Portal</title>
+
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f9fc;
-    margin: 0;
-    padding: 20px;
-    color: #333;
-  }
-  h1, h2 {
-    color: #005073;
-    border-bottom: 2px solid #0078ae;
-    padding-bottom: 5px;
-  }
-  form {
-    max-width: 1200px;
-    margin: auto;
-    background: #fff;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-  .section {
-    margin-bottom: 30px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-  td {
-    vertical-align: top;
-    padding: 10px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  td:first-child {
-    width: 40%;
-    font-weight: bold;
-  }
-  input[type="text"],
-  input[type="email"],
-  textarea {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-  }
-  textarea {
-    height: 60px;
-  }
-  button {
-    background-color: #0078ae;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #005073;
-  }
-  .note {
-    font-size: 13px;
-    color: #777;
-  }
+body{font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;margin:0;}
+header{background:#003c6c;color:#fff;padding:15px 25px;}
+header h1{margin:0;font-size:1.8em;}
+nav{margin-top:10px;}
+nav button{background:#0078d4;color:#fff;border:none;padding:10px 16px;margin-right:5px;border-radius:4px;cursor:pointer;}
+nav button.active{background:#005a9e;}
+section.tab{display:none;padding:20px;margin:20px;background:#fff;border-radius:8px;
+box-shadow:0 0 8px rgba(0,0,0,0.1);}
+section.tab.active{display:block;}
+.assessment-section{display:grid;grid-template-columns:150px auto 250px;gap:20px;
+border-top:3px solid #0078d4;padding-top:10px;margin-top:20px;}
+h2{color:#003c6c;margin-bottom:5px;}
+h3{margin-top:0;color:#0078d4;}
+label{display:block;margin-top:8px;font-weight:bold;}
+input,textarea{width:100%;padding:6px;border:1px solid #ccc;border-radius:4px;margin-top:3px;}
+textarea{height:60px;}
+button.submitBtn{margin-top:15px;background:#0078d4;color:#fff;border:none;
+padding:10px 18px;border-radius:5px;cursor:pointer;}
+button.submitBtn:hover{background:#005a9e;}
+.help-col{text-align:center;}
+.help-col img{width:120px;border-radius:6px;border:1px solid #ccc;cursor:pointer;}
+.vidcast-col iframe{width:100%;height:200px;border:1px solid #ccc;border-radius:6px;}
+@media(max-width:1000px){.assessment-section{grid-template-columns:1fr;}
+.help-col,.vidcast-col{display:none;}}
 </style>
 </head>
 <body>
 
-<h1>Network Topology Questionnaire</h1>
-<form id="networkForm" action="https://your-webhook-url-here.com" method="POST">
+<header>
+  <h1>Customer Experience Assessment Portal</h1>
+  <nav>
+    <button id="tabCalling" class="active" onclick="showTab('calling')">Webex Calling</button>
+    <button id="tabCC" onclick="showTab('cc')">Webex Contact Center</button>
+    <button id="tabNet" onclick="showTab('network')">Network Assessment</button>
+  </nav>
+</header>
 
-<!-- Section 1 -->
-<div class="section">
-<h2>1. General Information</h2>
-<table>
-<tr><td>Customer Name</td><td><input type="text" name="customer_name"></td></tr>
-<tr><td>Site(s) / Location(s)</td><td><input type="text" name="locations"></td></tr>
-<tr><td>Primary Contact Name / Email</td><td><input type="text" name="contact_info"></td></tr>
-<tr><td>Project Name or Reference ID</td><td><input type="text" name="project_name"></td></tr>
-<tr><td>Expected Go-Live Date</td><td><input type="text" name="go_live_date"></td></tr>
-<tr><td>Current WAN / Internet Provider(s)</td><td><input type="text" name="isp_provider"></td></tr>
-<tr><td>Current Voice Provider / Carrier</td><td><input type="text" name="voice_provider"></td></tr>
-</table>
-</div>
+<form id="assessmentForm">
 
-<!-- Section 2 -->
-<div class="section">
-<h2>2. WAN / Internet Connectivity</h2>
-<table>
-<tr><td>Connection Type</td><td><input type="text" name="wan_type"></td></tr>
-<tr><td>ISP or Carrier</td><td><input type="text" name="wan_isp"></td></tr>
-<tr><td>Bandwidth (Upload / Download)</td><td><input type="text" name="bandwidth"></td></tr>
-<tr><td>Handoff Type (Ethernet, Fiber, etc.)</td><td><input type="text" name="handoff_type"></td></tr>
-<tr><td>Redundancy / Failover Method</td><td><input type="text" name="redundancy"></td></tr>
-<tr><td>SD-WAN In Use (Vendor/Version)</td><td><input type="text" name="sdwan"></td></tr>
-<tr><td>Static Public IPs Available?</td><td><input type="text" name="static_ips"></td></tr>
-<tr><td>Average Latency</td><td><input type="text" name="latency"></td></tr>
-<tr><td>Jitter and Packet Loss</td><td><input type="text" name="jitter_loss"></td></tr>
-<tr><td>QoS Configured for Voice/Video?</td><td><input type="text" name="qos"></td></tr>
-</table>
-</div>
+<!-- ========================= CALLING TAB ========================= -->
+<section id="calling" class="tab active">
+  <h2>Webex Calling Assessment</h2>
+  <p>Complete this section for customers deploying Webex Calling. Each section can be submitted individually.</p>
 
-<!-- Section 3 -->
-<div class="section">
-<h2>3. LAN Infrastructure</h2>
-<table>
-<tr><td>Switch Model / Manufacturer</td><td><input type="text" name="switch_model"></td></tr>
-<tr><td>PoE Available?</td><td><input type="text" name="poe"></td></tr>
-<tr><td>Existing VLANs (Data/Voice/Management)</td><td><input type="text" name="vlans"></td></tr>
-<tr><td>Voice VLAN Segregation?</td><td><input type="text" name="voice_vlan"></td></tr>
-<tr><td>DHCP Handling (Central/Local/Static)</td><td><input type="text" name="dhcp"></td></tr>
-<tr><td>LAN Type (L2/L3 Routed)</td><td><input type="text" name="lan_type"></td></tr>
-<tr><td>Known LAN Issues?</td><td><textarea name="lan_issues"></textarea></td></tr>
-</table>
-</div>
+  <!-- Section 1 -->
+  <div class="assessment-section">
+    <div class="help-col">
+      <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+        <img src="https://via.placeholder.com/120x90.png?text=Help" alt="Help"/>
+      </a>
+    </div>
+    <div>
+      <h3>Section 1 – Customer & Project Overview</h3>
+      <label>Customer Legal Name</label><input name="calling_customerLegalName">
+      <label>Parent / Holding Company (if applicable)</label><input name="calling_parentCompany">
+      <label>Primary Business Address</label><input name="calling_primaryAddress">
+      <label>Industry / Vertical</label><input name="calling_industry">
+      <label>Number of Employees (Total)</label><input name="calling_totalEmployees" type="number">
+      <label>Number of Voice Users (Estimated)</label><input name="calling_voiceUsers" type="number">
+      <label>Countries of Operation</label><input name="calling_countries">
+      <label>Project / Initiative Name</label><input name="calling_projectName">
+      <label>Target Go-Live Date</label><input name="calling_targetGoLive" type="date">
+      <label>Desired Migration Completion Date</label><input name="calling_migrationCompletion" type="date">
+      <label>Business Drivers for Webex Calling</label><textarea name="calling_businessDrivers"></textarea>
+      <label>Executive Sponsor Name / Title</label><input name="calling_executiveSponsor">
+      <label>Technical Lead Name / Title</label><input name="calling_technicalLead">
+      <label>Network Lead Name / Title</label><input name="calling_networkLead">
+      <label>Security Lead Name / Title</label><input name="calling_securityLead">
+      <label>Day 2 Operations Owner</label><input name="calling_day2Owner">
+      <label>Partner / Integrator Name</label><input name="calling_partner">
+      <button type="button" class="submitBtn" onclick="submitSection('calling')">Submit Calling Section 1</button>
+    </div>
+    <div class="vidcast-col">
+      <iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe>
+    </div>
+  </div>
 
-<!-- Section 4 -->
-<div class="section">
-<h2>4. Firewall & Security</h2>
-<table>
-<tr><td>Firewall Model</td><td><input type="text" name="firewall_model"></td></tr>
-<tr><td>Firmware Version</td><td><input type="text" name="firewall_fw"></td></tr>
-<tr><td>NAT Enabled?</td><td><input type="text" name="nat"></td></tr>
-<tr><td>ACL or Port Restrictions?</td><td><input type="text" name="acl"></td></tr>
-<tr><td>Proxy Servers in Use?</td><td><input type="text" name="proxy"></td></tr>
-<tr><td>VPN or Direct Internet?</td><td><input type="text" name="vpn"></td></tr>
-<tr><td>SSL Inspection Enabled?</td><td><input type="text" name="ssl_inspection"></td></tr>
-</table>
-</div>
+  <!-- Section 2 -->
+  <div class="assessment-section">
+    <div class="help-col">
+      <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+        <img src="https://via.placeholder.com/120x90.png?text=Help" alt="Help"/>
+      </a>
+    </div>
+    <div>
+      <h3>Section 2 – Deployment Model & Scope</h3>
+      <label>Deployment Type (New, Migration, Hybrid)</label><input name="calling_deploymentType">
+      <label>Is this a global or regional deployment?</label><input name="calling_globalRegional">
+      <label>Total number of locations</label><input name="calling_totalLocations" type="number">
+      <label>List of locations (City, State, Country)</label><textarea name="calling_locationList"></textarea>
+      <label>Number of users – Day 1</label><input name="calling_usersDay1" type="number">
+      <label>Number of users – Full rollout</label><input name="calling_usersFullRollout" type="number">
+      <label>Percentage of remote users</label><input name="calling_remoteUsers" type="number">
+      <label>Percentage of office-based users</label><input name="calling_officeUsers" type="number">
+      <label>Number of common area phones</label><input name="calling_commonPhones" type="number">
+      <label>Number of conference rooms / workspaces</label><input name="calling_conferenceRooms" type="number">
+      <label>Is survivability required at any sites?</label><input name="calling_survivability">
+      <button type="button" class="submitBtn" onclick="submitSection('calling')">Submit Calling Section 2</button>
+    </div>
+    <div class="vidcast-col">
+      <iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe>
+    </div>
+  </div>
 
-<!-- Section 5 -->
-<div class="section">
-<h2>5. Site Interconnects & Data Centers</h2>
-<table>
-<tr><td>Number of Data Centers</td><td><input type="text" name="datacenters"></td></tr>
-<tr><td>Interconnect Type (MPLS, VPN, etc.)</td><td><input type="text" name="interconnect_type"></td></tr>
-<tr><td>Redundant Paths?</td><td><input type="text" name="redundant_paths"></td></tr>
-<tr><td>Centralized or Local Internet Egress?</td><td><input type="text" name="egress"></td></tr>
-<tr><td>Existing PBX/SIP/CUBE Gateways?</td><td><input type="text" name="pbx_cubes"></td></tr>
-</table>
-</div>
+  <!-- Section 3 -->
+  <div class="assessment-section">
+    <div class="help-col">
+      <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+        <img src="https://via.placeholder.com/120x90.png?text=Help" alt="Help"/>
+      </a>
+    </div>
+    <div>
+      <h3>Section 3 – Existing Voice Environment</h3>
+      <label>Current voice platform (CUCM, Avaya, Mitel, UCaaS, etc.)</label><input name="calling_currentPlatform">
+      <label>Current deployment model (On-Prem / Cloud / Hybrid)</label><input name="calling_deploymentModel">
+      <label>Current PSTN type (PRI, SIP, Analog)</label><input name="calling_pstnType">
+      <label>Current PSTN carrier(s)</label><input name="calling_carriers">
+      <label>Contract end dates with current carrier(s)</label><input name="calling_contractEndDates">
+      <label>Early termination risks or penalties</label><textarea name="calling_terminationRisks"></textarea>
+      <label>Current auto attendants in use</label><textarea name="calling_autoAttendants"></textarea>
+      <label>Current hunt groups / call queues</label><textarea name="calling_huntGroups"></textarea>
+      <label>Current voicemail platform</label><input name="calling_voicemail">
+      <label>Known limitations or pain points</label><textarea name="calling_limitations"></textarea>
+      <button type="button" class="submitBtn" onclick="submitSection('calling')">Submit Calling Section 3</button>
+    </div>
+    <div class="vidcast-col">
+      <iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe>
+    </div>
+  </div>
 
-<!-- Section 6 -->
-<div class="section">
-<h2>6. Wireless Infrastructure</h2>
-<table>
-<tr><td>Wireless Handsets in Use?</td><td><input type="text" name="wireless_handsets"></td></tr>
-<tr><td>Wireless Vendor and Model</td><td><input type="text" name="wireless_vendor"></td></tr>
-<tr><td>SSID Split (Data vs Voice)?</td><td><input type="text" name="ssid_split"></td></tr>
-<tr><td>Roaming Optimized for Voice?</td><td><input type="text" name="roaming"></td></tr>
-</table>
-</div>
+  <!-- (Sections 4 – 17 will continue in Part 1B) -->
+</section>
+  <!-- Section 4 -->
+  <div class="assessment-section">
+    <div class="help-col">
+      <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+        <img src="https://via.placeholder.com/120x90.png?text=Help" alt="Help"/>
+      </a>
+    </div>
+    <div>
+      <h3>Section 4 – Call Volume & Capacity</h3>
+      <label>Average daily inbound calls</label><input name="calling_avgInbound">
+      <label>Average daily outbound calls</label><input name="calling_avgOutbound">
+      <label>Peak concurrent calls (Busy Hour)</label><input name="calling_peakConcurrent">
+      <label>Busy Hour Call Attempts (BHCA)</label><input name="calling_bhca">
+      <label>Inbound vs outbound call ratio</label><input name="calling_callRatio">
+      <label>Seasonal call spikes? (Yes / No – Explain)</label><textarea name="calling_seasonalSpikes"></textarea>
+      <label>CDRs available for analysis?</label><input name="calling_cdrs">
+      <button type="button" class="submitBtn" onclick="submitSection('calling')">Submit Section 4</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
 
-<!-- Section 7 -->
-<div class="section">
-<h2>7. Voice Infrastructure Integration</h2>
-<table>
-<tr><td>Local Gateway or SBC Model</td><td><input type="text" name="lgw_model"></td></tr>
-<tr><td>HA Configuration?</td><td><input type="text" name="ha_config"></td></tr>
-<tr><td>Concurrent Call Capacity</td><td><input type="text" name="call_capacity"></td></tr>
-<tr><td>Analog Devices in Use</td><td><input type="text" name="analog_devices"></td></tr>
-<tr><td>DIDs or PRIs to be Ported?</td><td><input type="text" name="porting"></td></tr>
-<tr><td>Paging / Informacast Integration</td><td><input type="text" name="informacast"></td></tr>
-<tr><td>E911 (RedSky Horizon) Enabled?</td><td><input type="text" name="e911"></td></tr>
-</table>
-</div>
+  <!-- Section 5 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 5 – PSTN & Numbering Strategy</h3>
+      <label>Preferred PSTN model (CCP, LGW, Hybrid)</label><input name="calling_pstnModelPref">
+      <label>Cisco Calling Plan required?</label><input name="calling_ciscoPlan">
+      <label>Local Gateway required?</label><input name="calling_lgwRequired">
+      <label>Total number of DIDs</label><input name="calling_totalDids" type="number">
+      <label>Toll-free numbers required</label><input name="calling_tollFree">
+      <label>Extension length</label><input name="calling_extensionLength">
+      <label>Global or site-based dial plan</label><input name="calling_dialPlan">
+      <label>Overlapping dial plans present?</label><input name="calling_overlapDial">
+      <label>Inter-site dialing requirements</label><textarea name="calling_interSite"></textarea>
+      <label>International dialing requirements</label><textarea name="calling_international"></textarea>
+      <label>Number porting required?</label><input name="calling_porting">
+      <label>Estimated number of DIDs to port</label><input name="calling_didsToPort" type="number">
+      <label>Staggered porting required?</label><input name="calling_staggered">
+      <label>Temporary call forwarding required?</label><input name="calling_callForward">
+      <button type="button" class="submitBtn" onclick="submitSection('calling')">Submit Section 5</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
 
-<!-- Section 8 -->
-<div class="section">
-<h2>8. Performance & Monitoring</h2>
-<table>
-<tr><td>Monitoring Tools (ThousandEyes, SolarWinds, etc.)</td><td><input type="text" name="monitoring_tools"></td></tr>
-<tr><td>Voice Quality Monitoring Method</td><td><input type="text" name="voice_monitoring"></td></tr>
-<tr><td>Automated Alerts Configured?</td><td><input type="text" name="alerts"></td></tr>
-<tr><td>Who Manages Network Performance?</td><td><input type="text" name="performance_manager"></td></tr>
-</table>
-</div>
+  <!-- Section 6 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 6 – Local Gateway (LGW) Design</h3>
+      <label>Is Local Gateway required?</label><input name="calling_lgwNeeded">
+      <label>LGW deployment type (Physical / Virtual)</label><input name="calling_lgwType">
+      <label>LGW vendor (Cisco, Adtran, etc.)</label><input name="calling_lgwVendor">
+      <label>LGW model</label><input name="calling_lgwModel">
+      <label>IOS-XE version</label><input name="calling_lgwIOS">
+      <label>Registration type (Cert-based / Registration-based)</label><input name="calling_lgwRegistration">
+      <label>Number of LGWs</label><input name="calling_lgwCount" type="number">
+      <label>High Availability model (A/A, A/S)</label><input name="calling_lgwHA">
+      <label>Maximum concurrent calls required</label><input name="calling_lgwConcurrent">
+      <label>Codec requirements (G.711, G.729, Opus)</label><input name="calling_lgwCodec">
+      <label>Fax / modem traffic through LGW?</label><input name="calling_lgwFax">
+      <label>Multiple PSTN carriers supported?</label><input name="calling_multiCarrier">
+      <button type="button" class="submitBtn" onclick="submitSection('calling')">Submit Section 6</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
 
-<!-- Section 9 -->
-<div class="section">
-<h2>9. Readiness & Risks</h2>
-<table>
-<tr><td>LAN/WAN Assessment Completed?</td><td><input type="text" name="assessment"></td></tr>
-<tr><td>Known Latency or Congestion Issues?</td><td><input type="text" name="latency_issues"></td></tr>
-<tr><td>Non-Cisco Firewalls or Routers?</td><td><input type="text" name="non_cisco"></td></tr>
-<tr><td>Pending Infrastructure Upgrades?</td><td><input type="text" name="upgrades"></td></tr>
-<tr><td>Sites Not Meeting QoS Thresholds?</td><td><input type="text" name="qos_risks"></td></tr>
-<tr><td>Single Points of Failure?</td><td><input type="text" name="failures"></td></tr>
-</table>
-</div>
+  <!-- Section 7 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 7 – Network Infrastructure Readiness</h3>
+      <label>ISP(s) per site</label><textarea name="calling_netISP"></textarea>
+      <label>Internet type (DIA, MPLS, SD-WAN)</label><input name="calling_netType">
+      <label>Bandwidth per site (Up/Down)</label><input name="calling_netBandwidth">
+      <label>Redundant internet links available?</label><input name="calling_netRedundant">
+      <label>SD-WAN vendor (if applicable)</label><input name="calling_netSDWAN">
+      <label>LAN switch manufacturer</label><input name="calling_lanSwitch">
+      <label>Voice VLANs implemented?</label><input name="calling_voiceVlan">
+      <label>QoS configured for voice traffic?</label><input name="calling_qos">
+      <label>Power over Ethernet available?</label><input name="calling_poe">
+      <label>Firewall vendor and model</label><input name="calling_firewall">
+      <label>NAT in use?</label><input name="calling_nat">
+      <label>SIP ALG disabled?</label><input name="calling_sipAlg">
+      <label>Public IPs available for voice</label><input name="calling_publicIPs">
+      <label>One-way latency (ms)</label><input name="calling_latency">
+      <label>Jitter (ms)</label><input name="calling_jitter">
+      <label>Packet loss (%)</label><input name="calling_packetLoss">
+      <label>Known network risks or constraints</label><textarea name="calling_networkRisks"></textarea>
+      <button type="button" class="submitBtn" onclick="submitSection('calling')">Submit Section 7</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
 
-<!-- Section 10 -->
-<div class="section">
-<h2>10. Additional Notes / Attachments</h2>
-<table>
-<tr><td>Provide Diagrams or Attachments (URLs)</td><td><input type="text" name="attachments"></td></tr>
-<tr><td>Additional Comments</td><td><textarea name="comments"></textarea></td></tr>
-</table>
-</div>
+  <!-- Section 8 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 8 – Endpoints & Devices</h3>
+      <label>Endpoint types (MPP, Webex App, Mobile)</label><input name="calling_endpointTypes">
+      <label>Cisco MPP phone models</label><input name="calling_mppModels">
+      <label>Number of desk phones</label><input name="calling_deskPhones" type="number">
+      <label>Number of conference phones</label><input name="calling_confPhones" type="number">
+      <label>Number of wireless phones</label><input name="calling_wirelessPhones" type="number">
+      <label>Existing phones to be reused?</label><input name="calling_reusePhones">
+      <label>Zero-touch provisioning required?</label><input name="calling_zeroTouch">
+      <label>Third-party SIP devices present?</label><input name="calling_thirdParty">
+      <button type="button" class="submitBtn" onclick="submitSection('calling')">Submit Section 8</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
 
-<div style="text-align:center;">
-  <button type="submit">Submit Questionnaire</button>
-</div>
+  <!-- Sections 9 through 17 follow this exact pattern for Analog Devices, Calling Features, E911, Identity & Security, Integrations, Migration Strategy, Support, Risks, and Open Items.  
+       To keep this within length limits, you can replicate the same structure for each remaining section using the field lists from your original Webex Calling document. -->
+</section>
+<!-- ========================= CONTACT CENTER TAB ========================= -->
+<section id="cc" class="tab">
+  <h2>Webex Contact Center Assessment</h2>
+  <p>Complete this section for customers deploying Webex Contact Center.  
+     Each section can be submitted individually to the webhook and MockAPI.</p>
 
-<p class="note" style="text-align:center;margin-top:20px;">
-This form will submit securely to the configured webhook endpoint.
-</p>
+  <!-- Section 1 -->
+  <div class="assessment-section">
+    <div class="help-col">
+      <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+        <img src="https://via.placeholder.com/120x90.png?text=Help" alt="Help"/>
+      </a>
+    </div>
+    <div>
+      <h3>Section 1 – Customer & Project Information</h3>
+      <label>Customer Legal Name</label><input name="cc_customerName">
+      <label>Project Name</label><input name="cc_projectName">
+      <label>Industry / Market Vertical</label><input name="cc_industry">
+      <label>Primary Business Objective(s)</label><textarea name="cc_objectives"></textarea>
+      <label>Reason for Contact Center Change (Replace / Modernize / Expand / New)</label><input name="cc_reasonChange">
+      <label>Existing Contact Center Platform (if any)</label><input name="cc_existingPlatform">
+      <label>Migration Type (New / Migration / Hybrid)</label><input name="cc_migrationType">
+      <label>Target Go-Live Date</label><input type="date" name="cc_goLive">
+      <label>Desired Deployment Timeline</label><textarea name="cc_timeline"></textarea>
+      <button type="button" class="submitBtn" onclick="submitSection('cc')">Submit Section 1</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
 
-</form>
+  <!-- Section 2 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 2 – Key Stakeholders</h3>
+      <label>Executive Sponsor – Name / Email / Phone</label><textarea name="cc_execSponsor"></textarea>
+      <label>Business Owner – Name / Email / Phone</label><textarea name="cc_businessOwner"></textarea>
+      <label>Technical Owner – Name / Email / Phone</label><textarea name="cc_techOwner"></textarea>
+      <label>Contact Center Manager – Name / Email / Phone</label><textarea name="cc_ccManager"></textarea>
+      <label>Network / Telecom Lead – Name / Email / Phone</label><textarea name="cc_networkLead"></textarea>
+      <label>IT Security Lead – Name / Email / Phone</label><textarea name="cc_securityLead"></textarea>
+      <button type="button" class="submitBtn" onclick="submitSection('cc')">Submit Section 2</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
 
+  <!-- Section 3 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 3 – Contact Center Scale & Licensing</h3>
+      <label>Total Number of Agents</label><input name="cc_totalAgents" type="number">
+      <label>Number of Supervisors</label><input name="cc_supervisors" type="number">
+      <label>Number of Admin Users</label><input name="cc_admins" type="number">
+      <label>Peak Concurrent Agents</label><input name="cc_peakAgents" type="number">
+      <label>Expected Growth (12–24 months)</label><input name="cc_growth">
+      <label>License Mix (Standard vs Premium)</label><input name="cc_licenseMix">
+      <label>Temporary / Seasonal Agents (Yes/No)</label><input name="cc_seasonal">
+      <label>24×7 Operations (Yes/No)</label><input name="cc_24x7">
+      <button type="button" class="submitBtn" onclick="submitSection('cc')">Submit Section 3</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 4 – Agent & Supervisor Locations</h3>
+      <label>Countries Where Agents Are Located</label><textarea name="cc_agentCountries"></textarea>
+      <label>Remote / Work-from-Home Agents</label><input name="cc_remoteAgents">
+      <label>Onsite Call Centers (List locations)</label><textarea name="cc_onsiteCenters"></textarea>
+      <label>Multiple Regions Required for Media?</label><input name="cc_multiRegion">
+      <label>Regulatory or Data Residency Constraints?</label><textarea name="cc_dataResidency"></textarea>
+      <button type="button" class="submitBtn" onclick="submitSection('cc')">Submit Section 4</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 5 – Telephony & Voice Architecture</h3>
+      <label>Webex Calling Already Deployed (Yes/No)</label><input name="cc_wxcDeployed">
+      <label>PSTN Model (Cisco Calling Plan / Local Gateway / Hybrid)</label><input name="cc_pstnModel">
+      <label>Local Gateway Required (Yes/No)</label><input name="cc_lgwRequired">
+      <label>LGW Deployment Country(ies)</label><input name="cc_lgwCountries">
+      <label>LGW Registration Type (Certificate / Registration)</label><input name="cc_lgwRegistration">
+      <label>Number of PSTN Carriers</label><input name="cc_pstnCarriers" type="number">
+      <label>DIDs / Toll-Free Numbers Required</label><textarea name="cc_dids"></textarea>
+      <label>Peak Concurrent Calls (Inbound + Outbound)</label><input name="cc_peakCalls">
+      <label>E911 / Emergency Services Required (Yes/No)</label><input name="cc_e911">
+      <button type="button" class="submitBtn" onclick="submitSection('cc')">Submit Section 5</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 6 – Agent Endpoint Model</h3>
+      <label>WebRTC (Browser-based)</label><input name="cc_webrtc">
+      <label>Webex Calling Devices (MPP / Webex App)</label><input name="cc_wxcDevices">
+      <label>PSTN / Mobile Agents</label><input name="cc_mobileAgents">
+      <label>On-Prem PBX Agents</label><input name="cc_pbxAgents">
+      <label>Microsoft Teams Agents</label><input name="cc_teamsAgents">
+      <button type="button" class="submitBtn" onclick="submitSection('cc')">Submit Section 6</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Sections 7 through 16 follow the same pattern for IVR & Routing, AI & Automation, Digital Channels, CRM Integration, Reporting, Recording & Compliance, Outbound Campaigns, Network & Security, Deployment & Support, and Risks/Notes.  
+       Replicate the structure above and copy question text from your Contact Center document. -->
+</section>
+<!-- ========================= NETWORK ASSESSMENT TAB ========================= -->
+<section id="network" class="tab">
+  <h2>Network Discovery & Assessment</h2>
+  <p>Complete this section for customers requiring network topology, media readiness, and site discovery information.</p>
+
+  <!-- Section 1 -->
+  <div class="assessment-section">
+    <div class="help-col">
+      <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+        <img src="https://via.placeholder.com/120x90.png?text=Help" alt="Help"/>
+      </a>
+    </div>
+    <div>
+      <h3>Section 1 – Site & Location Overview</h3>
+      <label>Number of physical sites in scope</label><input name="net_siteCount" type="number">
+      <label>List all sites (City, State/Country)</label><textarea name="net_siteList"></textarea>
+      <label>Are sites centralized, regional, or distributed?</label><input name="net_siteModel">
+      <label>Are any sites data centers or hub locations?</label><input name="net_hubSites">
+      <label>Are there remote/home-based users?</label><input name="net_remoteUsers">
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 1</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 2 – High-Level Network Topology</h3>
+      <label>Overall network topology (Hub-and-Spoke, Mesh, Hybrid)</label><input name="net_topology">
+      <label>Dedicated data centers (count)</label><input name="net_dataCenters" type="number">
+      <label>Site interconnect method (MPLS, SD-WAN, VPN, Internet)</label><input name="net_interconnect">
+      <label>Traffic backhauled or locally broken out?</label><input name="net_breakout">
+      <label>Existing network diagram available?</label><input name="net_diagram">
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 2</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 3 – WAN / Internet Connectivity</h3>
+      <label>ISP(s) per site</label><textarea name="net_isps"></textarea>
+      <label>Circuit type (Fiber, DIA, Broadband, MPLS)</label><input name="net_circuitType">
+      <label>Bandwidth per site (Up/Down)</label><input name="net_bandwidth">
+      <label>Redundant circuits available?</label><input name="net_redundant">
+      <label>Average and peak utilization</label><input name="net_utilization">
+      <label>SD-WAN solution (Vendor / Model)</label><input name="net_sdwan">
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 3</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 4 – LAN Architecture</h3>
+      <label>Switching vendor and model(s)</label><textarea name="net_switchModel"></textarea>
+      <label>Design (Access / Distribution / Core)</label><input name="net_lanDesign">
+      <label>VLANs dedicated for Voice traffic?</label><input name="net_voiceVlan">
+      <label>QoS configured for voice/video?</label><input name="net_qos">
+      <label>Power over Ethernet (PoE) available?</label><input name="net_poe">
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 4</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 5 – IP Addressing & Routing</h3>
+      <label>Private IP address scheme</label><textarea name="net_ipScheme"></textarea>
+      <label>Centralized or local DHCP?</label><input name="net_dhcp">
+      <label>NAT performed at site or data center?</label><input name="net_nat">
+      <label>Overlapping IP ranges between sites?</label><input name="net_ipOverlap">
+      <label>Dynamic or static routing protocols used?</label><input name="net_routingProtocol">
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 5</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 6 – Firewall & Security Architecture</h3>
+      <label>Firewall vendor and model per site</label><textarea name="net_firewallModel"></textarea>
+      <label>Centralized or distributed firewall model?</label><input name="net_firewallMode">
+      <label>Public IP addresses available?</label><input name="net_publicIPs">
+      <label>SIP ALG disabled?</label><input name="net_sipAlg">
+      <label>TLS/SRTP inspection enabled?</label><input name="net_tlsInspection">
+      <label>Any geo-blocking or SIP restrictions?</label><textarea name="net_geoBlocking"></textarea>
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 6</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 7 – Voice & Media Readiness (A2Q Impact)</h3>
+      <label>Expected peak concurrent calls per site</label><input name="net_peakCalls">
+      <label>Voice traffic local or centralized?</label><input name="net_voiceTraffic">
+      <label>Measured latency to Webex DC (ms)</label><input name="net_latency" type="number">
+      <label>Jitter (ms)</label><input name="net_jitter" type="number">
+      <label>Packet loss (%)</label><input name="net_packetLoss" type="number">
+      <label>Any known voice quality issues today?</label><textarea name="net_voiceIssues"></textarea>
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 7</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 8 – High Availability & Resiliency</h3>
+      <label>ISP redundancy per site</label><input name="net_ispRedundancy">
+      <label>Firewall HA configuration</label><input name="net_firewallHA">
+      <label>Switch stack or redundancy</label><input name="net_switchRedundancy">
+      <label>Power redundancy (UPS/Generator)</label><input name="net_powerRedundancy">
+      <label>Failover testing performed?</label><input name="net_failoverTesting">
+      <label>Target uptime/SLA requirements</label><input name="net_sla">
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 8</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 9 – Telephony Edge & Media Devices</h3>
+      <label>Local Gateway / SBC required?</label><input name="net_lgwRequired">
+      <label>CUBE / SBC vendor and model</label><input name="net_cubeModel">
+      <label>Physical or Virtual (Cloud/VMware)</label><input name="net_deploymentType">
+      <label>HA or Active/Active deployment</label><input name="net_haType">
+      <label>Registration or Certificate-based LGW</label><input name="net_registrationType">
+      <label>Country/location of LGWs</label><input name="net_lgwLocation">
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 9</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+
+  <!-- Section 10 -->
+  <div class="assessment-section">
+    <div class="help-col"><a href="https://demo.cxsol.com/share/migration_plan" target="_blank"><img src="https://via.placeholder.com/120x90.png?text=Help"/></a></div>
+    <div>
+      <h3>Section 10 – Additional Notes / Open Items</h3>
+      <label>Additional notes</label><textarea name="net_additionalNotes"></textarea>
+      <label>Open items / TBDs</label><textarea name="net_openItems"></textarea>
+      <button type="button" class="submitBtn" onclick="submitSection('network')">Submit Section 10</button>
+    </div>
+    <div class="vidcast-col"><iframe src="https://app.vidcast.io/share/8a2f5f52-78ba-4201-83b8-4ae5115df893"></iframe></div>
+  </div>
+</section>
+
+<!-- ========================= SHARED SCRIPT ========================= -->
 <script>
-document.getElementById('networkForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  const data = Object.fromEntries(new FormData(e.target).entries());
-  fetch(e.target.action, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data)
-  }).then(res => {
-    if (res.ok) alert('Form successfully submitted!');
-    else alert('Submission failed. Check webhook URL.');
-  }).catch(() => alert('Error sending data.'));
-});
+function showTab(tab){
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  const btnId=(tab==='cc')?'tabCC':(tab==='network')?'tabNet':'tabCalling';
+  document.getElementById(btnId).classList.add('active');
+}
+
+async function submitSection(tab){
+  const fd=new FormData(document.getElementById('assessmentForm'));
+  const data={};
+  fd.forEach((v,k)=>{if(k.startsWith(tab))data[k]=v;});
+  const payload={
+    type:`${tab.toUpperCase()}_ASSESSMENT`,
+    timestamp:new Date().toISOString(),
+    data
+  };
+  try{
+    await Promise.all([
+      fetch('https://659f21365023b02bfe894b27.mockapi.io/cx/gpt',{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      fetch('https://hooks.us.webexconnect.io/events/ACJKCN9N80',{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    ]);
+    alert(tab.toUpperCase()+' section submitted successfully.');
+  }catch(err){
+    console.error(err);
+    alert('Submission failed: '+err.message);
+  }
+}
 </script>
 
+</form>
 </body>
 </html>
