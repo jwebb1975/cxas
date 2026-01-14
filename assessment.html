@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment Portal – CX AI Prototype</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;margin:0;}
+  header{background:#003c6c;color:#fff;padding:10px 20px;}
+  header h1{margin:0;}
+  nav{display:flex;gap:10px;margin-top:10px;}
+  nav button{background:#0078d4;color:#fff;border:none;padding:8px 15px;border-radius:4px;cursor:pointer;}
+  nav button.active{background:#005a9e;}
+  section.tab{display:none;padding:20px;background:#fff;margin:20px;border-radius:8px;
+              box-shadow:0 0 8px rgba(0,0,0,0.1);}
+  section.tab.active{display:grid;grid-template-columns:150px auto 250px;gap:20px;}
+  h2{grid-column:1/4;border-bottom:2px solid #ccc;padding-bottom:5px;color:#003c6c;}
+  label{display:block;font-weight:bold;margin-top:10px;}
+  input,textarea{width:100%;padding:6px;border:1px solid #ccc;border-radius:4px;margin-top:4px;}
+  textarea{height:60px;}
+  .help-left{text-align:center;}
+  .help-left img{width:120px;border-radius:6px;border:1px solid #ccc;cursor:pointer;}
+  .help-right iframe{width:100%;height:200px;border:1px solid #ccc;border-radius:6px;}
+  footer{background:#003c6c;color:#fff;text-align:center;padding:15px;}
+  footer button{margin:0 10px;background:#0078d4;color:#fff;border:none;
+                padding:10px 18px;border-radius:5px;cursor:pointer;}
+  footer button:hover{background:#005a9e;}
+  @media(max-width:900px){
+    section.tab.active{grid-template-columns:1fr;}
+    .help-left,.help-right{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Customer Experience Assessment Portal</h1>
+  <nav>
+    <button id="tabCalling" class="active" onclick="showTab('calling')">Calling</button>
+    <button id="tabCC" onclick="showTab('cc')">Contact Center</button>
+    <button id="tabNet" onclick="showTab('network')">Network</button>
+    <button id="tabFuture" onclick="showTab('future')">Future Enhancements</button>
+  </nav>
+</header>
+
+<form id="assessmentForm">
+
+<!-- ========== Calling Section ========== -->
+<section id="calling" class="tab active">
+  <h2>Webex Calling Assessment</h2>
+  <div class="help-left">
+    <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+      <img src="https://via.placeholder.com/120x90.png?text=AI+Help" alt="Help">
+    </a>
+  </div>
+  <div>
+    <label>Customer Legal Name</label><input name="calling_customerName">
+    <label>Deployment Type (New/Migration/Hybrid)</label><input name="calling_deploymentType">
+    <label>PSTN Model (CCP/LGW/Hybrid)</label><input name="calling_pstnModel">
+    <label>Total Users</label><input name="calling_totalUsers">
+    <label>Business Drivers</label><textarea name="calling_businessDrivers"></textarea>
+  </div>
+  <div class="help-right">
+    <iframe src="https://demo.cxsol.com/share/migration_plan"></iframe>
+  </div>
+</section>
+
+<!-- ========== Contact Center Section ========== -->
+<section id="cc" class="tab">
+  <h2>Webex Contact Center Assessment</h2>
+  <div class="help-left">
+    <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+      <img src="https://via.placeholder.com/120x90.png?text=AI+Help" alt="Help">
+    </a>
+  </div>
+  <div>
+    <label>Project Name</label><input name="cc_projectName">
+    <label>Total Agents</label><input name="cc_totalAgents">
+    <label>Licensing (Standard/Premium)</label><input name="cc_license">
+    <label>Channels Enabled</label><input name="cc_channels">
+    <label>CRM Integration (Yes/No)</label><input name="cc_crmIntegration">
+  </div>
+  <div class="help-right">
+    <iframe src="https://demo.cxsol.com/share/migration_plan"></iframe>
+  </div>
+</section>
+
+<!-- ========== Network Section ========== -->
+<section id="network" class="tab">
+  <h2>Network Topology Assessment</h2>
+  <div class="help-left">
+    <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+      <img src="https://via.placeholder.com/120x90.png?text=AI+Help" alt="Help">
+    </a>
+  </div>
+  <div>
+    <label>Number of Sites</label><input name="net_siteCount" type="number">
+    <label>Interconnect (MPLS/SD-WAN/VPN)</label><input name="net_interconnect">
+    <label>Internet Breakout (Local/Backhaul)</label><input name="net_breakout">
+    <label>Firewall Model</label><input name="net_firewallModel">
+    <label>Latency (ms)</label><input name="net_latency" type="number">
+  </div>
+  <div class="help-right">
+    <iframe src="https://demo.cxsol.com/share/migration_plan"></iframe>
+  </div>
+</section>
+
+<!-- ========== Future Enhancements Section ========== -->
+<section id="future" class="tab">
+  <h2>Future Enhancements / Ideas</h2>
+  <div class="help-left">
+    <a href="https://demo.cxsol.com/share/migration_plan" target="_blank">
+      <img src="https://via.placeholder.com/120x90.png?text=AI+Help" alt="Help">
+    </a>
+  </div>
+  <div>
+    <label>Potential Integrations</label><textarea name="future_integrations"></textarea>
+    <label>Desired AI Features</label><textarea name="future_aiFeatures"></textarea>
+    <label>Comments / Requests</label><textarea name="future_comments"></textarea>
+  </div>
+  <div class="help-right">
+    <iframe src="https://demo.cxsol.com/share/migration_plan"></iframe>
+  </div>
+</section>
+
+<footer>
+  <button type="button" onclick="submitAll()">Submit All</button>
+  <button type="button" onclick="exportForGPT()">Export for GPT</button>
+  <button type="button" onclick="generateSOW()">Generate SOW</button>
+  <button type="button" onclick="openCRM()">View CRM</button>
+</footer>
+</form>
+
+<script>
+/* --- Tab switching --- */
+function showTab(tabName){
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
+  document.getElementById('tab'+tabName.charAt(0).toUpperCase()+tabName.slice(1)).classList.add('active');
+}
+
+/* --- Action Buttons --- */
+async function submitAll(){
+  const fd=new FormData(document.getElementById('assessmentForm'));
+  const json={}; fd.forEach((v,k)=>json[k]=v);
+  const payload={
+    eventType:"AssessmentSubmit",
+    timestamp:new Date().toISOString(),
+    customer:{name:json.calling_customerName||"Unknown"},
+    sections:{
+      calling:json,
+      contactcenter:json,
+      network:json,
+      future:json
+    }
+  };
+  await Promise.all([
+    fetch("https://659f21365023b02bfe894b27.mockapi.io/cx/gpt",
+          {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    fetch("https://hooks.us.webexconnect.io/events/ACJKCN9N80",
+          {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
+  ]);
+  alert("Assessment submitted to MockAPI + Webex Connect.");
+}
+
+function exportForGPT(){
+  const fd=new FormData(document.getElementById('assessmentForm'));
+  const json={}; fd.forEach((v,k)=>json[k]=v);
+  const blob=new Blob([JSON.stringify(json,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='assessment_export.json';a.click();
+  URL.revokeObjectURL(url);
+}
+
+function generateSOW(){
+  alert("This button will call GPT webhook to generate a Statement of Work.");
+}
+
+function openCRM(){
+  window.open('crm.html','_blank');
+}
+</script>
+</body>
+</html>
