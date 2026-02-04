@@ -19,13 +19,24 @@
       padding: 24px 32px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 340px;
+      width: 360px;
       text-align: center;
     }
     .logo {
       width: 208px;
       height: 47px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+    }
+    .crm-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0 20px;
+    }
+    .crm-logos img {
+      height: 28px;
+      opacity: 0.9;
     }
     label {
       display: block;
@@ -58,7 +69,11 @@
     .message {
       margin-top: 12px;
       font-size: 14px;
-      color: green;
+    }
+    .subtext {
+      font-size: 12px;
+      color: #666;
+      margin-top: -6px;
     }
   </style>
 </head>
@@ -67,7 +82,13 @@
     <img class="logo"
          src="https://cxsol.com/wp-content/uploads/2024/01/CX-Advanced-Solutions-header-208x47.png"
          alt="CX Advanced Solutions Logo">
-    <h2>Webhook Test Form</h2>
+
+    <h2>Update Notes Form</h2>
+    <div class="subtext">Example: Posting notes to an external CRM</div>
+
+    <div class="crm-logos">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg" alt="Salesforce">
+    </div>
 
     <form id="webhookForm">
       <label for="name">Name</label>
@@ -76,7 +97,7 @@
       <label for="phone">Phone</label>
       <input id="phone" type="text" required value="8019950433">
 
-      <label for="description">Description</label>
+      <label for="description">Notes Section</label>
       <input id="description" type="text" required value="Insert summary notes here">
 
       <button id="submitBtn" type="submit">Send to Webhook</button>
@@ -92,7 +113,7 @@
       const btn = document.getElementById("submitBtn");
       const msg = document.getElementById("messageBox");
       btn.disabled = true;
-      btn.textContent = "Sending…";
+      btn.textContent = "Sending�";
 
       const payload = {
         name: document.getElementById("name").value,
